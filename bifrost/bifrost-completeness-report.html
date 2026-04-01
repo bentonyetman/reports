@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BiFrost Catalog Completeness Report - April 1, 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<style>
+  :root {
+    --bg: #f8fafc; --card: #ffffff; --border: #e2e8f0;
+    --text: #1e293b; --text-muted: #64748b; --text-light: #94a3b8;
+    --green: #16a34a; --green-bg: #dcfce7; --green-border: #86efac;
+    --yellow: #ca8a04; --yellow-bg: #fef9c3; --yellow-border: #fde047;
+    --red: #dc2626; --red-bg: #fee2e2; --red-border: #fca5a5;
+    --gray: #6b7280; --gray-bg: #f3f4f6; --gray-border: #d1d5db;
+    --blue: #2563eb; --blue-bg: #dbeafe; --blue-border: #93c5fd;
+    --purple: #7c3aed; --purple-bg: #ede9fe;
+    --indigo: #4f46e5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+  .header { text-align: center; margin-bottom: 32px; }
+  .header h1 { font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .header p { color: var(--text-muted); font-size: 14px; }
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .summary-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+  .summary-card .value { font-size: 36px; font-weight: 700; }
+  .summary-card .label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .score-green { color: var(--green); }
+  .score-yellow { color: var(--yellow); }
+  .score-red { color: var(--red); }
+  .score-gray { color: var(--gray); }
+  .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 4px; }
+  .tab { flex: 1; padding: 10px 16px; border: none; background: transparent; cursor: pointer; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--text-muted); transition: all 0.2s; }
+  .tab:hover { background: var(--bg); }
+  .tab.active { background: var(--indigo); color: white; }
+  .domain-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; overflow: hidden; transition: box-shadow 0.2s; }
+  .domain-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .domain-header { padding: 16px 20px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+  .domain-header:hover { background: var(--bg); }
+  .domain-info { display: flex; align-items: center; gap: 16px; flex: 1; }
+  .domain-name { font-weight: 600; font-size: 16px; }
+  .domain-version { font-size: 12px; color: var(--text-light); background: var(--gray-bg); padding: 2px 8px; border-radius: 4px; }
+  .domain-owner { font-size: 13px; color: var(--text-muted); }
+  .domain-stats { display: flex; gap: 12px; align-items: center; }
+  .stat-chip { font-size: 12px; color: var(--text-muted); background: var(--bg); padding: 4px 10px; border-radius: 6px; }
+  .score-badge { display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 32px; border-radius: 8px; font-weight: 700; font-size: 14px; }
+  .score-badge.high { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  .score-badge.medium { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+  .score-badge.low { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+  .chevron { font-size: 18px; color: var(--text-light); transition: transform 0.2s; margin-left: 12px; }
+  .chevron.open { transform: rotate(180deg); }
+  .domain-detail { padding: 0 20px 20px; border-top: 1px solid var(--border); }
+  .principle-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  .principle-table th { text-align: left; padding: 8px 12px; font-size: 13px; font-weight: 600; color: var(--text-muted); border-bottom: 2px solid var(--border); }
+  .principle-table td { padding: 8px 12px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .principle-table tr:last-child td { border-bottom: none; }
+  .rating-pill { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+  .rating-met { background: var(--green-bg); color: var(--green); }
+  .rating-partial { background: var(--yellow-bg); color: var(--yellow); }
+  .rating-missing { background: var(--red-bg); color: var(--red); }
+  .rating-na { background: var(--gray-bg); color: var(--gray); }
+  .priority-note { margin-top: 12px; padding: 12px 16px; background: var(--blue-bg); border-radius: 8px; font-size: 13px; color: var(--blue); border-left: 3px solid var(--blue); }
+  .principle-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 12px; }
+  .principle-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .principle-card .desc { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+  .domain-pill-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .domain-pill { padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 500; }
+  .issue-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
+  .issue-card .issue-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .severity-badge { padding: 2px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .severity-critical { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+  .severity-high { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+  .severity-medium { background: var(--gray-bg); color: var(--gray); border: 1px solid var(--gray-border); }
+  .issue-card .issue-title { font-weight: 600; font-size: 14px; }
+  .issue-card .issue-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .rec-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-top: 24px; }
+  .rec-section h2 { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+  .rec-item { display: flex; gap: 12px; margin-bottom: 16px; }
+  .rec-item:last-child { margin-bottom: 0; }
+  .rec-num { width: 28px; height: 28px; border-radius: 50%; background: var(--indigo); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .rec-text { font-size: 14px; }
+  .rec-text strong { font-weight: 600; }
+  .footer { text-align: center; color: var(--text-light); font-size: 12px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); }
+  @media (max-width: 768px) {
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .domain-stats { display: none; }
+    .tabs { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const e = React.createElement;
+
+const DOMAINS = [
+  {
+    id: "GeneralLedger", name: "General Ledger", version: "1.0.3", owner: "erp-fin-gl-team",
+    services: 6, entities: 16, events: 33, channels: 6, score: 90,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "erp-fin-gl-team owns all entities" },
+      { name: "Service/APIs", rating: "Met", evidence: "6 services: COA, JE, Fiscal Calendar, Import, Export, Inquiry" },
+      { name: "Eventing", rating: "Met", evidence: "33 events across 6 Kafka channels" },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "Lives in SageMaker Studio" },
+      { name: "Versioning", rating: "Partial", evidence: "Entities versioned (v1.0.0-1.0.1); invariants universally TBD" },
+      { name: "Documented", rating: "Met", evidence: "CoaAccount: 6 properties with types and descriptions" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built in BiFrost" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Define business invariants for CoaAccount, JournalEntryControl, and FiscalYear."
+  },
+  {
+    id: "AccountsPayable", name: "Accounts Payable", version: "1.0.7", owner: "erp-ap-team",
+    services: 11, entities: 11, events: 23, channels: 2, score: 90,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "erp-ap-team owns Invoice and PaymentRun" },
+      { name: "Service/APIs", rating: "Met", evidence: "11 services covering full AP lifecycle" },
+      { name: "Eventing", rating: "Met", evidence: "23 events on 2 Kafka channels (invoice + payment run)" },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "Lives in SageMaker Studio" },
+      { name: "Versioning", rating: "Partial", evidence: "Invoice v1.0.6, PaymentRun v1.0.6; rowVersion for OCC; invariants TBD" },
+      { name: "Documented", rating: "Met", evidence: "Invoice: 35 properties with full descriptions, enums. Gold standard." },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Map service dependencies (AP -> VM, AP -> GL, AP -> PO). Define business invariants."
+  },
+  {
+    id: "Beacon", name: "Beacon", version: "1.0.1", owner: "platform-team-notifications",
+    services: 3, entities: 3, events: 2, channels: 2, score: 90,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "platform-team-notifications" },
+      { name: "Service/APIs", rating: "Met", evidence: "3 services: API, Processor, InApp Consumer" },
+      { name: "Eventing", rating: "Met", evidence: "2 events on 2 Kafka channels" },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Partial", evidence: "Entities at v1.0.1; invariants TBD" },
+      { name: "Documented", rating: "Met", evidence: "NotificationRequest: 13 properties with descriptions and enum values" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Map upstream dependencies (which products call Beacon). Define invariants."
+  },
+  {
+    id: "VendorManagement", name: "Vendor Management", version: "1.0.5", owner: "vendor-management-team",
+    services: 1, entities: 8, events: 1, channels: 1, score: 70,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "vendor-management-team" },
+      { name: "Service/APIs", rating: "Met", evidence: "VendorService with CRUD, search, import, export, promote commands" },
+      { name: "Eventing", rating: "Met", evidence: "VendorApprovalStatusChanged on Kafka channel" },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Partial", evidence: "Vendor at v1.0.5; invariants TBD" },
+      { name: "Documented", rating: "Missing", evidence: "Vendor entity has properties: [] (empty). No property definitions despite v1.0.5." },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Populate Vendor entity properties. This is the #1 highest-impact action in the catalog -- canonical shared domain object."
+  },
+  {
+    id: "TaskManagement", name: "Task Management", version: "1.0.1", owner: "platform-team-tasks",
+    services: 1, entities: 1, events: 0, channels: 0, score: 70,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "platform-team-tasks" },
+      { name: "Service/APIs", rating: "Met", evidence: "TaskApiService with CRUD, search, outcome submission" },
+      { name: "Eventing", rating: "Missing", evidence: "No events. Task lifecycle (OPEN/COMPLETE/CANCELLED) not published." },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Partial", evidence: "Task at v1.0.1; invariants TBD" },
+      { name: "Documented", rating: "Met", evidence: "Task entity: 15 properties with full descriptions and enum values" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Add domain events for task lifecycle transitions to enable event-driven integrations."
+  },
+  {
+    id: "PurchaseOrder", name: "Purchase Order", version: "1.0.3", owner: "pro-purchase-order",
+    services: 4, entities: 5, events: 1, channels: 1, score: 60,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "pro-purchase-order" },
+      { name: "Service/APIs", rating: "Met", evidence: "4 services: PO, LineItem, InvoiceAllocation, POType" },
+      { name: "Eventing", rating: "Partial", evidence: "Only PoSubmitted event. Missing approval, issuance, closure events." },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Partial", evidence: "PurchaseOrder at v1.0.3; invariants not defined" },
+      { name: "Documented", rating: "Missing", evidence: "PurchaseOrder entity has properties: [] (empty). Context relationships documented in description." },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Document PO entity properties and expand events to cover full lifecycle."
+  },
+  {
+    id: "Requisitions", name: "Requisitions", version: "1.0.0", owner: "requisitions-team",
+    services: 1, entities: 15, events: 0, channels: 0, score: 60,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "requisitions-team" },
+      { name: "Service/APIs", rating: "Met", evidence: "ProApiRequisitions with queries for reqs, review sequences, groups" },
+      { name: "Eventing", rating: "Missing", evidence: "No events. Requisition approval/submission not published." },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Partial", evidence: "Entities at v1.0.0; invariants TBD" },
+      { name: "Documented", rating: "Partial", evidence: "Requisition has 6 properties but most lack descriptions." },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Add events for requisition lifecycle and flesh out property documentation."
+  },
+  {
+    id: "RevenueCore", name: "Revenue Core", version: "1.0.0", owner: "(not assigned)",
+    services: 1, entities: 9, events: 0, channels: 0, score: 30,
+    principles: [
+      { name: "Ownership", rating: "Missing", evidence: "No owning team assigned" },
+      { name: "Service/APIs", rating: "Met", evidence: "RevenueCoreService with account, customer, rate, service operations" },
+      { name: "Eventing", rating: "Missing", evidence: "No events defined" },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Partial", evidence: "All entities at v1.0.0" },
+      { name: "Documented", rating: "Missing", evidence: "Entity summaries are placeholders ('Account entity', 'Customer entity')" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Assign an owning team and document entity properties. Good structural breadth needs depth."
+  },
+  {
+    id: "PurchaseRequests", name: "Purchase Requests", version: "1.0.0", owner: "(not assigned)",
+    services: 0, entities: 0, events: 0, channels: 0, score: 0,
+    principles: [
+      { name: "Ownership", rating: "Missing", evidence: "No owner assigned" },
+      { name: "Service/APIs", rating: "Missing", evidence: "0 services" },
+      { name: "Eventing", rating: "Missing", evidence: "0 events" },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Missing", evidence: "No entities to version" },
+      { name: "Documented", rating: "Missing", evidence: "No entities to document" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Planned domain not yet populated. Clarify boundary with Requisitions domain."
+  },
+  {
+    id: "Contracts", name: "Contracts", version: "1.0.0", owner: "(not assigned)",
+    services: 0, entities: 0, events: 0, channels: 0, score: 0,
+    principles: [
+      { name: "Ownership", rating: "Missing", evidence: "No owner assigned" },
+      { name: "Service/APIs", rating: "Missing", evidence: "0 services" },
+      { name: "Eventing", rating: "Missing", evidence: "0 events" },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Missing", evidence: "No entities to version" },
+      { name: "Documented", rating: "Missing", evidence: "No entities to document" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Planned domain not yet populated. Clarify boundary with VendorManagement."
+  }
+];
+
+const PRINCIPLES = [
+  { name: "Ownership", desc: "Does the domain have a clear owning team?" },
+  { name: "Service/APIs", desc: "Are services defined with commands and queries?" },
+  { name: "Eventing", desc: "Are domain events published with schemas and Kafka channels?" },
+  { name: "Analytical Sink", desc: "Is analytical data surfaced? (Not Trackable -- lives in SageMaker Studio)" },
+  { name: "Versioning", desc: "Are entities versioned with business invariants?" },
+  { name: "Documented", desc: "Do entities have property definitions, descriptions, types?" },
+  { name: "MCP Server Tools", desc: "Are MCP tools registered? (Not Trackable -- not yet built)" },
+  { name: "GAB Discoverability", desc: "Are objects discoverable in Government App Builder? (Not Trackable)" }
+];
+
+const ISSUES = [
+  { severity: "critical", title: "Vendor entity fragmentation persists", desc: "Vendor entity (v1.0.5) appears in both VendorManagement and PurchaseOrder. The authoritative VendorManagement Vendor has zero properties defined. ADR-65 specifically flags this as the canonical fragmentation problem." },
+  { severity: "critical", title: "Entity list mixes commands/queries as entities", desc: "The entity list API returns 375 items, but many are commands (199) and queries (106) duplicated as entities. This inflates counts and creates confusion for catalog consumers." },
+  { severity: "critical", title: "Service dependencies almost entirely unmapped", desc: "Of 30 services, only Beacon's NotificationApiService has a mapped downstream dependency. Known cross-domain interactions (AP to GL, PO to GL, AP to VM) are not reflected." },
+  { severity: "high", title: "Business invariants universally TBD", desc: "Every entity inspected has invariants marked as TBD. Without invariants, the catalog cannot serve as a contract for cross-domain integration." },
+  { severity: "high", title: "No flow definitions exist", desc: "Zero end-to-end process flows are defined. Procure-to-Pay, Record-to-Report, and other cross-domain processes are not modeled." },
+  { severity: "high", title: "Five domains lack events entirely", desc: "TaskManagement, RevenueCore, Requisitions, PurchaseRequests, and Contracts publish no domain events, preventing event-driven integration." },
+  { severity: "high", title: "Core procurement entities lack property definitions", desc: "PurchaseOrder and Vendor entities both have empty property arrays despite being at v1.0.3 and v1.0.5 respectively." },
+  { severity: "medium", title: "RevenueCore has placeholder documentation", desc: "Entity summaries like 'Account entity' and 'Customer entity' provide no meaningful information." },
+  { severity: "medium", title: "Potential domain overlap: PurchaseRequests vs Requisitions", desc: "Both domains describe managing purchase requisitions. Requisitions has 15 entities while PurchaseRequests is empty. Domain boundaries need clarification." }
+];
+
+const RECS = [
+  { title: "Populate Vendor entity properties.", desc: "Highest-leverage single action. Use the Invoice entity (35 properties) as the template. Resolve fragmentation by making VendorManagement's definition authoritative." },
+  { title: "Map service dependencies for cross-domain interactions.", desc: "Start with AP to VM (vendor sync), AP to GL (accrual posting), PO to GL (encumbrance). Beacon's existing mapping is the model." },
+  { title: "Define business invariants for top 5 aggregate roots.", desc: "Start with Invoice, PaymentRun, PurchaseOrder, Vendor, and JournalEntryControl. Even 3-5 invariants per entity would be transformative." },
+  { title: "Add lifecycle events for PurchaseOrder and Requisitions.", desc: "PO has only PoSubmitted. Add Approved, Issued, Closed, Cancelled to mirror AP's comprehensive approach." },
+  { title: "Create at least one end-to-end flow definition.", desc: "The Procure-to-Pay flow (Requisition to PO to Invoice to PaymentRun) would demonstrate the most cross-domain value." }
+];
+
+function getScoreClass(score) {
+  if (score >= 80) return "high";
+  if (score >= 50) return "medium";
+  return "low";
+}
+function getScoreColorClass(score) {
+  if (score >= 80) return "score-green";
+  if (score >= 50) return "score-yellow";
+  return "score-red";
+}
+function getRatingClass(rating) {
+  if (rating === "Met") return "rating-met";
+  if (rating === "Partial") return "rating-partial";
+  if (rating === "Missing") return "rating-missing";
+  return "rating-na";
+}
+
+function SummaryCards() {
+  var avgScore = Math.round(DOMAINS.reduce(function(s, d) { return s + d.score; }, 0) / DOMAINS.length);
+  var emptyDomains = DOMAINS.filter(function(d) { return d.score === 0; }).length;
+  var criticalCount = ISSUES.filter(function(i) { return i.severity === "critical"; }).length;
+  return e("div", { className: "summary-grid" },
+    e("div", { className: "summary-card" },
+      e("div", { className: "value " + getScoreColorClass(avgScore) }, avgScore + "%"),
+      e("div", { className: "label" }, "Average Compliance")
+    ),
+    e("div", { className: "summary-card" },
+      e("div", { className: "value" }, DOMAINS.length),
+      e("div", { className: "label" }, "Total Domains")
+    ),
+    e("div", { className: "summary-card" },
+      e("div", { className: "value score-red" }, emptyDomains),
+      e("div", { className: "label" }, "Empty Shell Domains")
+    ),
+    e("div", { className: "summary-card" },
+      e("div", { className: "value score-red" }, criticalCount),
+      e("div", { className: "label" }, "Critical Issues")
+    )
+  );
+}
+
+function DomainCard(props) {
+  var d = props.domain;
+  var isOpen = props.isOpen;
+  var onToggle = props.onToggle;
+  return e("div", { className: "domain-card" },
+    e("div", { className: "domain-header", onClick: onToggle },
+      e("div", { className: "domain-info" },
+        e("div", null,
+          e("span", { className: "domain-name" }, d.name),
+          e("span", { className: "domain-version", style: { marginLeft: 8 } }, "v" + d.version)
+        ),
+        e("span", { className: "domain-owner" }, d.owner)
+      ),
+      e("div", { className: "domain-stats" },
+        e("span", { className: "stat-chip" }, d.services + " svc"),
+        e("span", { className: "stat-chip" }, d.entities + " ent"),
+        e("span", { className: "stat-chip" }, d.events + " evt"),
+        e("span", { className: "score-badge " + getScoreClass(d.score) }, d.score + "%"),
+        e("span", { className: "chevron " + (isOpen ? "open" : "") }, "\u25BC")
+      )
+    ),
+    isOpen ? e("div", { className: "domain-detail" },
+      e("table", { className: "principle-table" },
+        e("thead", null,
+          e("tr", null,
+            e("th", null, "Principle"),
+            e("th", { style: { width: 110 } }, "Rating"),
+            e("th", null, "Evidence")
+          )
+        ),
+        e("tbody", null,
+          d.principles.map(function(p, i) {
+            return e("tr", { key: i },
+              e("td", { style: { fontWeight: 500 } }, p.name),
+              e("td", null, e("span", { className: "rating-pill " + getRatingClass(p.rating) }, p.rating)),
+              e("td", { style: { color: "var(--text-muted)" } }, p.evidence)
+            );
+          })
+        )
+      ),
+      e("div", { className: "priority-note" },
+        e("strong", null, "Area to prioritize: "), d.priority
+      )
+    ) : null
+  );
+}
+
+function ByDomainTab() {
+  var openState = React.useState({});
+  var openDomains = openState[0];
+  var setOpenDomains = openState[1];
+  function toggle(id) {
+    setOpenDomains(function(prev) {
+      var next = Object.assign({}, prev);
+      next[id] = !prev[id];
+      return next;
+    });
+  }
+  return e("div", null,
+    DOMAINS.map(function(d) {
+      return e(DomainCard, {
+        key: d.id,
+        domain: d,
+        isOpen: !!openDomains[d.id],
+        onToggle: function() { toggle(d.id); }
+      });
+    })
+  );
+}
+
+function ByPrincipleTab() {
+  return e("div", null,
+    PRINCIPLES.map(function(p, pi) {
+      var met = [], partial = [], missing = [], na = [];
+      DOMAINS.forEach(function(d) {
+        var dp = d.principles.find(function(x) { return x.name === p.name; });
+        if (!dp) return;
+        if (dp.rating === "Met") met.push(d.name);
+        else if (dp.rating === "Partial") partial.push(d.name);
+        else if (dp.rating === "Missing") missing.push(d.name);
+        else na.push(d.name);
+      });
+      return e("div", { key: pi, className: "principle-card" },
+        e("h3", null, (pi + 1) + ". " + p.name),
+        e("div", { className: "desc" }, p.desc),
+        met.length > 0 ? e("div", { style: { marginBottom: 8 } },
+          e("strong", { style: { fontSize: 12, color: "var(--green)" } }, "Met: "),
+          e("span", { className: "domain-pill-list", style: { display: "inline-flex" } },
+            met.map(function(n) { return e("span", { key: n, className: "domain-pill rating-met" }, n); })
+          )
+        ) : null,
+        partial.length > 0 ? e("div", { style: { marginBottom: 8 } },
+          e("strong", { style: { fontSize: 12, color: "var(--yellow)" } }, "Partial: "),
+          e("span", { className: "domain-pill-list", style: { display: "inline-flex" } },
+            partial.map(function(n) { return e("span", { key: n, className: "domain-pill rating-partial" }, n); })
+          )
+        ) : null,
+        missing.length > 0 ? e("div", { style: { marginBottom: 8 } },
+          e("strong", { style: { fontSize: 12, color: "var(--red)" } }, "Missing: "),
+          e("span", { className: "domain-pill-list", style: { display: "inline-flex" } },
+            missing.map(function(n) { return e("span", { key: n, className: "domain-pill rating-missing" }, n); })
+          )
+        ) : null,
+        na.length > 0 ? e("div", null,
+          e("strong", { style: { fontSize: 12, color: "var(--gray)" } }, "Not Trackable: "),
+          e("span", { className: "domain-pill-list", style: { display: "inline-flex" } },
+            na.map(function(n) { return e("span", { key: n, className: "domain-pill rating-na" }, n); })
+          )
+        ) : null
+      );
+    })
+  );
+}
+
+function CrossCuttingTab() {
+  return e("div", null,
+    ISSUES.map(function(issue, i) {
+      return e("div", { key: i, className: "issue-card" },
+        e("div", { className: "issue-header" },
+          e("span", { className: "severity-badge severity-" + issue.severity }, issue.severity),
+          e("span", { className: "issue-title" }, issue.title)
+        ),
+        e("div", { className: "issue-desc" }, issue.desc)
+      );
+    })
+  );
+}
+
+function Recommendations() {
+  return e("div", { className: "rec-section" },
+    e("h2", null, "Top 5 Recommendations"),
+    RECS.map(function(r, i) {
+      return e("div", { key: i, className: "rec-item" },
+        e("div", { className: "rec-num" }, i + 1),
+        e("div", { className: "rec-text" },
+          e("strong", null, r.title), " ", r.desc
+        )
+      );
+    })
+  );
+}
+
+function App() {
+  var tabState = React.useState("domain");
+  var activeTab = tabState[0];
+  var setActiveTab = tabState[1];
+  return e("div", { className: "container" },
+    e("div", { className: "header" },
+      e("h1", null, "BiFrost Catalog Completeness Report"),
+      e("p", null, "ADR-65 Shared Domain Object Principles | April 1, 2026")
+    ),
+    e(SummaryCards),
+    e("div", { className: "tabs" },
+      e("button", { className: "tab " + (activeTab === "domain" ? "active" : ""), onClick: function() { setActiveTab("domain"); } }, "By Domain"),
+      e("button", { className: "tab " + (activeTab === "principle" ? "active" : ""), onClick: function() { setActiveTab("principle"); } }, "By Principle"),
+      e("button", { className: "tab " + (activeTab === "issues" ? "active" : ""), onClick: function() { setActiveTab("issues"); } }, "Cross-Cutting Issues")
+    ),
+    activeTab === "domain" ? e(ByDomainTab) : null,
+    activeTab === "principle" ? e(ByPrincipleTab) : null,
+    activeTab === "issues" ? e(CrossCuttingTab) : null,
+    e(Recommendations),
+    e("div", { className: "footer" }, "Generated by BiFrost Completeness Report -- scheduled weekly on Mondays at 8am | " + new Date().toISOString().slice(0, 19).replace("T", " ") + " UTC")
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(e(App));
+</script>
+</body>
+</html>
