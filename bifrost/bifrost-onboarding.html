@@ -52,6 +52,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--og-gray-25);color:var(--o
 /* SECTION LABEL */
 .section-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--og-medium-gray);margin-bottom:10px}
 
+/* PATH HEADER */
+.path-header{background:var(--og-white);border-radius:12px;padding:24px 32px;margin-bottom:12px;border:1px solid var(--og-gray-100);text-align:center}
+.path-header h2{font-size:20px;font-weight:700;color:var(--og-dark-gray);margin-bottom:4px}
+.path-header p{font-size:14px;color:var(--og-medium-gray);margin:0}
+
 /* PATH SELECTOR */
 .path-selector{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
 .path-card{background:var(--og-white);border:2px solid var(--og-gray-100);border-radius:12px;padding:24px;cursor:pointer;transition:all .2s ease}
@@ -196,7 +201,10 @@ code{background:var(--og-gray-50);padding:2px 6px;border-radius:4px;font-family:
   </div>
 
   <!-- PATH SELECTOR -->
-  <div class="section-label">Choose your path</div>
+  <div class="path-header">
+    <h2>Choose your onboarding path</h2>
+    <p>There are two ways to get started with BiFrost, depending on your role.</p>
+  </div>
   <div class="path-selector">
     <div class="path-card contributor active" onclick="selectPath('contributor')">
       <div class="path-required-tag">Required for all teams</div>
