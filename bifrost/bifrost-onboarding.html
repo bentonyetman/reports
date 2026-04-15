@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BiFrost - Getting Started</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..900;1,9..40,100..900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --og-blurple:#4b3fff;
+  --og-blurple-lite:#5069ff;
+  --og-dark-gray:#31414e;
+  --og-medium-gray:#7f8ca0;
+  --og-lite-gray:#dce6f4;
+  --og-gray-25:#f4f6f9;
+  --og-gray-50:#eceef1;
+  --og-gray-100:#e0e2e5;
+  --og-orange:#f86a0b;
+  --og-blue:#0095da;
+  --og-yellow:#ffb636;
+  --og-red:#de3423;
+  --og-white:#ffffff;
+  --code-bg:#1e1e1c;
+  --code-text:#e8e6df;
+  --code-comment:#6a9955;
+  --code-string:#ce9178;
+  --code-keyword:#569cd6;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--og-gray-25);color:var(--og-dark-gray);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* HEADER */
+.site-header{background:var(--og-dark-gray);padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.header-links{display:flex;gap:20px}
+.header-links a{color:rgba(255,255,255,.65);text-decoration:none;font-size:13px;font-weight:500;transition:color .15s}
+.header-links a:hover{color:#fff}
+
+/* PAGE */
+.container{max-width:760px;margin:0 auto;padding:36px 24px 80px}
+
+/* HERO */
+.hero{background:var(--og-white);border-radius:12px;padding:36px 40px;margin-bottom:20px;border:1px solid var(--og-gray-100)}
+.hero-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--og-medium-gray);margin-bottom:10px}
+.hero h1{font-size:30px;font-weight:700;line-height:1.2;color:var(--og-blurple);margin-bottom:10px;letter-spacing:-.01em}
+.hero-subtitle{font-size:15px;color:var(--og-dark-gray);line-height:1.6;max-width:580px;margin-bottom:22px;opacity:.8}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn-video{display:inline-flex;align-items:center;gap:8px;background:var(--og-orange);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;padding:10px 20px;border-radius:6px;text-decoration:none;transition:opacity .15s}
+.btn-video:hover{opacity:.88}
+.btn-ghost{display:inline-flex;align-items:center;gap:6px;color:var(--og-dark-gray);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:10px 16px;border-radius:6px;text-decoration:none;border:1px solid var(--og-gray-100);background:transparent;transition:background .15s}
+.btn-ghost:hover{background:var(--og-gray-50)}
+
+/* SECTION LABEL */
+.section-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--og-medium-gray);margin-bottom:10px}
+
+/* PATH SELECTOR */
+.path-selector{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.path-card{background:var(--og-white);border:2px solid var(--og-gray-100);border-radius:12px;padding:24px;cursor:pointer;transition:all .2s ease}
+.path-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.path-icon-wrap{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;background:var(--og-gray-50);transition:background .2s}
+.path-title{font-size:16px;font-weight:700;margin-bottom:5px;line-height:1.3;transition:color .2s}
+.path-desc{font-size:13px;line-height:1.5;color:var(--og-medium-gray)}
+.time-badge{display:inline-block;margin-top:10px;font-size:11px;font-weight:500;color:var(--og-medium-gray);background:var(--og-gray-50);padding:3px 10px;border-radius:100px;transition:all .2s}
+.path-required-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;background:var(--og-blurple);color:#fff;padding:2px 8px;border-radius:100px;margin-bottom:12px}
+
+/* Contributor card states */
+.path-card.contributor .path-title{color:var(--og-blurple)}
+.path-card.contributor:hover{border-color:var(--og-blurple)}
+.path-card.contributor.active{background:var(--og-blurple);border-color:var(--og-blurple)}
+.path-card.contributor.active .path-icon-wrap{background:rgba(255,255,255,.18)}
+.path-card.contributor.active .path-required-tag{background:rgba(255,255,255,.22);color:#fff}
+.path-card.contributor.active .path-title{color:#fff}
+.path-card.contributor.active .path-desc{color:rgba(255,255,255,.75)}
+.path-card.contributor.active .time-badge{background:rgba(255,255,255,.18);color:rgba(255,255,255,.85)}
+
+/* End user card states */
+.path-card.end-user .path-title{color:var(--og-dark-gray)}
+.path-card.end-user:hover{border-color:var(--og-dark-gray)}
+.path-card.end-user.active{background:var(--og-dark-gray);border-color:var(--og-dark-gray)}
+.path-card.end-user.active .path-icon-wrap{background:rgba(255,255,255,.12)}
+.path-card.end-user.active .path-title{color:#fff}
+.path-card.end-user.active .path-desc{color:rgba(255,255,255,.65)}
+.path-card.end-user.active .time-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.8)}
+
+/* STEPS PANE */
+.steps-container{display:none}
+.steps-container.visible{display:block}
+.steps-pane{background:var(--og-white);border-radius:12px;border:1px solid var(--og-gray-100);padding:36px 40px}
+.path-indicator{display:flex;align-items:center;gap:10px;padding-bottom:24px;margin-bottom:8px;border-bottom:1px solid var(--og-gray-100)}
+.path-indicator-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.steps-contributor .path-indicator-dot{background:var(--og-blurple)}
+.steps-enduser .path-indicator-dot{background:var(--og-dark-gray)}
+.path-indicator-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--og-medium-gray)}
+
+/* STEPS */
+.step{position:relative;padding-left:48px;margin-top:28px}
+.step::before{content:'';position:absolute;left:15px;top:36px;bottom:-28px;width:1.5px;background:var(--og-gray-100)}
+.step:last-child::before{display:none}
+.step-number{position:absolute;left:0;top:2px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.steps-contributor .step-number{background:var(--og-blurple)}
+.steps-enduser .step-number{background:var(--og-dark-gray)}
+.step h3{font-size:17px;font-weight:700;color:var(--og-dark-gray);margin-bottom:10px;line-height:1.35;padding-top:3px}
+.step-body{font-size:14px;color:var(--og-dark-gray);line-height:1.7}
+.step-body p{margin-bottom:12px;opacity:.85}
+.step-body a{color:var(--og-blurple);text-decoration:none;font-weight:500}
+.step-body a:hover{text-decoration:underline}
+p.caption{font-size:12px;opacity:.6;margin-top:6px;margin-bottom:0}
+
+/* CODE */
+code{background:var(--og-gray-50);padding:2px 6px;border-radius:4px;font-family:monospace;font-size:12px;color:var(--og-dark-gray)}
+.code-block{background:var(--code-bg);border-radius:8px;margin:14px 0;overflow:hidden}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;font-size:11px;font-weight:500;color:rgba(255,255,255,.38);border-bottom:1px solid rgba(255,255,255,.06)}
+.code-header button{background:none;border:none;color:rgba(255,255,255,.38);cursor:pointer;font-size:11px;font-family:'DM Sans',sans-serif;padding:2px 8px;border-radius:4px;transition:all .15s}
+.code-header button:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8)}
+.code-content{padding:16px;font-family:monospace;font-size:13px;line-height:1.6;color:var(--code-text);overflow-x:auto;white-space:pre}
+.code-content .comment{color:var(--code-comment)}
+.code-content .string{color:var(--code-string)}
+.code-content .keyword{color:var(--code-keyword)}
+
+/* CALLOUTS */
+.callout{border-radius:8px;padding:14px 18px;margin:14px 0;font-size:13px;line-height:1.6}
+.callout strong{font-weight:600}
+.callout a{color:inherit;text-decoration:underline}
+.callout-info{background:var(--og-lite-gray);border-left:3px solid var(--og-blurple);color:var(--og-dark-gray)}
+.callout-warn{background:#fffbeb;border-left:3px solid var(--og-yellow);color:#78350f}
+.callout-important{background:#fef2f2;border-left:3px solid var(--og-red);color:#991b1b}
+
+/* LISTS */
+.og-list{list-style:none;margin:12px 0;padding:0}
+.og-list li{display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:14px;line-height:1.5;color:var(--og-dark-gray);opacity:.85}
+.og-list li::before{content:'→';color:var(--og-blurple);font-weight:700;flex-shrink:0;margin-top:1px}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin:14px 0 0}
+.tab-btn{padding:6px 14px;border-radius:6px 6px 0 0;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;background:var(--og-gray-50);color:var(--og-medium-gray)}
+.tab-btn.active{background:var(--code-bg);color:#fff}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* LINK BUTTON */
+.btn-link{display:inline-flex;align-items:center;gap:6px;background:var(--og-lite-gray);color:var(--og-blurple);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:8px 16px;border-radius:6px;text-decoration:none;margin-top:10px;transition:opacity .15s}
+.btn-link:hover{opacity:.85}
+
+/* SCOREBOARD CTA */
+.scoreboard-cta{background:var(--og-blurple);border-radius:12px;padding:40px;margin-top:20px;text-align:center}
+.scoreboard-cta h3{font-size:20px;font-weight:700;color:#fff;margin-bottom:8px}
+.scoreboard-cta p{font-size:14px;color:rgba(255,255,255,.75);margin-bottom:24px;max-width:460px;margin-left:auto;margin-right:auto}
+.btn-scoreboard{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--og-blurple);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;padding:12px 28px;border-radius:6px;text-decoration:none;transition:opacity .15s}
+.btn-scoreboard:hover{opacity:.9}
+
+@media(max-width:600px){
+  .path-selector{grid-template-columns:1fr}
+  .hero h1{font-size:24px}
+  .container{padding:20px 16px 60px}
+  .hero{padding:24px}
+  .steps-pane{padding:24px 20px}
+  .site-header{padding:12px 20px}
+  .step{padding-left:40px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <!-- OpenGov logo: white variant (fill changed to #ffffff) -->
+  <svg style="height:24px;width:auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1289.5 247.4">
+    <defs><style>.og-w{fill:#ffffff}</style></defs>
+    <path class="og-w" d="M1279.4,0h-225.1c-10.3,0-13.9,13.6-5,18.7l107.5,62.1v124.2c0,10.3,13.6,13.9,18.7,5l112.6-195c3.9-6.7-1-15.1-8.7-15.1Z"/>
+    <g>
+      <path class="og-w" d="M292,86.2c-9-5.5-19-8.2-29.9-8.2s-20.6,2.7-29.1,8.1c-4.7,3-8.9,6.7-12.4,11.1v-16.8h-26.3v167.1h26.3v-63.8c3.6,4.3,7.7,8,12.4,11.1,8.4,5.4,18.1,8.1,29.1,8.1s20.9-2.7,29.9-8.2c9-5.5,16.1-13,21.2-22.5,5.2-9.5,7.7-20.1,7.7-31.7s-2.6-22.1-7.7-31.7c-5.2-9.5-12.2-17-21.2-22.5ZM289.2,160c-3.2,5.9-7.6,10.5-13.1,13.8-5.6,3.4-11.8,5-18.7,5s-13.1-1.7-18.8-5c-5.6-3.4-10.1-8-13.3-13.8-3.2-5.9-4.8-12.4-4.8-19.6s1.6-13.7,4.8-19.6c3.2-5.9,7.6-10.5,13.1-13.8,5.6-3.4,11.8-5,18.7-5s13.1,1.7,18.8,5c5.6,3.4,10,8,13.3,13.8,3.2,5.9,4.8,12.4,4.8,19.6s-1.6,13.7-4.8,19.6Z"/>
+      <path class="og-w" d="M434.8,87.7c-10-6.4-21.4-9.6-34.3-9.6s-22.4,2.7-31.9,8.2c-9.5,5.5-17.1,13-22.5,22.5-5.5,9.5-8.2,20.1-8.2,31.7s2.8,22.1,8.4,31.7c5.6,9.5,13.3,17.1,23,22.5,9.7,5.5,20.5,8.2,32.4,8.2s24-3,33.9-9c9.9-6,17.6-14.1,22.9-24.3l-21.8-9.6c-3.3,6.3-7.9,11.2-14,14.9-6,3.7-12.8,5.5-20.3,5.5s-14.2-1.8-20.1-5.3c-5.9-3.5-10.5-8.3-13.8-14.3-2-3.5-3.4-7.3-4.2-11.4h97.9c1.7-13,0-24.9-4.9-35.8-5-10.9-12.5-19.5-22.5-25.9ZM381.7,105.8c5.6-3.5,11.9-5.3,18.8-5.3s13.1,1.6,18.5,4.8c5.5,3.2,9.8,7.6,12.9,13.3,1.8,3.2,3.1,6.7,4.1,10.3h-71.1c.8-3,1.9-5.9,3.4-8.7,3.3-6.1,7.7-10.9,13.4-14.4Z"/>
+      <path class="og-w" d="M576.6,84.6c-7.6-4.4-16.2-6.6-25.9-6.6s-18.1,2.3-25.6,6.9c-5.2,3.2-9.6,7.2-13.1,12v-16.5h-26.3v120.1h26.3v-67.8c0-5.8,1.3-11,4-15.7,2.7-4.7,6.4-8.4,11.1-11,4.8-2.7,10.1-4,16.1-4s11.3,1.3,16.1,4c4.8,2.7,8.5,6.3,11.1,11,2.7,4.7,4,9.9,4,15.7v67.8h26v-72c0-9.5-2.1-18.1-6.2-25.8-4.1-7.7-10-13.7-17.6-18.1Z"/>
+      <path class="og-w" d="M901.4,86.2c-9.7-5.5-20.5-8.2-32.4-8.2s-22.7,2.7-32.4,8.2c-9.7,5.5-17.4,13-23,22.5-5.6,9.5-8.4,20.1-8.4,31.7s2.8,22.1,8.4,31.7c5.6,9.5,13.3,17.1,23,22.5,9.7,5.5,20.5,8.2,32.4,8.2s22.7-2.7,32.4-8.2c9.7-5.5,17.4-13,23-22.5,5.6-9.5,8.4-20.1,8.4-31.7s-2.8-22.1-8.4-31.7c-5.6-9.5-13.3-17-23-22.5ZM901.1,160c-3.2,5.9-7.6,10.5-13.3,13.8-5.6,3.4-11.9,5-18.8,5s-13.1-1.7-18.8-5c-5.6-3.4-10.1-8-13.3-13.8-3.2-5.9-4.8-12.4-4.8-19.6s1.6-13.7,4.8-19.6c3.2-5.9,7.6-10.5,13.3-13.8,5.6-3.4,11.9-5,18.8-5s13.1,1.7,18.8,5c5.6,3.4,10,8,13.3,13.8,3.2,5.9,4.8,12.4,4.8,19.6s-1.6,13.7-4.8,19.6Z"/>
+      <polygon class="og-w" points="1034.7 80.4 998.5 174.7 962.4 80.4 934.3 80.4 983.1 200.5 1012.6 200.5 1061.2 80.4 1034.7 80.4"/>
+      <path class="og-w" d="M714,105.7l-14.6,25.3h63.4c-5.7,25.7-28.7,44.8-56.1,44.8s-57.5-25.7-57.5-57.5,25.7-57.5,57.5-57.5,39.8,11.6,49.8,28.7l24.6-14.2c-14.8-25.7-42.6-42.9-74.4-42.9-47.4,0-85.9,38.5-85.9,85.9s38.5,85.9,85.9,85.9,78.8-31.8,84.9-73.2c.6-4.1.9-8.4.9-12.7s-.3-8.5-.9-12.7h-77.6Z"/>
+      <path class="og-w" d="M85.9,32.5C38.5,32.5,0,71,0,118.4s38.5,85.9,85.9,85.9,85.9-38.4,85.9-85.9-38.4-85.9-85.9-85.9ZM85.9,175.9c-31.8,0-57.5-25.7-57.5-57.5s25.7-57.5,57.5-57.5,57.5,25.7,57.5,57.5-25.7,57.5-57.5,57.5Z"/>
+    </g>
+  </svg>
+  <div class="header-links">
+    <a href="https://catalog.bifrost.ogintegration.us" target="_blank">Catalog portal</a>
+    <a href="https://reports-rho-plum.vercel.app/bifrost/bifrost-completeness-report.html" target="_blank">Scorecard</a>
+    <a href="https://opengovinc.atlassian.net/wiki/spaces/IIP/pages/5847122115/BiFrost+Domain+Model+Product+Team+Onboarding+Guide" target="_blank">Confluence docs</a>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-label">Getting started</div>
+    <h1>BiFrost onboarding</h1>
+    <p class="hero-subtitle">The domain object catalog that connects AI assistants to OpenGov's production ecosystem. Start here.</p>
+    <div class="hero-actions">
+      <a href="https://drive.google.com/open?id=13P0cdHGNgWOE8INPotXLdH8WnMS0GjJM&usp=drive_fs" target="_blank" class="btn-video">&#9654; Watch intro video (3 min)</a>
+      <a href="https://reports-rho-plum.vercel.app/bifrost/bifrost-completeness-report.html" target="_blank" class="btn-ghost">View BiFrost Scorecard</a>
+    </div>
+  </div>
+
+  <!-- PATH SELECTOR -->
+  <div class="section-label">Choose your path</div>
+  <div class="path-selector">
+    <div class="path-card contributor active" onclick="selectPath('contributor')">
+      <div class="path-required-tag">Required for all teams</div>
+      <div class="path-icon-wrap">&#128230;</div>
+      <div class="path-title">I own a domain</div>
+      <p class="path-desc">Register your team's domain objects so every team and AI agent can discover them.</p>
+      <span class="time-badge">~20 min first time</span>
+    </div>
+    <div class="path-card end-user" onclick="selectPath('enduser')">
+      <div class="path-icon-wrap">&#9889;</div>
+      <div class="path-title">I want to use BiFrost</div>
+      <p class="path-desc">Connect your AI tool to the catalog. Explore domain objects for building or the Hackathon.</p>
+      <span class="time-badge">~10 min setup</span>
+    </div>
+  </div>
+
+  <!-- CONTRIBUTOR PATH -->
+  <div id="steps-contributor" class="steps-container steps-contributor visible">
+    <div class="steps-pane">
+      <div class="path-indicator">
+        <div class="path-indicator-dot"></div>
+        <span class="path-indicator-label">Domain owner path</span>
+      </div>
+
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Understand what gets published</h3>
+        <div class="step-body">
+          <p>You add a <code>bifrost-spec.yaml</code> to your repo root. It declares your team's domain model: entities, services, commands, queries, events, and relationships. This feeds the BiFrost Catalog, MCP server, and Logos REST API.</p>
+          <div class="callout callout-info"><strong>Why this matters:</strong> AI is now the primary consumer of our information ecosystem. Every unpublished domain object is a blind spot for AI agents, the Nexus Workflow Designer, and cross-team integration.</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+            <a href="https://opengovinc.atlassian.net/wiki/spaces/AR/pages/5791646376/RFC+-+BiFrost+Domain+Model+Spec+and+Tooling" target="_blank" class="btn-link">&#128196; Read the RFC</a>
+            <a href="https://opengovinc.atlassian.net/wiki/spaces/IIP/pages/5847122115/BiFrost+Domain+Model+Product+Team+Onboarding+Guide" target="_blank" class="btn-link">&#128218; Full documentation</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Generate and validate your spec</h3>
+        <div class="step-body">
+          <p>Run <code>specgen</code> against your codebase to auto-generate a draft spec, then run <code>bifrost-validator</code> to catch errors before committing. Both tools are available on <a href="https://github.com/opengov/bifrost/releases">GitHub Releases</a>.</p>
+          <div class="code-block"><div class="code-header"><span>Terminal</span><button onclick="copyCode(this)">Copy</button></div><div class="code-content"><span class="comment"># Auto-generate a spec from your codebase</span>
+specgen generate --repo-path /path/to/your/repo
+
+<span class="comment"># Validate before committing</span>
+./bifrost-validator validate ./bifrost-spec.yaml --verbose</div></div>
+          <div class="callout callout-warn"><strong>Review the output.</strong> specgen gets you ~80% there. Check descriptions, API mappings, and relationships before committing.</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+            <a href="https://opengovinc.atlassian.net/wiki/spaces/IIP/pages/5847122115/BiFrost+Domain+Model+Product+Team+Onboarding+Guide" target="_blank" class="btn-link">&#128218; Detailed generation steps</a>
+            <a href="https://opengovinc.atlassian.net/wiki/spaces/IIP/pages/5866062195/Reference+Checklist" target="_blank" class="btn-link">&#9989; Naming rules and checklist</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Commit and set up CI sync</h3>
+        <div class="step-body">
+          <p>Commit your <code>bifrost-spec.yaml</code> and push. Then post your repo URL in <a href="https://opengov.slack.com/channels/approval-workflow-onboarding">#approval-workflow-onboarding</a> to get the GitHub Action added. After that, every merge to main auto-validates and syncs to the catalog.</p>
+          <div class="code-block"><div class="code-header"><span>Git</span><button onclick="copyCode(this)">Copy</button></div><div class="code-content"><span class="keyword">git</span> add bifrost-spec.yaml
+<span class="keyword">git</span> commit -m <span class="string">"feat: add BiFrost domain object spec"</span>
+<span class="keyword">git</span> push</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">4</div>
+        <h3>Check the scorecard</h3>
+        <div class="step-body">
+          <p>Once your spec is merged, verify your team's completeness on the scorecard. Use the reference checklist to close any remaining gaps.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
+            <a href="https://reports-rho-plum.vercel.app/bifrost/bifrost-completeness-report.html" class="btn-link" target="_blank">View BiFrost Scorecard &#8594;</a>
+            <a href="https://opengovinc.atlassian.net/wiki/spaces/IIP/pages/5866062195/Reference+Checklist" target="_blank" class="btn-link">&#9989; Reference checklist</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- END USER PATH -->
+  <div id="steps-enduser" class="steps-container steps-enduser">
+    <div class="steps-pane">
+      <div class="path-indicator">
+        <div class="path-indicator-dot"></div>
+        <span class="path-indicator-label">End user path</span>
+      </div>
+
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Get an API key</h3>
+        <div class="step-body">
+          <p>Request a key in <a href="https://opengov.slack.com/channels/approval-workflow-onboarding">#approval-workflow-onboarding</a> on Slack. You'll get an <code>ipfx_sk_*</code> key to authenticate with the MCP server.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Configure your AI tool</h3>
+        <div class="step-body">
+          <p>Add BiFrost to your IDE's MCP configuration. Pick your tool below.</p>
+          <div class="tabs" id="tabs-setup">
+            <button class="tab-btn active" onclick="showTab(event,'setup','cursor')">Cursor</button>
+            <button class="tab-btn" onclick="showTab(event,'setup','claude-desktop')">Claude Desktop</button>
+            <button class="tab-btn" onclick="showTab(event,'setup','claude-code')">Claude Code</button>
+          </div>
+          <div id="tab-setup-cursor" class="tab-panel active">
+            <div class="code-block"><div class="code-header"><span>.cursor/mcp.json</span><button onclick="copyCode(this)">Copy</button></div><div class="code-content">{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"ipfx-catalog"</span>: {
+      <span class="string">"type"</span>: <span class="string">"sse"</span>,
+      <span class="string">"url"</span>: <span class="string">"https://catalog.bifrost.ogintegration.us/sse?api_key=ipfx_sk_YOUR_KEY"</span>
+    }
+  }
+}</div></div>
+          </div>
+          <div id="tab-setup-claude-desktop" class="tab-panel">
+            <div class="code-block"><div class="code-header"><span>~/Library/Application Support/Claude/claude_desktop_config.json</span><button onclick="copyCode(this)">Copy</button></div><div class="code-content">{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"ipfx-catalog"</span>: {
+      <span class="string">"command"</span>: <span class="string">"npx"</span>,
+      <span class="string">"args"</span>: [
+        <span class="string">"-y"</span>, <span class="string">"mcp-remote"</span>,
+        <span class="string">"https://catalog.bifrost.ogintegration.us/sse"</span>,
+        <span class="string">"--header"</span>,
+        <span class="string">"X-API-Key:ipfx_sk_YOUR_KEY"</span>
+      ]
+    }
+  }
+}</div></div>
+          </div>
+          <div id="tab-setup-claude-code" class="tab-panel">
+            <div class="code-block"><div class="code-header"><span>.mcp.json or ~/.claude/settings.json</span><button onclick="copyCode(this)">Copy</button></div><div class="code-content">{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"ipfx-catalog"</span>: {
+      <span class="string">"url"</span>: <span class="string">"https://catalog.bifrost.ogintegration.us/sse"</span>,
+      <span class="string">"headers"</span>: {
+        <span class="string">"X-API-Key"</span>: <span class="string">"ipfx_sk_YOUR_KEY"</span>
+      }
+    }
+  }
+}</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Try it out</h3>
+        <div class="step-body">
+          <p>Ask your AI assistant something like "List all domains in BiFrost" or "What events does AccountsPayable produce?" The MCP server exposes 16 tools for discovery, deep dives, and integration planning.</p>
+          <a href="https://opengovinc.atlassian.net/wiki/spaces/IIP/pages/5847122115/BiFrost+Domain+Model+Product+Team+Onboarding+Guide" target="_blank" class="btn-link">&#128218; Full tool reference and example prompts</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">4</div>
+        <h3>Use it with everything you build</h3>
+        <div class="step-body">
+          <p>Before building new services, integrations, or features, check BiFrost first. Discover existing domain objects so you reuse instead of duplicate. Let your AI scaffold from real metadata instead of guessing.</p>
+          <ul class="og-list">
+            <li>Search the catalog before creating new entities or events</li>
+            <li>Trace event flows to understand upstream and downstream dependencies</li>
+            <li>Use published APIs and schemas as your integration contracts</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCOREBOARD CTA -->
+  <div class="scoreboard-cta">
+    <h3>Check the BiFrost Scorecard</h3>
+    <p>See completeness across all domains. Where does your team stand?</p>
+    <a href="https://reports-rho-plum.vercel.app/bifrost/bifrost-completeness-report.html" class="btn-scoreboard" target="_blank">View BiFrost Scorecard &#8594;</a>
+  </div>
+
+</div>
+
+<script>
+function selectPath(p) {
+  document.querySelectorAll('.path-card').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.steps-container').forEach(s => s.classList.remove('visible'));
+  if (p === 'contributor') {
+    document.querySelector('.path-card.contributor').classList.add('active');
+    document.getElementById('steps-contributor').classList.add('visible');
+  } else {
+    document.querySelector('.path-card.end-user').classList.add('active');
+    document.getElementById('steps-enduser').classList.add('visible');
+  }
+}
+function showTab(e, group, id) {
+  const tabs = document.getElementById('tabs-' + group);
+  const container = tabs.parentElement;
+  tabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  container.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById('tab-' + group + '-' + id).classList.add('active');
+}
+function copyCode(btn) {
+  const text = btn.closest('.code-block').querySelector('.code-content').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+}
+</script>
+</body>
+</html>
