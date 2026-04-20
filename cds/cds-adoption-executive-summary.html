@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Capital Design System - Adoption Analysis</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root {
+    --bg: #FAFAFB;
+    --ink: #0F172A;
+    --ink2: #334155;
+    --dim: #64748B;
+    --line: #E2E8F0;
+    --line2: #F1F5F9;
+    --accent: #4B3FFF;
+    --accent-bg: #EEF2FF;
+    --warn: #DC2626;
+    --warn-bg: #FEE2E2;
+    --amber: #F59E0B;
+    --amber-bg: #FEF3C7;
+    --ok: #0F7A3E;
+    --ok-bg: #D1FADF;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    background: #fff;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    margin: 0; padding: 0;
+    font-size: 15px; line-height: 1.55;
+  }
+  .page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 56px 48px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #4B3FFF 0%, #7C3AED 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 40px 44px;
+    margin-bottom: 32px;
+  }
+  .hero .eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.75;
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px 0;
+  }
+  .hero .tagline {
+    font-size: 17px;
+    opacity: 0.9;
+    margin-bottom: 28px;
+    max-width: 680px;
+  }
+  .hero .meta {
+    font-size: 13px;
+    opacity: 0.75;
+  }
+  .hero .meta a { color: white; text-decoration: underline; }
+
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 36px 0 8px;
+  }
+  .kpi {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .kpi .num {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .kpi .num .sub { font-size: 18px; font-weight: 400; opacity: 0.7; }
+  .kpi .lbl {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.85;
+    margin-top: 4px;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 40px 0 12px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent);
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 24px 0 8px 0;
+    color: var(--ink);
+  }
+  p { margin: 0 0 14px 0; color: var(--ink2); }
+  p.lead { font-size: 17px; color: var(--ink); margin-bottom: 20px; }
+  strong { color: var(--ink); }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(75,63,255,0.3); }
+  a:hover { border-bottom-color: var(--accent); }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    background: var(--line2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--ink);
+  }
+
+  .callout {
+    background: var(--accent-bg);
+    border-left: 4px solid var(--accent);
+    padding: 16px 20px;
+    border-radius: 0 10px 10px 0;
+    margin: 16px 0 20px;
+  }
+  .callout.warn { background: var(--warn-bg); border-color: var(--warn); }
+  .callout.amber { background: var(--amber-bg); border-color: var(--amber); }
+  .callout p { margin: 0; color: var(--ink); }
+  .callout .title { font-weight: 600; margin-bottom: 4px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 14px 0 22px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line2);
+    vertical-align: top;
+  }
+  thead th {
+    background: #F9FAFB;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--dim);
+    font-weight: 600;
+    border-bottom: 1px solid var(--line);
+  }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+  td.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; color: var(--ink2); }
+
+  .bar-row { display: flex; align-items: center; gap: 10px; font-size: 13px; padding: 6px 0; }
+  .bar-row .label { min-width: 220px; font-weight: 500; }
+  .bar-row .bar { flex: 1; height: 8px; background: var(--line2); border-radius: 4px; overflow: hidden; }
+  .bar-row .bar > div { height: 100%; background: var(--accent); }
+  .bar-row .val { width: 50px; text-align: right; font-variant-numeric: tabular-nums; color: var(--dim); font-size: 12.5px; }
+
+  .recs {
+    counter-reset: rec;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .recs li {
+    counter-increment: rec;
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line2);
+  }
+  .recs li:last-child { border-bottom: none; }
+  .recs li::before {
+    content: counter(rec);
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    margin-top: 2px;
+  }
+  .rec-title { font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+  .rec-body { color: var(--ink2); font-size: 14px; }
+
+  .pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .pill.warn { background: var(--warn-bg); color: #7F1D1D; }
+  .pill.ok { background: var(--ok-bg); color: #065F2B; }
+  .pill.amber { background: var(--amber-bg); color: #854D0E; }
+  .pill.accent { background: var(--accent-bg); color: #3730A3; }
+
+  .section-intro { color: var(--dim); font-size: 14px; margin-bottom: 16px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+  hr { border: 0; height: 1px; background: var(--line); margin: 48px 0; }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--dim);
+  }
+  footer a { color: var(--dim); }
+
+  .cta {
+    background: var(--ink);
+    color: white;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 32px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+  .cta .cta-text { flex: 1; }
+  .cta h3 { color: white; margin: 0 0 4px 0; font-size: 17px; }
+  .cta p { color: rgba(255,255,255,0.75); margin: 0; font-size: 13.5px; }
+  .cta a.btn {
+    background: var(--accent);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    border: none;
+    white-space: nowrap;
+  }
+  .cta a.btn:hover { background: #3B2FEF; }
+
+  @media print {
+    body { font-size: 12px; }
+    .page { max-width: none; padding: 24px; }
+    .hero { background: #4B3FFF; color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .cta { background: var(--ink); color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    a { border-bottom: none; }
+    h2 { break-after: avoid; }
+    .recs li, tr { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hero">
+  <div class="eyebrow">Design System Adoption · April 2026</div>
+  <h1>Capital Design System - where the org stands</h1>
+  <div class="tagline">
+    An org-wide audit of where OpenGov product teams are using (and not using) the Capital Design System - with specific recommendations for closing the gap.
+  </div>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="num">79</div>
+      <div class="lbl">Active frontend repos</div>
+    </div>
+    <div class="kpi">
+      <div class="num">12.3<span class="sub">k</span></div>
+      <div class="lbl">UI files scanned</div>
+    </div>
+    <div class="kpi">
+      <div class="num">82<span class="sub">%</span></div>
+      <div class="lbl">Repos touching CDS</div>
+    </div>
+    <div class="kpi">
+      <div class="num">23<span class="sub">%</span></div>
+      <div class="lbl">UI files using CDS</div>
+    </div>
+  </div>
+
+  <div class="meta">Scan date: 2026-04-19 · Scope: every OpenGov repo pushed in the past 90 days</div>
+</div>
+
+<!-- ============ TL;DR ============ -->
+<h2>TL;DR for leadership</h2>
+<p class="lead">
+  CDS adoption is <strong>broad but shallow</strong>. Four out of five active frontend repos pull in a CDS package - but <strong>only about a quarter of UI files actually import from CDS</strong>, and more than a quarter use raw <code>@mui/*</code> components without the Capital theme wrapper. Without intervention, the gap will widen: we already see two parallel libraries forming and a shadcn/ui beachhead in six repos.
+</p>
+
+<div class="callout">
+  <div class="title">Three things to fix first</div>
+  <p>
+    <strong>1.</strong> Close the two biggest adoption holes (<a href="https://github.com/OpenGov/bifrost" target="_blank">bifrost</a>, <a href="https://github.com/OpenGov/product-roadmap-portal" target="_blank">product-roadmap-portal</a>) - they alone represent ~1,050 unthemed UI files.
+    <strong>2.</strong> Resolve the <a href="https://github.com/OpenGov/og-ui-components-library" target="_blank">og-ui-components-library</a> parallel-library situation before it grows further.
+    <strong>3.</strong> Stop the shadcn/ui pattern spreading - it's in six repos today.
+  </p>
+</div>
+
+<!-- ============ ADOPTION SNAPSHOT ============ -->
+<h2>Adoption snapshot</h2>
+
+<h3>Top five CDS adopters</h3>
+<table>
+  <thead><tr>
+    <th>Repo</th>
+    <th class="num">Composite score</th>
+    <th class="num">% UI files using CDS</th>
+  </tr></thead>
+  <tbody>
+    <tr><td><a href="https://github.com/OpenGov/hcm-app" target="_blank">hcm-app</a></td><td class="num">63</td><td class="num">79%</td></tr>
+    <tr><td><a href="https://github.com/OpenGov/payroll-app" target="_blank">payroll-app</a></td><td class="num">60</td><td class="num">73%</td></tr>
+    <tr><td><a href="https://github.com/OpenGov/plc-ui" target="_blank">plc-ui</a></td><td class="num">56</td><td class="num">66%</td></tr>
+    <tr><td><a href="https://github.com/OpenGov/shared-components-dev-app" target="_blank">shared-components-dev-app</a></td><td class="num">48</td><td class="num">57%</td></tr>
+    <tr><td><a href="https://github.com/OpenGov/cit-mobile-inspections" target="_blank">cit-mobile-inspections</a></td><td class="num">46</td><td class="num">52%</td></tr>
+  </tbody>
+</table>
+<p class="section-intro">Composite score = %&nbsp;CDS&nbsp;−&nbsp;0.5×%&nbsp;raw&nbsp;MUI&nbsp;−&nbsp;0.25×%&nbsp;hex&nbsp;−&nbsp;0.15×%&nbsp;px. Max is 100; top real-world score is 63.</p>
+
+<h3>Most-used CDS packages (by number of repos that declare a dependency on them)</h3>
+<div class="bar-row"><div class="label"><code>capital-mui-theme</code></div><div class="bar"><div style="width:100%"></div></div><div class="val">104</div></div>
+<div class="bar-row"><div class="label"><code>react-capital-assets</code></div><div class="bar"><div style="width:62%"></div></div><div class="val">65</div></div>
+<div class="bar-row"><div class="label"><code>components-nav-bar</code></div><div class="bar"><div style="width:45%"></div></div><div class="val">47</div></div>
+<div class="bar-row"><div class="label"><code>capital-style</code></div><div class="bar"><div style="width:35%"></div></div><div class="val">36</div></div>
+<div class="bar-row"><div class="label"><code>components-result</code></div><div class="bar"><div style="width:32%"></div></div><div class="val">33</div></div>
+<div class="bar-row"><div class="label"><code>component-library</code></div><div class="bar"><div style="width:32%"></div></div><div class="val">33</div></div>
+
+<!-- ============ FINDINGS ============ -->
+<h2>What we found</h2>
+
+<h3>1. Adoption is broad but shallow</h3>
+<p>
+  CDS is the de-facto choice - 82% of active frontend repos pull in at least one CDS package - but day-to-day, <strong>only 23% of UI files actually import from CDS</strong>, and <strong>26% import raw <code>@mui/*</code> without wrapping in the Capital theme</strong>. The typical pattern is "CDS for the theme and nav bar, then roll my own" rather than "CDS-first."
+</p>
+
+<h3>2. A small number of repos contain most of the gap</h3>
+<p>Two repos alone account for over a thousand UI files with effectively zero CDS adoption:</p>
+<table>
+  <thead><tr><th>Repo</th><th class="num">UI files</th><th>Pattern</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://github.com/OpenGov/bifrost" target="_blank">bifrost</a></td><td class="num">695</td><td>52% raw MUI, no CDS</td></tr>
+    <tr><td><a href="https://github.com/OpenGov/product-roadmap-portal" target="_blank">product-roadmap-portal</a></td><td class="num">359</td><td>0% CDS, shadcn/ui</td></tr>
+    <tr><td><a href="https://github.com/OpenGov/gab-boilerplate" target="_blank">gab-boilerplate</a>, <a href="https://github.com/OpenGov/gab-311" target="_blank">gab-311</a></td><td class="num">~300</td><td>Raw HTML + shadcn/ui</td></tr>
+    <tr><td><a href="https://github.com/OpenGov/gab-proto-ddwrite" target="_blank">gab-proto-ddwrite</a>, <a href="https://github.com/OpenGov/open-data-viz" target="_blank">open-data-viz</a></td><td class="num">~180</td><td>Various non-CDS</td></tr>
+  </tbody>
+</table>
+
+<h3>3. Teams keep reinventing the same components</h3>
+<p class="section-intro">The same basic components show up as locally-defined re-implementations across many repos, instead of importing CDS or themed MUI:</p>
+<table>
+  <thead><tr>
+    <th>Component</th>
+    <th class="num">Repos reinventing it</th>
+    <th>Should use instead</th>
+  </tr></thead>
+  <tbody>
+    <tr><td><strong>Button</strong></td><td class="num">12</td><td>MUI <code>Button</code> + <code>capital-mui-theme</code></td></tr>
+    <tr><td><strong>DataGrid</strong></td><td class="num">9</td><td><code>@mui/x-data-grid</code> or CDS <code>og-grid-table</code></td></tr>
+    <tr><td><strong>PageHeader</strong></td><td class="num">8</td><td><code>@opengov/components-page-header</code></td></tr>
+    <tr><td><strong>Modal</strong></td><td class="num">8</td><td><code>@opengov/components-modal</code></td></tr>
+    <tr><td><strong>Tooltip, Card</strong></td><td class="num">8 each</td><td><code>@mui/material</code></td></tr>
+    <tr><td><strong>Toolbar</strong></td><td class="num">7</td><td><code>@opengov/components-toolbar</code></td></tr>
+    <tr><td><strong>Accordion, Badge</strong></td><td class="num">7 each</td><td><code>@mui/material</code></td></tr>
+  </tbody>
+</table>
+
+<h3>4. shadcn/ui has quietly landed in six repos</h3>
+<div class="callout amber">
+  <div class="title">Six repos have the tell-tale <code>components/ui/{button,card,dialog}.tsx</code> shadcn-starter pattern</div>
+  <p>
+    <a href="https://github.com/OpenGov/migration-orchestrator-app" target="_blank">migration-orchestrator-app</a>,
+    <a href="https://github.com/OpenGov/product-roadmap-portal" target="_blank">product-roadmap-portal</a>,
+    <a href="https://github.com/OpenGov/spc-poc" target="_blank">spc-poc</a>,
+    <a href="https://github.com/OpenGov/visibility-portal" target="_blank">visibility-portal</a>,
+    <a href="https://github.com/OpenGov/gab-311" target="_blank">gab-311</a>,
+    <a href="https://github.com/OpenGov/gab-boilerplate" target="_blank">gab-boilerplate</a>
+  </p>
+</div>
+<p>
+  shadcn is a trendy open-source component starter that teams install in minutes - but it ships Tailwind and a set of primitives that <strong>completely bypass Capital</strong>. Left unchecked, this becomes a parallel design language inside our own codebase.
+</p>
+
+<h3>5. A parallel library is forming under the "og-ui-components-library" name</h3>
+<div class="callout warn">
+  <div class="title">Despite the name, <a href="https://github.com/OpenGov/og-ui-components-library" target="_blank">og-ui-components-library</a> is an ERP-team monorepo, not a design system</div>
+  <p>Very active (32 commits / 30 merged PRs in the last 30 days) · <strong>No CODEOWNERS, no required reviews.</strong></p>
+</div>
+<p>
+  The repo's <code>@opengov/account-code-entry</code> package has already displaced CDS's <code>@opengov/components-account-number-input</code> across the ERP suite (<code>erp-fin-ap</code>, <code>erp-fin-gl</code>, <code>pro-app</code>, <code>pro-purchase-order-api</code>). ACE is genuinely better - but because it sits outside CDS governance, every future ERP-built component faces the same fork-or-upstream decision with no forum to resolve it.
+</p>
+<p>
+  Newer additions like <code>AppEmptyState</code> (overlaps CDS <code>Result</code>) and <code>CapitalProgress</code> (wraps MUI progress) are early warning signs: <strong>general-purpose primitives are starting to be re-minted outside CDS.</strong>
+</p>
+
+<!-- ============ RECOMMENDATIONS ============ -->
+<h2>Recommendations</h2>
+<p class="section-intro">Ranked by likely impact. The first four are the ones I'd bring to a design-system steering review.</p>
+
+<h3 style="margin-top:24px">For the platform / CDS team</h3>
+<ol class="recs">
+  <li>
+    <div>
+      <div class="rec-title">Close the two biggest adoption gaps first</div>
+      <div class="rec-body">
+        <a href="https://github.com/OpenGov/bifrost" target="_blank">bifrost</a> (695 unthemed UI files) and <a href="https://github.com/OpenGov/product-roadmap-portal" target="_blank">product-roadmap-portal</a> (359 files, shadcn) dwarf every other gap. One focused engagement per repo would move the org-wide CDS-import rate several points.
+      </div>
+    </div>
+  </li>
+  <li>
+    <div>
+      <div class="rec-title">Publish a stance on shadcn/ui</div>
+      <div class="rec-body">
+        Either formally bless it as a prototyping-only pattern with a written deprecation path, or replace it with CDS equivalents before more teams copy the pattern from the six repos that have it today.
+      </div>
+    </div>
+  </li>
+  <li>
+    <div>
+      <div class="rec-title">Sunset or promote - don't leave CDS stubs competing with ERP's parallel</div>
+      <div class="rec-body">
+        CDS's <code>components-account-number-input</code> has a single external consumer; the ERP team's ACE is used in four production apps. Either promote ACE into CDS or formally retire the CDS stub and point consumers at ACE.
+      </div>
+    </div>
+  </li>
+  <li>
+    <div>
+      <div class="rec-title">Publish a "which component do I use?" decision tree</div>
+      <div class="rec-body">
+        The fact that <code>Button</code> is being re-implemented in 12 repos suggests that teams can't quickly find the right CDS / MUI answer. A one-page decision tree (with paths to a CDS component, a themed MUI component, or "ask in #design-system") would eliminate most of the drift we measured.
+      </div>
+    </div>
+  </li>
+</ol>
+
+<h3 style="margin-top:32px">For og-ui-components-library</h3>
+<ol class="recs" style="counter-reset: rec 4">
+  <li>
+    <div>
+      <div class="rec-title">Rename the repo to reflect its ERP scope</div>
+      <div class="rec-body">
+        <code>og-ui-components-library</code> invites drift from every team. Something like <code>erp-components</code> or <code>erp-shared</code> makes the boundary honest and tells other teams not to shop there for generic UI.
+      </div>
+    </div>
+  </li>
+  <li>
+    <div>
+      <div class="rec-title">Add <code>CODEOWNERS</code> and required reviews</div>
+      <div class="rec-body">
+        A library shipped into four production apps with zero review gating is a governance hole. This is a 30-minute fix.
+      </div>
+    </div>
+  </li>
+  <li>
+    <div>
+      <div class="rec-title">Promote the strictly-better pieces into CDS</div>
+      <div class="rec-body">
+        ACE and the purchase-order / vendor-search components are high-quality and solve real org-wide problems. Formalizing ownership prevents other suites from doing the same parallel work.
+      </div>
+    </div>
+  </li>
+  <li>
+    <div>
+      <div class="rec-title">Stop general-purpose additions from drifting in</div>
+      <div class="rec-body">
+        <code>AppEmptyState</code> and <code>CapitalProgress</code> are both generic enough that they should either use existing CDS / MUI primitives or be proposed upstream to <a href="https://github.com/OpenGov/component-library" target="_blank">component-library</a>. Set a rule and document it in the repo's README.
+      </div>
+    </div>
+  </li>
+</ol>
+
+<h3 style="margin-top:32px">For frontend enablement broadly</h3>
+<ol class="recs" style="counter-reset: rec 8">
+  <li>
+    <div>
+      <div class="rec-title">Wire <code>code-cds-frontend</code> checks into CI for the top adopter repos</div>
+      <div class="rec-body">
+        New drift should be caught at PR time, not in a scorecard six months later. The <a href="https://github.com/OpenGov/og-cursor-rules/blob/main/.claude/agents/code-cds-frontend.md" target="_blank">existing agent spec</a> already encodes the rules.
+      </div>
+    </div>
+  </li>
+  <li>
+    <div>
+      <div class="rec-title">Re-run this scorecard quarterly</div>
+      <div class="rec-body">
+        The scan is fully repeatable (scripted, ~5 minutes end-to-end). Tracking the 23% "UI files using CDS" number over time is the single best signal of whether the design-system strategy is landing.
+      </div>
+    </div>
+  </li>
+</ol>
+
+<!-- ============ CTA ============ -->
+<div class="cta">
+  <div class="cta-text">
+    <h3>Explore the full data</h3>
+    <p>Interactive scorecard - sort by score, filter by product suite, drill into any repo's top CDS imports, raw MUI usage, hex samples, and component drift.</p>
+  </div>
+  <a class="btn" href="cds-adoption-scorecard.html">Open scorecard →</a>
+</div>
+
+<footer>
+  Methodology: scanned every OpenGov repo pushed in the past 90 days (557 repos) · filtered to those with a React / Vue / Angular / Next / Svelte dependency at root or in workspace sub-packages (79 repos) · shallow-cloned each and counted CDS imports in <code>.tsx</code> / <code>.jsx</code> files that actually render JSX (12,293 UI files).
+  Anti-patterns (hardcoded hex, hardcoded px) scanned only inside style-bearing regions. Scaffold-clone detection collapsed 12 repos that are identical copies of the PSP bedrock template.
+  · Source spec: <a href="https://github.com/OpenGov/og-cursor-rules/blob/main/.claude/agents/code-cds-frontend.md" target="_blank">code-cds-frontend.md</a>
+  · CDS source of truth: <a href="https://github.com/OpenGov/component-library" target="_blank">OpenGov/component-library</a>
+  · Prepared for the CDS steering review - April 2026
+</footer>
+
+</div>
+</body>
+</html>

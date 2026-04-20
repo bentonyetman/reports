@@ -84,6 +84,8 @@
   .drift-path { font-family: ui-monospace, Menlo, monospace; color: var(--dim); font-size: 10.5px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   td.offenders { max-width: 720px; }
 
+  .scaffold-badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 999px; background: #F5F3FF; color: #6D28D9; margin-left: 6px; cursor: help; }
+
   .legend { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
   .legend span { font-size: 10.5px; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
 
@@ -96,7 +98,7 @@
 <div class="wrap">
 <header>
   <div>
-    <h1>Capital Design System — Adoption Scorecard</h1>
+    <h1>Capital Design System - Adoption Scorecard</h1>
     <div class="sub">2026-04-19 · 75 OpenGov frontend repos with recent activity (past 3 months)</div>
   </div>
   <div class="legend">
@@ -105,7 +107,7 @@
 </header>
 
 <div class="kpi-strip">
-  <div class="kpi"><div class="num">75</div><div class="lbl">Frontend repos</div><div class="sublbl">TSX/JSX files present</div></div>
+  <div class="kpi"><div class="num">75</div><div class="lbl">Frontend repos</div><div class="sublbl">63 unique · 12 scaffold clones</div></div>
   <div class="kpi"><div class="num">13,114</div><div class="lbl">UI files</div><div class="sublbl">14,751 total .tsx/.jsx</div></div>
   <div class="kpi"><div class="num">61<span class="dim" style="font-size:16px">/75</span></div><div class="lbl">Repos using CDS</div><div class="sublbl">at least 1 CDS import</div></div>
   <div class="kpi"><div class="num" style="color:var(--accent)">20.9%</div><div class="lbl">CDS-imported files</div><div class="sublbl">of all TSX/JSX</div></div>
@@ -332,7 +334,9 @@
   <tbody id="tbody">
         <tr class="row bucket-strong" data-bucket="strong" data-suite="FIN/ERP/HCM" data-name="hcm-app">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/hcm-app" target="_blank">hcm-app</a> <span class="dim mono">· 2026-04-19</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/hcm-app" target="_blank">hcm-app</a> <span class="dim mono">· 2026-04-19</span>
+              
+            </div>
             <div class="repo-desc">HCM Application</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -345,11 +349,13 @@
           <td class="deps">capital-design-tokens, capital-mui-theme, components-nav-bar, components-og-grid-table, components-page-header, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>148</span> · components-og-grid-table <span class=ct>126</span> · components-nav-bar <span class=ct>4</span> · components-page-header <span class=ct>3</span></td>
           <td class="deps">material <span class=ct>282</span> · icons-material/Add <span class=ct>78</span> · icons-material/CheckCircle <span class=ct>47</span> · icons-material/Edit <span class=ct>43</span> · icons-material/Delete <span class=ct>37</span></td>
-          <td class="swatches"><span class=swatch style="background:#fff" title="#fff — 9×"></span> <span class=swatch style="background:#fafafa" title="#fafafa — 5×"></span> <span class=swatch style="background:#8b5cf6" title="#8b5cf6 — 3×"></span> <span class=swatch style="background:#ed6c02" title="#ed6c02 — 2×"></span> <span class=swatch style="background:#000" title="#000 — 1×"></span> <span class=swatch style="background:#555" title="#555 — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#fff" title="#fff - 9×"></span> <span class=swatch style="background:#fafafa" title="#fafafa - 5×"></span> <span class=swatch style="background:#8b5cf6" title="#8b5cf6 - 3×"></span> <span class=swatch style="background:#ed6c02" title="#ed6c02 - 2×"></span> <span class=swatch style="background:#000" title="#000 - 1×"></span> <span class=swatch style="background:#555" title="#555 - 1×"></span></td>
         </tr>
         <tr class="row bucket-strong" data-bucket="strong" data-suite="FIN/ERP/HCM" data-name="payroll-app">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/payroll-app" target="_blank">payroll-app</a> <span class="dim mono">· 2026-04-18</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/payroll-app" target="_blank">payroll-app</a> <span class="dim mono">· 2026-04-18</span>
+              
+            </div>
             <div class="repo-desc">payroll app for global</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -362,11 +368,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-og-grid-table, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>57</span> · components-og-grid-table <span class=ct>51</span> · components-nav-bar <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>94</span> · icons-material/Add <span class=ct>10</span> · icons-material/VerifiedUser <span class=ct>10</span> · icons-material/CheckCircle <span class=ct>9</span> · icons-material/Edit <span class=ct>5</span></td>
-          <td class="swatches"><span class=swatch style="background:#fff" title="#fff — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#fff" title="#fff - 1×"></span></td>
         </tr>
         <tr class="row bucket-strong" data-bucket="strong" data-suite="PLC" data-name="plc-ui">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/plc-ui" target="_blank">plc-ui</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/plc-ui" target="_blank">plc-ui</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">An implementation of CDS for PLC</div>
           </td>
           <td><span class="chip suite">PLC</span></td>
@@ -379,11 +387,13 @@
           <td class="deps">capital-style, component-library</td>
           <td class="deps">capital-style <span class=ct>15</span> · component-library <span class=ct>13</span></td>
           <td class="deps">material <span class=ct>3</span> · material/Typography <span class=ct>1</span></td>
-          <td class="swatches"><span class=swatch style="background:#ccc" title="#ccc — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#ccc" title="#ccc - 1×"></span></td>
         </tr>
         <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="shared-components-dev-app">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/shared-components-dev-app" target="_blank">shared-components-dev-app</a> <span class="dim mono">· 2026-02-06</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/shared-components-dev-app" target="_blank">shared-components-dev-app</a> <span class="dim mono">· 2026-02-06</span>
+              
+            </div>
             <div class="repo-desc">Lightweight React application for developing shared components in isolation from the component-library monorepo</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -396,11 +406,13 @@
           <td class="deps">capital-assets, capital-mui-theme, component-library, components-account-number-input, components-nav-bar, components-nav-bar-bundled, components-og-grid-table</td>
           <td class="deps">components-nav-bar <span class=ct>3</span> · capital-mui-theme <span class=ct>1</span> · components-account-number-input <span class=ct>1</span> · components-og-grid-table <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>5</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="psp-demo-assistant">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/psp-demo-assistant" target="_blank">psp-demo-assistant</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/psp-demo-assistant" target="_blank">psp-demo-assistant</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">psp demo assistant for platform</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -413,11 +425,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>15</span> · components-result <span class=ct>4</span> · components-page-header <span class=ct>3</span> · components-nav-bar <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>18</span> · icons-material <span class=ct>12</span></td>
-          <td class="swatches"><span class=swatch style="background:#fff" title="#fff — 61×"></span> <span class=swatch style="background:#e2e8f0" title="#e2e8f0 — 59×"></span> <span class=swatch style="background:#94a3b8" title="#94a3b8 — 43×"></span> <span class=swatch style="background:#2563eb" title="#2563eb — 35×"></span> <span class=swatch style="background:#64748b" title="#64748b — 28×"></span> <span class=swatch style="background:#334155" title="#334155 — 23×"></span> <span class=swatch style="background:#0f172a" title="#0f172a — 19×"></span> <span class=swatch style="background:#475569" title="#475569 — 12×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#fff" title="#fff - 61×"></span> <span class=swatch style="background:#e2e8f0" title="#e2e8f0 - 59×"></span> <span class=swatch style="background:#94a3b8" title="#94a3b8 - 43×"></span> <span class=swatch style="background:#2563eb" title="#2563eb - 35×"></span> <span class=swatch style="background:#64748b" title="#64748b - 28×"></span> <span class=swatch style="background:#334155" title="#334155 - 23×"></span> <span class=swatch style="background:#0f172a" title="#0f172a - 19×"></span> <span class=swatch style="background:#475569" title="#475569 - 12×"></span></td>
         </tr>
         <tr class="row bucket-strong" data-bucket="strong" data-suite="EAM/CIT" data-name="cit-mobile-inspections">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/cit-mobile-inspections" target="_blank">cit-mobile-inspections</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/cit-mobile-inspections" target="_blank">cit-mobile-inspections</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">CIT&#x27;s React Native implementation built for performing inspections (offline-first!)</div>
           </td>
           <td><span class="chip suite">EAM/CIT</span></td>
@@ -429,80 +443,14 @@
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
           <td class="deps">capital-style</td>
           <td class="deps">capital-style <span class=ct>36</span></td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
-        </tr>
-        <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="ace-mcp-server">
-          <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/ace-mcp-server" target="_blank">ace-mcp-server</a> <span class="dim mono">· 2026-04-15</span></div>
-            <div class="repo-desc">ace mcp server for platform</div>
-          </td>
-          <td><span class="chip suite">Platform</span></td>
-          <td class="num" title="11 total .tsx/.jsx files">10</td>
-          <td><span class="badge" style="color:#065F2B;background:#D1FADF">Strong</span></td>
-          <td class="score"><b>45.0</b><span class="dim small">/100</span></td>
-          <td><div class="pctcell"><span class="pctnum">50.0%</span><div class="bar"><div class="fill" style="width:50.0%;background:#4B3FFF"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">10.0%</span><div class="bar"><div class="fill" style="width:10.0%;background:#DC2626"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
-          <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
-          <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
-        </tr>
-        <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="chronos">
-          <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/chronos" target="_blank">chronos</a> <span class="dim mono">· 2026-04-13</span></div>
-            <div class="repo-desc">chronos for platform</div>
-          </td>
-          <td><span class="chip suite">Platform</span></td>
-          <td class="num" title="11 total .tsx/.jsx files">10</td>
-          <td><span class="badge" style="color:#065F2B;background:#D1FADF">Strong</span></td>
-          <td class="score"><b>45.0</b><span class="dim small">/100</span></td>
-          <td><div class="pctcell"><span class="pctnum">50.0%</span><div class="bar"><div class="fill" style="width:50.0%;background:#4B3FFF"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">10.0%</span><div class="bar"><div class="fill" style="width:10.0%;background:#DC2626"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
-          <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
-          <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
-        </tr>
-        <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="chronos-audit-platform">
-          <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/chronos-audit-platform" target="_blank">chronos-audit-platform</a> <span class="dim mono">· 2026-04-13</span></div>
-            <div class="repo-desc">chronos audit platform for platform</div>
-          </td>
-          <td><span class="chip suite">Platform</span></td>
-          <td class="num" title="11 total .tsx/.jsx files">10</td>
-          <td><span class="badge" style="color:#065F2B;background:#D1FADF">Strong</span></td>
-          <td class="score"><b>45.0</b><span class="dim small">/100</span></td>
-          <td><div class="pctcell"><span class="pctnum">50.0%</span><div class="bar"><div class="fill" style="width:50.0%;background:#4B3FFF"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">10.0%</span><div class="bar"><div class="fill" style="width:10.0%;background:#DC2626"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
-          <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
-          <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
-        </tr>
-        <tr class="row bucket-strong" data-bucket="strong" data-suite="Other" data-name="demo-repo-for-garry">
-          <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/demo-repo-for-garry" target="_blank">demo-repo-for-garry</a> <span class="dim mono">· 2026-04-13</span></div>
-            <div class="repo-desc">demo repo for garry for platform</div>
-          </td>
-          <td><span class="chip suite">Other</span></td>
-          <td class="num" title="11 total .tsx/.jsx files">10</td>
-          <td><span class="badge" style="color:#065F2B;background:#D1FADF">Strong</span></td>
-          <td class="score"><b>45.0</b><span class="dim small">/100</span></td>
-          <td><div class="pctcell"><span class="pctnum">50.0%</span><div class="bar"><div class="fill" style="width:50.0%;background:#4B3FFF"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">10.0%</span><div class="bar"><div class="fill" style="width:10.0%;background:#DC2626"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
-          <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
-          <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-strong" data-bucket="strong" data-suite="FIN/ERP/HCM" data-name="erp-inventory">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/erp-inventory" target="_blank">erp-inventory</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/erp-inventory" target="_blank">erp-inventory</a> <span class="dim mono">· 2026-04-17</span>
+              <span class="scaffold-badge" title="Identical .tsx file tree - includes: ace-mcp-server, chronos, chronos-audit-platform, demo-repo-for-garry, heimdall, mocksuite-bedrock, og-todo, rasai, template-bedrock, test-bedrock-template, test-new-flow-nav, tpm-tools-ds">scaffold ×13</span>
+            </div>
             <div class="repo-desc">erp inventory for fin</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -515,45 +463,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
-        </tr>
-        <tr class="row bucket-strong" data-bucket="strong" data-suite="EAM/CIT" data-name="heimdall">
-          <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/heimdall" target="_blank">heimdall</a> <span class="dim mono">· 2026-03-24</span></div>
-            <div class="repo-desc">OpenGov platform search </div>
-          </td>
-          <td><span class="chip suite">EAM/CIT</span></td>
-          <td class="num" title="11 total .tsx/.jsx files">10</td>
-          <td><span class="badge" style="color:#065F2B;background:#D1FADF">Strong</span></td>
-          <td class="score"><b>45.0</b><span class="dim small">/100</span></td>
-          <td><div class="pctcell"><span class="pctnum">50.0%</span><div class="bar"><div class="fill" style="width:50.0%;background:#4B3FFF"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">10.0%</span><div class="bar"><div class="fill" style="width:10.0%;background:#DC2626"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
-          <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
-          <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
-        </tr>
-        <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="mocksuite-bedrock">
-          <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/mocksuite-bedrock" target="_blank">mocksuite-bedrock</a> <span class="dim mono">· 2026-04-08</span></div>
-            <div class="repo-desc">mocksuite bedrock for platform</div>
-          </td>
-          <td><span class="chip suite">Platform</span></td>
-          <td class="num" title="11 total .tsx/.jsx files">10</td>
-          <td><span class="badge" style="color:#065F2B;background:#D1FADF">Strong</span></td>
-          <td class="score"><b>45.0</b><span class="dim small">/100</span></td>
-          <td><div class="pctcell"><span class="pctnum">50.0%</span><div class="bar"><div class="fill" style="width:50.0%;background:#4B3FFF"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">10.0%</span><div class="bar"><div class="fill" style="width:10.0%;background:#DC2626"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
-          <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
-          <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="og-rasai">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/og-rasai" target="_blank">og-rasai</a> <span class="dim mono">· 2026-04-15</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/og-rasai" target="_blank">og-rasai</a> <span class="dim mono">· 2026-04-15</span>
+              
+            </div>
             <div class="repo-desc">og rasai for internal-tools</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -566,113 +482,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
-        </tr>
-        <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="og-todo">
-          <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/og-todo" target="_blank">og-todo</a> <span class="dim mono">· 2026-04-10</span></div>
-            <div class="repo-desc">og todo for internal-tools</div>
-          </td>
-          <td><span class="chip suite">Platform</span></td>
-          <td class="num" title="11 total .tsx/.jsx files">10</td>
-          <td><span class="badge" style="color:#065F2B;background:#D1FADF">Strong</span></td>
-          <td class="score"><b>45.0</b><span class="dim small">/100</span></td>
-          <td><div class="pctcell"><span class="pctnum">50.0%</span><div class="bar"><div class="fill" style="width:50.0%;background:#4B3FFF"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">10.0%</span><div class="bar"><div class="fill" style="width:10.0%;background:#DC2626"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
-          <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
-          <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
-        </tr>
-        <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="rasai">
-          <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/rasai" target="_blank">rasai</a> <span class="dim mono">· 2026-03-30</span></div>
-            <div class="repo-desc">rasai for platform</div>
-          </td>
-          <td><span class="chip suite">Platform</span></td>
-          <td class="num" title="11 total .tsx/.jsx files">10</td>
-          <td><span class="badge" style="color:#065F2B;background:#D1FADF">Strong</span></td>
-          <td class="score"><b>45.0</b><span class="dim small">/100</span></td>
-          <td><div class="pctcell"><span class="pctnum">50.0%</span><div class="bar"><div class="fill" style="width:50.0%;background:#4B3FFF"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">10.0%</span><div class="bar"><div class="fill" style="width:10.0%;background:#DC2626"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
-          <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
-          <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
-        </tr>
-        <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="template-bedrock">
-          <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/template-bedrock" target="_blank">template-bedrock</a> <span class="dim mono">· 2026-04-17</span></div>
-            <div class="repo-desc">template bedrock for platform</div>
-          </td>
-          <td><span class="chip suite">Platform</span></td>
-          <td class="num" title="11 total .tsx/.jsx files">10</td>
-          <td><span class="badge" style="color:#065F2B;background:#D1FADF">Strong</span></td>
-          <td class="score"><b>45.0</b><span class="dim small">/100</span></td>
-          <td><div class="pctcell"><span class="pctnum">50.0%</span><div class="bar"><div class="fill" style="width:50.0%;background:#4B3FFF"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">10.0%</span><div class="bar"><div class="fill" style="width:10.0%;background:#DC2626"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
-          <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
-          <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
-        </tr>
-        <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="test-bedrock-template">
-          <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/test-bedrock-template" target="_blank">test-bedrock-template</a> <span class="dim mono">· 2026-04-16</span></div>
-            <div class="repo-desc">test bedrock template</div>
-          </td>
-          <td><span class="chip suite">Platform</span></td>
-          <td class="num" title="11 total .tsx/.jsx files">10</td>
-          <td><span class="badge" style="color:#065F2B;background:#D1FADF">Strong</span></td>
-          <td class="score"><b>45.0</b><span class="dim small">/100</span></td>
-          <td><div class="pctcell"><span class="pctnum">50.0%</span><div class="bar"><div class="fill" style="width:50.0%;background:#4B3FFF"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">10.0%</span><div class="bar"><div class="fill" style="width:10.0%;background:#DC2626"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
-          <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
-          <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
-        </tr>
-        <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="test-new-flow-nav">
-          <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/test-new-flow-nav" target="_blank">test-new-flow-nav</a> <span class="dim mono">· 2026-04-02</span></div>
-            <div class="repo-desc">test new flow nav for internal-tools</div>
-          </td>
-          <td><span class="chip suite">Platform</span></td>
-          <td class="num" title="11 total .tsx/.jsx files">10</td>
-          <td><span class="badge" style="color:#065F2B;background:#D1FADF">Strong</span></td>
-          <td class="score"><b>45.0</b><span class="dim small">/100</span></td>
-          <td><div class="pctcell"><span class="pctnum">50.0%</span><div class="bar"><div class="fill" style="width:50.0%;background:#4B3FFF"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">10.0%</span><div class="bar"><div class="fill" style="width:10.0%;background:#DC2626"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
-          <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
-          <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
-        </tr>
-        <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="tpm-tools-ds">
-          <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/tpm-tools-ds" target="_blank">tpm-tools-ds</a> <span class="dim mono">· 2026-04-09</span></div>
-            <div class="repo-desc">tpm tools ds for internal-tools</div>
-          </td>
-          <td><span class="chip suite">Platform</span></td>
-          <td class="num" title="11 total .tsx/.jsx files">10</td>
-          <td><span class="badge" style="color:#065F2B;background:#D1FADF">Strong</span></td>
-          <td class="score"><b>45.0</b><span class="dim small">/100</span></td>
-          <td><div class="pctcell"><span class="pctnum">50.0%</span><div class="bar"><div class="fill" style="width:50.0%;background:#4B3FFF"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">10.0%</span><div class="bar"><div class="fill" style="width:10.0%;background:#DC2626"></div></div></div></td>
-          <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
-          <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
-          <td class="deps">material <span class=ct>6</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-strong" data-bucket="strong" data-suite="Platform" data-name="bedrock">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/bedrock" target="_blank">bedrock</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/bedrock" target="_blank">bedrock</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">Foundational libraries and utilities for OpenGov services</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -685,11 +501,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>4</span> · components-page-header <span class=ct>3</span> · components-result <span class=ct>3</span> · components-nav-bar <span class=ct>2</span> · react-capital-assets <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>11</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-strong" data-bucket="strong" data-suite="GAB" data-name="gab-prototype">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/gab-prototype" target="_blank">gab-prototype</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/gab-prototype" target="_blank">gab-prototype</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">gab prototype for gab</div>
           </td>
           <td><span class="chip suite">GAB</span></td>
@@ -702,11 +520,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
           <td class="deps">components-result <span class=ct>26</span> · components-page-header <span class=ct>9</span> · capital-mui-theme <span class=ct>2</span></td>
           <td class="deps">material <span class=ct>47</span> · x-data-grid <span class=ct>22</span> · icons-material/Add <span class=ct>22</span> · icons-material/ViewModule <span class=ct>3</span> · icons-material/DeleteOutline <span class=ct>3</span></td>
-          <td class="swatches"><span class=swatch style="background:#fff" title="#fff — 4×"></span> <span class=swatch style="background:#f7f8fa" title="#f7f8fa — 1×"></span> <span class=swatch style="background:#f5f7fa" title="#f5f7fa — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#fff" title="#fff - 4×"></span> <span class=swatch style="background:#f7f8fa" title="#f7f8fa - 1×"></span> <span class=swatch style="background:#f5f7fa" title="#f5f7fa - 1×"></span></td>
         </tr>
         <tr class="row bucket-strong" data-bucket="strong" data-suite="PLC" data-name="plc-ai-plan-review">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/plc-ai-plan-review" target="_blank">plc-ai-plan-review</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/plc-ai-plan-review" target="_blank">plc-ai-plan-review</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">AI-based plan review tool for the PLC Suite</div>
           </td>
           <td><span class="chip suite">PLC</span></td>
@@ -719,11 +539,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>2</span> · components-nav-bar <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>4</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-strong" data-bucket="strong" data-suite="FIN/ERP/HCM" data-name="task-management">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/task-management" target="_blank">task-management</a> <span class="dim mono">· 2026-03-01</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/task-management" target="_blank">task-management</a> <span class="dim mono">· 2026-03-01</span>
+              
+            </div>
             <div class="repo-desc">Task management application</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -736,11 +558,13 @@
           <td class="deps">capital-assets, capital-mui-theme, component-library, components-date-picker, components-nav-bar, components-og-grid-table, components-page-header, components-result, react-capital-assets</td>
           <td class="deps">react-capital-assets <span class=ct>53</span> · components-page-header <span class=ct>47</span> · components-og-grid-table <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>102</span> · icons-material/CheckCircle <span class=ct>7</span> · icons-material/ExpandMore <span class=ct>5</span> · icons-material/ExpandLess <span class=ct>4</span> · icons-material/TrendingUp <span class=ct>4</span></td>
-          <td class="swatches"><span class=swatch style="background:#f8f8f8" title="#f8f8f8 — 3×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#f8f8f8" title="#f8f8f8 - 3×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="PLC" data-name="plc-react-sdk">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/plc-react-sdk" target="_blank">plc-react-sdk</a> <span class="dim mono">· 2026-04-18</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/plc-react-sdk" target="_blank">plc-react-sdk</a> <span class="dim mono">· 2026-04-18</span>
+              
+            </div>
             <div class="repo-desc">An SDK for developing React components in isolation</div>
           </td>
           <td><span class="chip suite">PLC</span></td>
@@ -752,12 +576,14 @@
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
           <td class="deps">capital-style, component-library</td>
           <td class="deps">capital-style <span class=ct>1</span></td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="EAM/CIT" data-name="cit-components">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/cit-components" target="_blank">cit-components</a> <span class="dim mono">· 2026-04-19</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/cit-components" target="_blank">cit-components</a> <span class="dim mono">· 2026-04-19</span>
+              
+            </div>
             <div class="repo-desc">React components for incrementally building out parts of CIT with React.</div>
           </td>
           <td><span class="chip suite">EAM/CIT</span></td>
@@ -770,11 +596,13 @@
           <td class="deps">capital-mui-theme, capital-style, component-library, components-ai-patterns, components-app-switcher, components-date-picker, components-file-management, components-nav-bar, components-result, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>534</span> · component-library <span class=ct>264</span> · capital-style <span class=ct>195</span> · react-capital-assets <span class=ct>138</span> · components-result <span class=ct>16</span></td>
           <td class="deps">material <span class=ct>1089</span> · icons-material <span class=ct>121</span> · material/styles <span class=ct>78</span> · lab <span class=ct>64</span> · x-data-grid-pro <span class=ct>52</span></td>
-          <td class="swatches"><span class=swatch style="background:#fff" title="#fff — 14×"></span> <span class=swatch style="background:#000000" title="#000000 — 11×"></span> <span class=swatch style="background:#ffffff" title="#ffffff — 10×"></span> <span class=swatch style="background:#666" title="#666 — 10×"></span> <span class=swatch style="background:#1315171a" title="#1315171a — 8×"></span> <span class=swatch style="background:#4b3fff" title="#4b3fff — 6×"></span> <span class=swatch style="background:#dddede" title="#dddede — 6×"></span> <span class=swatch style="background:#472d01" title="#472d01 — 6×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#fff" title="#fff - 14×"></span> <span class=swatch style="background:#000000" title="#000000 - 11×"></span> <span class=swatch style="background:#ffffff" title="#ffffff - 10×"></span> <span class=swatch style="background:#666" title="#666 - 10×"></span> <span class=swatch style="background:#1315171a" title="#1315171a - 8×"></span> <span class=swatch style="background:#4b3fff" title="#4b3fff - 6×"></span> <span class=swatch style="background:#dddede" title="#dddede - 6×"></span> <span class=swatch style="background:#472d01" title="#472d01 - 6×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Platform" data-name="atlas-usage">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/atlas-usage" target="_blank">atlas-usage</a> <span class="dim mono">· 2026-03-12</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/atlas-usage" target="_blank">atlas-usage</a> <span class="dim mono">· 2026-03-12</span>
+              
+            </div>
             <div class="repo-desc"></div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -787,11 +615,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>2</span> · components-page-header <span class=ct>2</span> · components-result <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · react-capital-assets <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>10</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="FIN/ERP/HCM" data-name="fin-pa-ui">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/fin-pa-ui" target="_blank">fin-pa-ui</a> <span class="dim mono">· 2026-03-26</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/fin-pa-ui" target="_blank">fin-pa-ui</a> <span class="dim mono">· 2026-03-26</span>
+              
+            </div>
             <div class="repo-desc">FIN Project Accounting UI repo</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -804,11 +634,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-og-grid-table, components-project-account-input, react-capital-assets</td>
           <td class="deps">components-og-grid-table <span class=ct>34</span> · capital-mui-theme <span class=ct>7</span> · components-project-account-input <span class=ct>5</span> · components-nav-bar <span class=ct>3</span> · react-capital-assets <span class=ct>3</span></td>
           <td class="deps">material <span class=ct>87</span> · icons-material <span class=ct>24</span> · material/styles <span class=ct>4</span> · icons-material/Edit <span class=ct>4</span> · x-date-pickers/AdapterDayjs <span class=ct>3</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="FIN/ERP/HCM" data-name="fin-bankrec">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/fin-bankrec" target="_blank">fin-bankrec</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/fin-bankrec" target="_blank">fin-bankrec</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">Bankrec</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -821,11 +653,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-og-grid-table, react-capital-assets</td>
           <td class="deps">components-og-grid-table <span class=ct>39</span> · capital-mui-theme <span class=ct>35</span> · components-nav-bar <span class=ct>2</span> · react-capital-assets <span class=ct>2</span></td>
           <td class="deps">material <span class=ct>137</span> · x-date-pickers-pro/AdapterDayjs <span class=ct>7</span> · x-date-pickers-pro <span class=ct>6</span> · icons-material/Close <span class=ct>5</span> · x-date-pickers <span class=ct>4</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="FIN/ERP/HCM" data-name="pluggable-payments">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/pluggable-payments" target="_blank">pluggable-payments</a> <span class="dim mono">· 2026-04-19</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/pluggable-payments" target="_blank">pluggable-payments</a> <span class="dim mono">· 2026-04-19</span>
+              
+            </div>
             <div class="repo-desc">Pluggable Payments Mono Repo</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -838,11 +672,13 @@
           <td class="deps">capital-mui-theme, capital-style</td>
           <td class="deps">capital-mui-theme <span class=ct>11</span> · capital-style <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>12</span> · icons-material/Close <span class=ct>2</span> · icons-material <span class=ct>1</span> · icons-material/ContentCopy <span class=ct>1</span> · icons-material/Visibility <span class=ct>1</span></td>
-          <td class="swatches"><span class=swatch style="background:#fdeded" title="#fdeded — 1×"></span> <span class=swatch style="background:#5f2120" title="#5f2120 — 1×"></span> <span class=swatch style="background:#f5c6cb" title="#f5c6cb — 1×"></span> <span class=swatch style="background:#2e7d32" title="#2e7d32 — 1×"></span> <span class=swatch style="background:#fff" title="#fff — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#fdeded" title="#fdeded - 1×"></span> <span class=swatch style="background:#5f2120" title="#5f2120 - 1×"></span> <span class=swatch style="background:#f5c6cb" title="#f5c6cb - 1×"></span> <span class=swatch style="background:#2e7d32" title="#2e7d32 - 1×"></span> <span class=swatch style="background:#fff" title="#fff - 1×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="FIN/ERP/HCM" data-name="hcm-career-portal">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/hcm-career-portal" target="_blank">hcm-career-portal</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/hcm-career-portal" target="_blank">hcm-career-portal</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">hcm career portal for fin</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -855,11 +691,13 @@
           <td class="deps">capital-mui-theme</td>
           <td class="deps">capital-mui-theme <span class=ct>11</span></td>
           <td class="deps">material <span class=ct>24</span> · icons-material/Search <span class=ct>7</span> · icons-material/LocationOnOutlined <span class=ct>5</span> · icons-material/WorkOutline <span class=ct>4</span> · icons-material/AttachMoney <span class=ct>4</span></td>
-          <td class="swatches"><span class=swatch style="background:#fff" title="#fff — 2×"></span> <span class=swatch style="background:#1976d2" title="#1976d2 — 1×"></span> <span class=swatch style="background:#fafafa" title="#fafafa — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#fff" title="#fff - 2×"></span> <span class=swatch style="background:#1976d2" title="#1976d2 - 1×"></span> <span class=swatch style="background:#fafafa" title="#fafafa - 1×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="FIN/ERP/HCM" data-name="erp-fin-ap">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/erp-fin-ap" target="_blank">erp-fin-ap</a> <span class="dim mono">· 2026-04-18</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/erp-fin-ap" target="_blank">erp-fin-ap</a> <span class="dim mono">· 2026-04-18</span>
+              
+            </div>
             <div class="repo-desc">ERP FIN AP Repository</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -872,11 +710,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-og-grid-table, components-project-account-input, react-capital-assets</td>
           <td class="deps">components-og-grid-table <span class=ct>42</span> · capital-mui-theme <span class=ct>31</span> · react-capital-assets <span class=ct>16</span> · components-nav-bar <span class=ct>1</span> · components-project-account-input <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>166</span> · material/styles <span class=ct>16</span> · icons-material/Close <span class=ct>10</span> · icons-material <span class=ct>9</span> · icons-material/MoreVert <span class=ct>7</span></td>
-          <td class="swatches"><span class=swatch style="background:#ffffff" title="#ffffff — 4×"></span> <span class=swatch style="background:#d32f2f" title="#d32f2f — 3×"></span> <span class=swatch style="background:#9e9e9e" title="#9e9e9e — 2×"></span> <span class=swatch style="background:#2e7d32" title="#2e7d32 — 2×"></span> <span class=swatch style="background:#1565c0" title="#1565c0 — 2×"></span> <span class=swatch style="background:#eef1fc" title="#eef1fc — 2×"></span> <span class=swatch style="background:#666" title="#666 — 1×"></span> <span class=swatch style="background:#5c6bc0" title="#5c6bc0 — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#ffffff" title="#ffffff - 4×"></span> <span class=swatch style="background:#d32f2f" title="#d32f2f - 3×"></span> <span class=swatch style="background:#9e9e9e" title="#9e9e9e - 2×"></span> <span class=swatch style="background:#2e7d32" title="#2e7d32 - 2×"></span> <span class=swatch style="background:#1565c0" title="#1565c0 - 2×"></span> <span class=swatch style="background:#eef1fc" title="#eef1fc - 2×"></span> <span class=swatch style="background:#666" title="#666 - 1×"></span> <span class=swatch style="background:#5c6bc0" title="#5c6bc0 - 1×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Strategic Init" data-name="stories">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/stories" target="_blank">stories</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/stories" target="_blank">stories</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">stories allows our customers to present complex information in a way that’s easy for anyone to understand, combining data with ima</div>
           </td>
           <td><span class="chip suite">Strategic Init</span></td>
@@ -889,11 +729,13 @@
           <td class="deps">capital-mui-theme, capital-style, component-library, component-library-classic, components-checkbox-tree, components-og-grid-table, react-capital-assets</td>
           <td class="deps">component-library <span class=ct>33</span> · capital-mui-theme <span class=ct>23</span> · react-capital-assets <span class=ct>20</span> · components-checkbox-tree <span class=ct>1</span> · components-og-grid-table <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>60</span> · material/Box <span class=ct>22</span> · icons-material <span class=ct>14</span> · material/Typography <span class=ct>14</span> · material/Button <span class=ct>10</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Access/PSS" data-name="public-service-platform">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/public-service-platform" target="_blank">public-service-platform</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/public-service-platform" target="_blank">public-service-platform</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">Public Service Platform for central login and suite navigation</div>
           </td>
           <td><span class="chip suite">Access/PSS</span></td>
@@ -906,11 +748,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
           <td class="deps">react-capital-assets <span class=ct>25</span> · capital-mui-theme <span class=ct>18</span> · components-result <span class=ct>9</span> · components-nav-bar <span class=ct>3</span> · components-page-header <span class=ct>3</span></td>
           <td class="deps">material <span class=ct>84</span> · material/styles <span class=ct>3</span> · material/CssBaseline <span class=ct>1</span> · material/Autocomplete <span class=ct>1</span> · material/TextField <span class=ct>1</span></td>
-          <td class="swatches"><span class=swatch style="background:#f0f7ff" title="#f0f7ff — 1×"></span> <span class=swatch style="background:#d0e7ff" title="#d0e7ff — 1×"></span> <span class=swatch style="background:#4caf50" title="#4caf50 — 1×"></span> <span class=swatch style="background:#2196f3" title="#2196f3 — 1×"></span> <span class=swatch style="background:#9e9e9e" title="#9e9e9e — 1×"></span> <span class=swatch style="background:#f44336" title="#f44336 — 1×"></span> <span class=swatch style="background:#f5f5f5" title="#f5f5f5 — 1×"></span> <span class=swatch style="background:#4b3fff" title="#4b3fff — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#f0f7ff" title="#f0f7ff - 1×"></span> <span class=swatch style="background:#d0e7ff" title="#d0e7ff - 1×"></span> <span class=swatch style="background:#4caf50" title="#4caf50 - 1×"></span> <span class=swatch style="background:#2196f3" title="#2196f3 - 1×"></span> <span class=swatch style="background:#9e9e9e" title="#9e9e9e - 1×"></span> <span class=swatch style="background:#f44336" title="#f44336 - 1×"></span> <span class=swatch style="background:#f5f5f5" title="#f5f5f5 - 1×"></span> <span class=swatch style="background:#4b3fff" title="#4b3fff - 1×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Platform" data-name="smart-forms">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/smart-forms" target="_blank">smart-forms</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/smart-forms" target="_blank">smart-forms</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">PLC&#x27;s Smart Forms</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -923,11 +767,13 @@
           <td class="deps">capital-mui-theme, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>20</span> · react-capital-assets <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>35</span> · icons-material/Close <span class=ct>5</span> · x-date-pickers <span class=ct>5</span> · icons-material/Add <span class=ct>4</span> · icons-material/Error <span class=ct>3</span></td>
-          <td class="swatches"><span class=swatch style="background:#e0e7e8" title="#e0e7e8 — 2×"></span> <span class=swatch style="background:#c7e5f0" title="#c7e5f0 — 1×"></span> <span class=swatch style="background:#f7f9fe" title="#f7f9fe — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#e0e7e8" title="#e0e7e8 - 2×"></span> <span class=swatch style="background:#c7e5f0" title="#c7e5f0 - 1×"></span> <span class=swatch style="background:#f7f9fe" title="#f7f9fe - 1×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Procurement" data-name="pro-app">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/pro-app" target="_blank">pro-app</a> <span class="dim mono">· 2026-04-18</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/pro-app" target="_blank">pro-app</a> <span class="dim mono">· 2026-04-18</span>
+              
+            </div>
             <div class="repo-desc">Main app for OpenGov Procurement</div>
           </td>
           <td><span class="chip suite">Procurement</span></td>
@@ -940,11 +786,13 @@
           <td class="deps">capital-mui-theme, capital-style, components-account-number-input, components-ai-patterns, components-nav-bar, components-og-grid-table, components-pagination, components-project-account-input, components-result, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>242</span> · capital-style <span class=ct>39</span> · react-capital-assets <span class=ct>30</span> · components-nav-bar <span class=ct>4</span> · components-og-grid-table <span class=ct>3</span></td>
           <td class="deps">icons-material <span class=ct>212</span> · material <span class=ct>187</span> · material/styles <span class=ct>11</span> · icons-material/Add <span class=ct>11</span> · material/Box <span class=ct>9</span></td>
-          <td class="swatches"><span class=swatch style="background:#ffffff" title="#ffffff — 8×"></span> <span class=swatch style="background:#4b3fff" title="#4b3fff — 7×"></span> <span class=swatch style="background:#666" title="#666 — 7×"></span> <span class=swatch style="background:#ddd" title="#ddd — 5×"></span> <span class=swatch style="background:#003c81" title="#003c81 — 5×"></span> <span class=swatch style="background:#1f2937" title="#1f2937 — 4×"></span> <span class=swatch style="background:#6b7280" title="#6b7280 — 4×"></span> <span class=swatch style="background:#dddede" title="#dddede — 4×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#ffffff" title="#ffffff - 8×"></span> <span class=swatch style="background:#4b3fff" title="#4b3fff - 7×"></span> <span class=swatch style="background:#666" title="#666 - 7×"></span> <span class=swatch style="background:#ddd" title="#ddd - 5×"></span> <span class=swatch style="background:#003c81" title="#003c81 - 5×"></span> <span class=swatch style="background:#1f2937" title="#1f2937 - 4×"></span> <span class=swatch style="background:#6b7280" title="#6b7280 - 4×"></span> <span class=swatch style="background:#dddede" title="#dddede - 4×"></span></td>
         </tr>
         <tr class="row bucket-minimal" data-bucket="minimal" data-suite="EAM/CIT" data-name="data-collection-app">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/data-collection-app" target="_blank">data-collection-app</a> <span class="dim mono">· 2026-04-15</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/data-collection-app" target="_blank">data-collection-app</a> <span class="dim mono">· 2026-04-15</span>
+              
+            </div>
             <div class="repo-desc">An application for managing Data Collections</div>
           </td>
           <td><span class="chip suite">EAM/CIT</span></td>
@@ -957,11 +805,13 @@
           <td class="deps">capital-mui-theme, capital-style, component-library, component-library-classic, components-navigation</td>
           <td class="deps">capital-mui-theme <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>1</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-minimal" data-bucket="minimal" data-suite="Strategic Init" data-name="si-app">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/si-app" target="_blank">si-app</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/si-app" target="_blank">si-app</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">Strategic Initiatives provides ability to facilitate the creation and management of initiatives in the open gov platform, and the </div>
           </td>
           <td><span class="chip suite">Strategic Init</span></td>
@@ -974,11 +824,13 @@
           <td class="deps">capital-mui-theme, capital-style, component-library, component-library-classic, components-navigation</td>
           <td class="deps">capital-mui-theme <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>1</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Strategic Init" data-name="reporting">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/reporting" target="_blank">reporting</a> <span class="dim mono">· 2026-04-18</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/reporting" target="_blank">reporting</a> <span class="dim mono">· 2026-04-18</span>
+              
+            </div>
             <div class="repo-desc">escape from voltron</div>
           </td>
           <td><span class="chip suite">Strategic Init</span></td>
@@ -991,11 +843,13 @@
           <td class="deps">capital-mui-theme, capital-style, component-library, component-library-classic, components-accordion, components-app-switcher, components-date-picker, components-navigation, components-og-grid-table, components-visualization, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>86</span> · components-og-grid-table <span class=ct>30</span> · components-visualization <span class=ct>24</span> · react-capital-assets <span class=ct>15</span> · component-library <span class=ct>13</span></td>
           <td class="deps">material <span class=ct>142</span> · material/Box <span class=ct>37</span> · material/Typography <span class=ct>29</span> · icons-material/Close <span class=ct>27</span> · x-data-grid <span class=ct>17</span></td>
-          <td class="swatches"><span class=swatch style="background:#eff2f5" title="#eff2f5 — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#eff2f5" title="#eff2f5 - 1×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Procurement" data-name="pro-purchase-order-api">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/pro-purchase-order-api" target="_blank">pro-purchase-order-api</a> <span class="dim mono">· 2026-04-18</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/pro-purchase-order-api" target="_blank">pro-purchase-order-api</a> <span class="dim mono">· 2026-04-18</span>
+              
+            </div>
             <div class="repo-desc">Purchase Order API for PRO</div>
           </td>
           <td><span class="chip suite">Procurement</span></td>
@@ -1008,11 +862,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-og-grid-table, components-project-account-input, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>32</span> · components-og-grid-table <span class=ct>10</span> · react-capital-assets <span class=ct>7</span> · components-project-account-input <span class=ct>2</span> · components-nav-bar <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>104</span> · icons-material/ErrorOutline <span class=ct>11</span> · icons-material/MoreVert <span class=ct>10</span> · icons-material/ArrowForwardIos <span class=ct>9</span> · icons-material/DeleteOutlined <span class=ct>7</span></td>
-          <td class="swatches"><span class=swatch style="background:#f5f5f5" title="#f5f5f5 — 1×"></span> <span class=swatch style="background:#c00" title="#c00 — 1×"></span> <span class=swatch style="background:#fff" title="#fff — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#f5f5f5" title="#f5f5f5 - 1×"></span> <span class=swatch style="background:#c00" title="#c00 - 1×"></span> <span class=swatch style="background:#fff" title="#fff - 1×"></span></td>
         </tr>
         <tr class="row bucket-minimal" data-bucket="minimal" data-suite="EAM/CIT" data-name="forms">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/forms" target="_blank">forms</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/forms" target="_blank">forms</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">Forms engine. Provides ability to create form templates and forms with various fields and validations.</div>
           </td>
           <td><span class="chip suite">EAM/CIT</span></td>
@@ -1025,11 +881,13 @@
           <td class="deps">capital-mui-theme, capital-style, component-library</td>
           <td class="deps">capital-mui-theme <span class=ct>2</span></td>
           <td class="deps">material/styles <span class=ct>2</span> · material <span class=ct>2</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="B&amp;P" data-name="bnp-ui">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/bnp-ui" target="_blank">bnp-ui</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/bnp-ui" target="_blank">bnp-ui</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">Frontend for B&amp;P</div>
           </td>
           <td><span class="chip suite">B&amp;P</span></td>
@@ -1042,11 +900,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-result, react-capital-assets</td>
           <td class="deps">react-capital-assets <span class=ct>106</span> · capital-mui-theme <span class=ct>74</span> · components-result <span class=ct>13</span> · components-nav-bar <span class=ct>3</span></td>
           <td class="deps">material <span class=ct>412</span> · icons-material <span class=ct>125</span> · x-data-grid <span class=ct>36</span> · lab <span class=ct>33</span> · x-date-pickers/AdapterDayjs <span class=ct>17</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="Platform" data-name="bifrost">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/bifrost" target="_blank">bifrost</a> <span class="dim mono">· 2026-04-19</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/bifrost" target="_blank">bifrost</a> <span class="dim mono">· 2026-04-19</span>
+              
+            </div>
             <div class="repo-desc">Bifrost - IPFX (GovERP Platform)</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -1056,14 +916,16 @@
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#4B3FFF"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">54.1%</span><div class="bar"><div class="fill" style="width:54.1%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">14.6%</span><div class="bar"><div class="fill" style="width:14.6%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">&lt;span class=dim&gt;—&lt;/span&gt;</td>
-          <td class="deps"><span class=dim>—</span></td>
+          <td class="deps">&lt;span class=dim&gt;-&lt;/span&gt;</td>
+          <td class="deps"><span class=dim>-</span></td>
           <td class="deps">material <span class=ct>319</span> · material/styles <span class=ct>24</span> · system <span class=ct>15</span> · material/Box <span class=ct>10</span> · icons-material <span class=ct>9</span></td>
-          <td class="swatches"><span class=swatch style="background:#ffffff" title="#ffffff — 38×"></span> <span class=swatch style="background:#3b82f6" title="#3b82f6 — 20×"></span> <span class=swatch style="background:#767676" title="#767676 — 17×"></span> <span class=swatch style="background:#64748b" title="#64748b — 15×"></span> <span class=swatch style="background:#6b7280" title="#6b7280 — 14×"></span> <span class=swatch style="background:#494949" title="#494949 — 12×"></span> <span class=swatch style="background:#f0f0f0" title="#f0f0f0 — 9×"></span> <span class=swatch style="background:#666" title="#666 — 8×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#ffffff" title="#ffffff - 38×"></span> <span class=swatch style="background:#3b82f6" title="#3b82f6 - 20×"></span> <span class=swatch style="background:#767676" title="#767676 - 17×"></span> <span class=swatch style="background:#64748b" title="#64748b - 15×"></span> <span class=swatch style="background:#6b7280" title="#6b7280 - 14×"></span> <span class=swatch style="background:#494949" title="#494949 - 12×"></span> <span class=swatch style="background:#f0f0f0" title="#f0f0f0 - 9×"></span> <span class=swatch style="background:#666" title="#666 - 8×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="FIN/ERP/HCM" data-name="erp-fin-gl">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/erp-fin-gl" target="_blank">erp-fin-gl</a> <span class="dim mono">· 2026-04-19</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/erp-fin-gl" target="_blank">erp-fin-gl</a> <span class="dim mono">· 2026-04-19</span>
+              
+            </div>
             <div class="repo-desc">ERP FIN GL Repository</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -1076,11 +938,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-og-grid-table, components-project-account-input</td>
           <td class="deps">capital-mui-theme <span class=ct>36</span> · components-og-grid-table <span class=ct>17</span> · react-capital-assets <span class=ct>10</span> · components-nav-bar <span class=ct>2</span> · components-project-account-input <span class=ct>2</span></td>
           <td class="deps">material <span class=ct>356</span> · lab <span class=ct>13</span> · material/styles <span class=ct>5</span> · x-date-pickers/DatePicker <span class=ct>2</span> · system <span class=ct>2</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Access/PSS" data-name="pss-access-control-apps">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/pss-access-control-apps" target="_blank">pss-access-control-apps</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/pss-access-control-apps" target="_blank">pss-access-control-apps</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">Access Control UI apps</div>
           </td>
           <td><span class="chip suite">Access/PSS</span></td>
@@ -1093,11 +957,13 @@
           <td class="deps">capital-mui-theme, capital-style, component-library, components-nav-bar, components-navigation, components-og-grid-table, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>22</span> · components-og-grid-table <span class=ct>20</span> · react-capital-assets <span class=ct>12</span> · components-nav-bar <span class=ct>3</span></td>
           <td class="deps">material <span class=ct>165</span> · icons-material <span class=ct>15</span> · icons-material/Close <span class=ct>12</span> · icons-material/WarningAmber <span class=ct>9</span> · icons-material/InfoOutlined <span class=ct>3</span></td>
-          <td class="swatches"><span class=swatch style="background:#856404" title="#856404 — 3×"></span> <span class=swatch style="background:#c62828" title="#c62828 — 2×"></span> <span class=swatch style="background:#e0e0e0" title="#e0e0e0 — 1×"></span> <span class=swatch style="background:#f5f5f5" title="#f5f5f5 — 1×"></span> <span class=swatch style="background:#f9a825" title="#f9a825 — 1×"></span> <span class=swatch style="background:#2e7d32" title="#2e7d32 — 1×"></span> <span class=swatch style="background:#fef3cd" title="#fef3cd — 1×"></span> <span class=swatch style="background:#ffc107" title="#ffc107 — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#856404" title="#856404 - 3×"></span> <span class=swatch style="background:#c62828" title="#c62828 - 2×"></span> <span class=swatch style="background:#e0e0e0" title="#e0e0e0 - 1×"></span> <span class=swatch style="background:#f5f5f5" title="#f5f5f5 - 1×"></span> <span class=swatch style="background:#f9a825" title="#f9a825 - 1×"></span> <span class=swatch style="background:#2e7d32" title="#2e7d32 - 1×"></span> <span class=swatch style="background:#fef3cd" title="#fef3cd - 1×"></span> <span class=swatch style="background:#ffc107" title="#ffc107 - 1×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Platform" data-name="seamstress-design">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/seamstress-design" target="_blank">seamstress-design</a> <span class="dim mono">· 2026-04-19</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/seamstress-design" target="_blank">seamstress-design</a> <span class="dim mono">· 2026-04-19</span>
+              
+            </div>
             <div class="repo-desc">A repo for designers to create demos/POC</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -1110,11 +976,13 @@
           <td class="deps">capital-mui-theme, components-ai-patterns, components-drawer, components-file-management, components-modal, components-nav-bar, components-page-header, components-pagination, components-result, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>94</span> · components-page-header <span class=ct>61</span> · components-ai-patterns <span class=ct>16</span> · react-capital-assets <span class=ct>15</span> · components-result <span class=ct>4</span></td>
           <td class="deps">material <span class=ct>362</span> · icons-material <span class=ct>146</span> · x-data-grid <span class=ct>31</span> · icons-material/Add <span class=ct>29</span> · icons-material/CheckCircle <span class=ct>28</span></td>
-          <td class="swatches"><span class=swatch style="background:#5b5fc7" title="#5b5fc7 — 23×"></span> <span class=swatch style="background:#6b7280" title="#6b7280 — 19×"></span> <span class=swatch style="background:#dc2626" title="#dc2626 — 10×"></span> <span class=swatch style="background:#9ca3af" title="#9ca3af — 8×"></span> <span class=swatch style="background:#e5e7eb" title="#e5e7eb — 7×"></span> <span class=swatch style="background:#16a34a" title="#16a34a — 6×"></span> <span class=swatch style="background:#4b3fff" title="#4b3fff — 6×"></span> <span class=swatch style="background:#fff" title="#fff — 6×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#5b5fc7" title="#5b5fc7 - 23×"></span> <span class=swatch style="background:#6b7280" title="#6b7280 - 19×"></span> <span class=swatch style="background:#dc2626" title="#dc2626 - 10×"></span> <span class=swatch style="background:#9ca3af" title="#9ca3af - 8×"></span> <span class=swatch style="background:#e5e7eb" title="#e5e7eb - 7×"></span> <span class=swatch style="background:#16a34a" title="#16a34a - 6×"></span> <span class=swatch style="background:#4b3fff" title="#4b3fff - 6×"></span> <span class=swatch style="background:#fff" title="#fff - 6×"></span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="Platform" data-name="product-roadmap-portal">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/product-roadmap-portal" target="_blank">product-roadmap-portal</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/product-roadmap-portal" target="_blank">product-roadmap-portal</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">OpenGov Product Roadmap Portal</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -1125,13 +993,15 @@
           <td><div class="pctcell"><span class="pctnum">1.4%</span><div class="bar"><div class="fill" style="width:1.4%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">1.2%</span><div class="bar"><div class="fill" style="width:1.2%;background:#F59E0B"></div></div></div></td>
           <td class="deps">capital-mui-theme, react-capital-assets</td>
-          <td class="deps"><span class=dim>—</span></td>
+          <td class="deps"><span class=dim>-</span></td>
           <td class="deps">material <span class=ct>6</span> · icons-material/Close <span class=ct>2</span> · material/transitions <span class=ct>1</span> · material/Drawer <span class=ct>1</span></td>
-          <td class="swatches"><span class=swatch style="background:#e5e7eb" title="#e5e7eb — 2×"></span> <span class=swatch style="background:#6b7280" title="#6b7280 — 2×"></span> <span class=swatch style="background:#08a84710" title="#08a84710 — 2×"></span> <span class=swatch style="background:#08a847" title="#08a847 — 2×"></span> <span class=swatch style="background:#08a84730" title="#08a84730 — 2×"></span> <span class=swatch style="background:#3b82f610" title="#3b82f610 — 2×"></span> <span class=swatch style="background:#3b82f6" title="#3b82f6 — 2×"></span> <span class=swatch style="background:#3b82f630" title="#3b82f630 — 2×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#e5e7eb" title="#e5e7eb - 2×"></span> <span class=swatch style="background:#6b7280" title="#6b7280 - 2×"></span> <span class=swatch style="background:#08a84710" title="#08a84710 - 2×"></span> <span class=swatch style="background:#08a847" title="#08a847 - 2×"></span> <span class=swatch style="background:#08a84730" title="#08a84730 - 2×"></span> <span class=swatch style="background:#3b82f610" title="#3b82f610 - 2×"></span> <span class=swatch style="background:#3b82f6" title="#3b82f6 - 2×"></span> <span class=swatch style="background:#3b82f630" title="#3b82f630 - 2×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Platform" data-name="product-ops-tools">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/product-ops-tools" target="_blank">product-ops-tools</a> <span class="dim mono">· 2026-04-18</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/product-ops-tools" target="_blank">product-ops-tools</a> <span class="dim mono">· 2026-04-18</span>
+              
+            </div>
             <div class="repo-desc">Product Operations Tools</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -1144,11 +1014,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
           <td class="deps">components-page-header <span class=ct>60</span> · react-capital-assets <span class=ct>28</span> · components-result <span class=ct>14</span> · components-og-grid-table <span class=ct>2</span> · capital-mui-theme <span class=ct>2</span></td>
           <td class="deps">material <span class=ct>163</span> · material/Typography <span class=ct>53</span> · material/Box <span class=ct>50</span> · material/Stack <span class=ct>49</span> · material/Card <span class=ct>29</span></td>
-          <td class="swatches"><span class=swatch style="background:#fff" title="#fff — 8×"></span> <span class=swatch style="background:#6b7280" title="#6b7280 — 4×"></span> <span class=swatch style="background:#f6f8fa" title="#f6f8fa — 3×"></span> <span class=swatch style="background:#0969da" title="#0969da — 3×"></span> <span class=swatch style="background:#a371f7" title="#a371f7 — 3×"></span> <span class=swatch style="background:#58a6ff" title="#58a6ff — 2×"></span> <span class=swatch style="background:#8b5cf6" title="#8b5cf6 — 2×"></span> <span class=swatch style="background:#ffffff" title="#ffffff — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#fff" title="#fff - 8×"></span> <span class=swatch style="background:#6b7280" title="#6b7280 - 4×"></span> <span class=swatch style="background:#f6f8fa" title="#f6f8fa - 3×"></span> <span class=swatch style="background:#0969da" title="#0969da - 3×"></span> <span class=swatch style="background:#a371f7" title="#a371f7 - 3×"></span> <span class=swatch style="background:#58a6ff" title="#58a6ff - 2×"></span> <span class=swatch style="background:#8b5cf6" title="#8b5cf6 - 2×"></span> <span class=swatch style="background:#ffffff" title="#ffffff - 1×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="FIN/ERP/HCM" data-name="vendor-management">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/vendor-management" target="_blank">vendor-management</a> <span class="dim mono">· 2026-04-19</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/vendor-management" target="_blank">vendor-management</a> <span class="dim mono">· 2026-04-19</span>
+              
+            </div>
             <div class="repo-desc">Vendor Management mono repo</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -1161,11 +1033,13 @@
           <td class="deps">capital-mui-theme, components-ai-patterns, components-nav-bar, components-og-grid-table, components-result, react-capital-assets</td>
           <td class="deps">components-og-grid-table <span class=ct>19</span> · react-capital-assets <span class=ct>7</span> · capital-mui-theme <span class=ct>3</span> · components-result <span class=ct>3</span> · components-nav-bar <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>114</span> · material/Grid <span class=ct>16</span> · icons-material/Add <span class=ct>7</span> · icons-material <span class=ct>6</span> · material/styles <span class=ct>4</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-minimal" data-bucket="minimal" data-suite="B&amp;P" data-name="bnp-data-management">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/bnp-data-management" target="_blank">bnp-data-management</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/bnp-data-management" target="_blank">bnp-data-management</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">Data management for B&amp;P</div>
           </td>
           <td><span class="chip suite">B&amp;P</span></td>
@@ -1178,11 +1052,13 @@
           <td class="deps">capital-mui-theme, capital-style, component-library, component-library-classic, components-checkbox-tree</td>
           <td class="deps">capital-mui-theme <span class=ct>2</span></td>
           <td class="deps">material <span class=ct>23</span> · material/Box <span class=ct>17</span> · x-data-grid <span class=ct>7</span> · material/Typography <span class=ct>6</span> · material/CircularProgress <span class=ct>5</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-minimal" data-bucket="minimal" data-suite="GAB" data-name="gab-core">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/gab-core" target="_blank">gab-core</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/gab-core" target="_blank">gab-core</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">Government App Builder GAB Core Repository</div>
           </td>
           <td><span class="chip suite">GAB</span></td>
@@ -1195,11 +1071,13 @@
           <td class="deps">capital-ag-grid-theme, components-nav-bar-bundled</td>
           <td class="deps">capital-ag-grid-theme <span class=ct>9</span> · components-nav-bar-bundled <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>195</span> · icons-material <span class=ct>128</span> · x-data-grid <span class=ct>3</span> · material/styles <span class=ct>1</span> · material/CssBaseline <span class=ct>1</span></td>
-          <td class="swatches"><span class=swatch style="background:#e65100" title="#e65100 — 6×"></span> <span class=swatch style="background:#4caf50" title="#4caf50 — 4×"></span> <span class=swatch style="background:#616161" title="#616161 — 3×"></span> <span class=swatch style="background:#1976d2" title="#1976d2 — 2×"></span> <span class=swatch style="background:#1565c0" title="#1565c0 — 2×"></span> <span class=swatch style="background:#f44336" title="#f44336 — 2×"></span> <span class=swatch style="background:#9e9e9e" title="#9e9e9e — 2×"></span> <span class=swatch style="background:#ff9800" title="#ff9800 — 2×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#e65100" title="#e65100 - 6×"></span> <span class=swatch style="background:#4caf50" title="#4caf50 - 4×"></span> <span class=swatch style="background:#616161" title="#616161 - 3×"></span> <span class=swatch style="background:#1976d2" title="#1976d2 - 2×"></span> <span class=swatch style="background:#1565c0" title="#1565c0 - 2×"></span> <span class=swatch style="background:#f44336" title="#f44336 - 2×"></span> <span class=swatch style="background:#9e9e9e" title="#9e9e9e - 2×"></span> <span class=swatch style="background:#ff9800" title="#ff9800 - 2×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Platform" data-name="og-ui-components-library">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/og-ui-components-library" target="_blank">og-ui-components-library</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/og-ui-components-library" target="_blank">og-ui-components-library</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">OpenGov UI Components Library</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -1212,11 +1090,13 @@
           <td class="deps">capital-mui-theme, components-og-grid-table, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>12</span> · components-og-grid-table <span class=ct>10</span> · react-capital-assets <span class=ct>8</span></td>
           <td class="deps">material <span class=ct>103</span> · system <span class=ct>6</span> · material/styles <span class=ct>3</span> · icons-material <span class=ct>1</span> · icons-material/CheckCircle <span class=ct>1</span></td>
-          <td class="swatches"><span class=swatch style="background:#fff" title="#fff — 2×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#fff" title="#fff - 2×"></span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="GAB" data-name="gab-boilerplate">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/gab-boilerplate" target="_blank">gab-boilerplate</a> <span class="dim mono">· 2026-04-18</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/gab-boilerplate" target="_blank">gab-boilerplate</a> <span class="dim mono">· 2026-04-18</span>
+              
+            </div>
             <div class="repo-desc">gab boilerplate for gab</div>
           </td>
           <td><span class="chip suite">GAB</span></td>
@@ -1227,13 +1107,15 @@
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.6%</span><div class="bar"><div class="fill" style="width:0.6%;background:#F59E0B"></div></div></div></td>
           <td class="deps">capital-style</td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="swatches"><span class=swatch style="background:#171717" title="#171717 — 2×"></span> <span class=swatch style="background:#fafafa" title="#fafafa — 1×"></span> <span class=swatch style="background:#737373" title="#737373 — 1×"></span> <span class=swatch style="background:#a3a3a3" title="#a3a3a3 — 1×"></span> <span class=swatch style="background:#e5e5e5" title="#e5e5e5 — 1×"></span> <span class=swatch style="background:#fff" title="#fff — 1×"></span></td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="swatches"><span class=swatch style="background:#171717" title="#171717 - 2×"></span> <span class=swatch style="background:#fafafa" title="#fafafa - 1×"></span> <span class=swatch style="background:#737373" title="#737373 - 1×"></span> <span class=swatch style="background:#a3a3a3" title="#a3a3a3 - 1×"></span> <span class=swatch style="background:#e5e5e5" title="#e5e5e5 - 1×"></span> <span class=swatch style="background:#fff" title="#fff - 1×"></span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="GAB" data-name="gab-311">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/gab-311" target="_blank">gab-311</a> <span class="dim mono">· 2026-04-15</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/gab-311" target="_blank">gab-311</a> <span class="dim mono">· 2026-04-15</span>
+              
+            </div>
             <div class="repo-desc">gab 311 for gab</div>
           </td>
           <td><span class="chip suite">GAB</span></td>
@@ -1243,14 +1125,16 @@
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#4B3FFF"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.7%</span><div class="bar"><div class="fill" style="width:0.7%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">&lt;span class=dim&gt;—&lt;/span&gt;</td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="swatches"><span class=swatch style="background:#171717" title="#171717 — 2×"></span> <span class=swatch style="background:#fafafa" title="#fafafa — 1×"></span> <span class=swatch style="background:#737373" title="#737373 — 1×"></span> <span class=swatch style="background:#a3a3a3" title="#a3a3a3 — 1×"></span> <span class=swatch style="background:#e5e5e5" title="#e5e5e5 — 1×"></span> <span class=swatch style="background:#fff" title="#fff — 1×"></span></td>
+          <td class="deps">&lt;span class=dim&gt;-&lt;/span&gt;</td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="swatches"><span class=swatch style="background:#171717" title="#171717 - 2×"></span> <span class=swatch style="background:#fafafa" title="#fafafa - 1×"></span> <span class=swatch style="background:#737373" title="#737373 - 1×"></span> <span class=swatch style="background:#a3a3a3" title="#a3a3a3 - 1×"></span> <span class=swatch style="background:#e5e5e5" title="#e5e5e5 - 1×"></span> <span class=swatch style="background:#fff" title="#fff - 1×"></span></td>
         </tr>
         <tr class="row bucket-minimal" data-bucket="minimal" data-suite="Platform" data-name="bifrost-workflow-builder">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/bifrost-workflow-builder" target="_blank">bifrost-workflow-builder</a> <span class="dim mono">· 2026-04-19</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/bifrost-workflow-builder" target="_blank">bifrost-workflow-builder</a> <span class="dim mono">· 2026-04-19</span>
+              
+            </div>
             <div class="repo-desc">Bifrost Workflow Builder</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -1263,11 +1147,13 @@
           <td class="deps">capital-mui-theme, components-og-grid-table</td>
           <td class="deps">capital-mui-theme <span class=ct>2</span> · components-og-grid-table <span class=ct>2</span></td>
           <td class="deps">material/Box <span class=ct>8</span> · material/Typography <span class=ct>7</span> · material/Button <span class=ct>5</span> · material/Card <span class=ct>4</span> · material/IconButton <span class=ct>3</span></td>
-          <td class="swatches"><span class=swatch style="background:#fff" title="#fff — 2×"></span> <span class=swatch style="background:#7c3aed" title="#7c3aed — 1×"></span> <span class=swatch style="background:#d1d5db" title="#d1d5db — 1×"></span> <span class=swatch style="background:#111827" title="#111827 — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#fff" title="#fff - 2×"></span> <span class=swatch style="background:#7c3aed" title="#7c3aed - 1×"></span> <span class=swatch style="background:#d1d5db" title="#d1d5db - 1×"></span> <span class=swatch style="background:#111827" title="#111827 - 1×"></span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="GAB" data-name="gab-proto-ddwrite">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/gab-proto-ddwrite" target="_blank">gab-proto-ddwrite</a> <span class="dim mono">· 2026-04-07</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/gab-proto-ddwrite" target="_blank">gab-proto-ddwrite</a> <span class="dim mono">· 2026-04-07</span>
+              
+            </div>
             <div class="repo-desc">jwa proto</div>
           </td>
           <td><span class="chip suite">GAB</span></td>
@@ -1277,14 +1163,16 @@
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#4B3FFF"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">91.1%</span><div class="bar"><div class="fill" style="width:91.1%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">8.0%</span><div class="bar"><div class="fill" style="width:8.0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">&lt;span class=dim&gt;—&lt;/span&gt;</td>
-          <td class="deps"><span class=dim>—</span></td>
+          <td class="deps">&lt;span class=dim&gt;-&lt;/span&gt;</td>
+          <td class="deps"><span class=dim>-</span></td>
           <td class="deps">material <span class=ct>105</span> · icons-material <span class=ct>71</span> · x-data-grid <span class=ct>3</span> · material/styles <span class=ct>1</span> · material/CssBaseline <span class=ct>1</span></td>
-          <td class="swatches"><span class=swatch style="background:#e65100" title="#e65100 — 6×"></span> <span class=swatch style="background:#4caf50" title="#4caf50 — 4×"></span> <span class=swatch style="background:#616161" title="#616161 — 3×"></span> <span class=swatch style="background:#1976d2" title="#1976d2 — 2×"></span> <span class=swatch style="background:#1565c0" title="#1565c0 — 2×"></span> <span class=swatch style="background:#f44336" title="#f44336 — 2×"></span> <span class=swatch style="background:#9e9e9e" title="#9e9e9e — 2×"></span> <span class=swatch style="background:#ff9800" title="#ff9800 — 2×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#e65100" title="#e65100 - 6×"></span> <span class=swatch style="background:#4caf50" title="#4caf50 - 4×"></span> <span class=swatch style="background:#616161" title="#616161 - 3×"></span> <span class=swatch style="background:#1976d2" title="#1976d2 - 2×"></span> <span class=swatch style="background:#1565c0" title="#1565c0 - 2×"></span> <span class=swatch style="background:#f44336" title="#f44336 - 2×"></span> <span class=swatch style="background:#9e9e9e" title="#9e9e9e - 2×"></span> <span class=swatch style="background:#ff9800" title="#ff9800 - 2×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Platform" data-name="atlas">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/atlas" target="_blank">atlas</a> <span class="dim mono">· 2026-04-19</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/atlas" target="_blank">atlas</a> <span class="dim mono">· 2026-04-19</span>
+              
+            </div>
             <div class="repo-desc">OpenGov Atlas repository</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -1297,11 +1185,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
           <td class="deps">react-capital-assets <span class=ct>11</span> · components-result <span class=ct>8</span> · components-page-header <span class=ct>8</span> · capital-mui-theme <span class=ct>1</span> · components-nav-bar <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>54</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Platform" data-name="blueprint">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/blueprint" target="_blank">blueprint</a> <span class="dim mono">· 2026-04-18</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/blueprint" target="_blank">blueprint</a> <span class="dim mono">· 2026-04-18</span>
+              
+            </div>
             <div class="repo-desc">blueprint for platform</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -1314,11 +1204,13 @@
           <td class="deps">capital-mui-theme, components-drawer, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
           <td class="deps">components-drawer <span class=ct>10</span> · components-result <span class=ct>8</span> · components-page-header <span class=ct>5</span> · react-capital-assets <span class=ct>4</span> · capital-mui-theme <span class=ct>2</span></td>
           <td class="deps">material <span class=ct>98</span> · icons-material <span class=ct>16</span> · icons-material/Search <span class=ct>6</span> · icons-material/NavigateNext <span class=ct>3</span> · icons-material/Facebook <span class=ct>3</span></td>
-          <td class="swatches"><span class=swatch style="background:#6366f1" title="#6366f1 — 8×"></span> <span class=swatch style="background:#f9fafb" title="#f9fafb — 2×"></span> <span class=swatch style="background:#e5e7eb" title="#e5e7eb — 2×"></span> <span class=swatch style="background:#d1d5db" title="#d1d5db — 1×"></span> <span class=swatch style="background:#1f2937" title="#1f2937 — 1×"></span> <span class=swatch style="background:#dc2626" title="#dc2626 — 1×"></span> <span class=swatch style="background:#b91c1c" title="#b91c1c — 1×"></span> <span class=swatch style="background:#e8e4df" title="#e8e4df — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#6366f1" title="#6366f1 - 8×"></span> <span class=swatch style="background:#f9fafb" title="#f9fafb - 2×"></span> <span class=swatch style="background:#e5e7eb" title="#e5e7eb - 2×"></span> <span class=swatch style="background:#d1d5db" title="#d1d5db - 1×"></span> <span class=swatch style="background:#1f2937" title="#1f2937 - 1×"></span> <span class=swatch style="background:#dc2626" title="#dc2626 - 1×"></span> <span class=swatch style="background:#b91c1c" title="#b91c1c - 1×"></span> <span class=swatch style="background:#e8e4df" title="#e8e4df - 1×"></span></td>
         </tr>
         <tr class="row bucket-minimal" data-bucket="minimal" data-suite="FIN/ERP/HCM" data-name="fin-sre-app">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/fin-sre-app" target="_blank">fin-sre-app</a> <span class="dim mono">· 2026-02-06</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/fin-sre-app" target="_blank">fin-sre-app</a> <span class="dim mono">· 2026-02-06</span>
+              
+            </div>
             <div class="repo-desc">FIN SRE Application</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -1331,11 +1223,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar</td>
           <td class="deps">capital-mui-theme <span class=ct>2</span> · components-nav-bar <span class=ct>2</span></td>
           <td class="deps">material <span class=ct>58</span> · icons-material/CheckCircle <span class=ct>25</span> · icons-material/Refresh <span class=ct>24</span> · icons-material/Search <span class=ct>17</span> · icons-material/Error <span class=ct>16</span></td>
-          <td class="swatches"><span class=swatch style="background:#1976d2" title="#1976d2 — 14×"></span> <span class=swatch style="background:#4caf50" title="#4caf50 — 4×"></span> <span class=swatch style="background:#2196f3" title="#2196f3 — 4×"></span> <span class=swatch style="background:#f44336" title="#f44336 — 3×"></span> <span class=swatch style="background:#ff9800" title="#ff9800 — 2×"></span> <span class=swatch style="background:#81c784" title="#81c784 — 2×"></span> <span class=swatch style="background:#ef5350" title="#ef5350 — 1×"></span> <span class=swatch style="background:#f5f5f5" title="#f5f5f5 — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#1976d2" title="#1976d2 - 14×"></span> <span class=swatch style="background:#4caf50" title="#4caf50 - 4×"></span> <span class=swatch style="background:#2196f3" title="#2196f3 - 4×"></span> <span class=swatch style="background:#f44336" title="#f44336 - 3×"></span> <span class=swatch style="background:#ff9800" title="#ff9800 - 2×"></span> <span class=swatch style="background:#81c784" title="#81c784 - 2×"></span> <span class=swatch style="background:#ef5350" title="#ef5350 - 1×"></span> <span class=swatch style="background:#f5f5f5" title="#f5f5f5 - 1×"></span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="Strategic Init" data-name="open-data-viz">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/open-data-viz" target="_blank">open-data-viz</a> <span class="dim mono">· 2026-04-14</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/open-data-viz" target="_blank">open-data-viz</a> <span class="dim mono">· 2026-04-14</span>
+              
+            </div>
             <div class="repo-desc">A placeholder for the opensource version of data-viz</div>
           </td>
           <td><span class="chip suite">Strategic Init</span></td>
@@ -1345,14 +1239,16 @@
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#4B3FFF"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">&lt;span class=dim&gt;—&lt;/span&gt;</td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="deps">&lt;span class=dim&gt;-&lt;/span&gt;</td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Procurement" data-name="pro-receipt">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/pro-receipt" target="_blank">pro-receipt</a> <span class="dim mono">· 2026-04-18</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/pro-receipt" target="_blank">pro-receipt</a> <span class="dim mono">· 2026-04-18</span>
+              
+            </div>
             <div class="repo-desc">Receipt for PRO</div>
           </td>
           <td><span class="chip suite">Procurement</span></td>
@@ -1365,11 +1261,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-og-grid-table, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>9</span> · components-og-grid-table <span class=ct>7</span> · components-nav-bar <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>43</span> · icons-material <span class=ct>10</span> · material/styles <span class=ct>3</span> · material/CssBaseline <span class=ct>2</span> · x-date-pickers/AdapterDayjs <span class=ct>1</span></td>
-          <td class="swatches"><span class=swatch style="background:#c00" title="#c00 — 2×"></span> <span class=swatch style="background:#fff" title="#fff — 2×"></span> <span class=swatch style="background:#f5f5f5" title="#f5f5f5 — 1×"></span> <span class=swatch style="background:#2d2d3c" title="#2d2d3c — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#c00" title="#c00 - 2×"></span> <span class=swatch style="background:#fff" title="#fff - 2×"></span> <span class=swatch style="background:#f5f5f5" title="#f5f5f5 - 1×"></span> <span class=swatch style="background:#2d2d3c" title="#2d2d3c - 1×"></span></td>
         </tr>
         <tr class="row bucket-minimal" data-bucket="minimal" data-suite="PLC" data-name="plc-dev-portal">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/plc-dev-portal" target="_blank">plc-dev-portal</a> <span class="dim mono">· 2026-04-18</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/plc-dev-portal" target="_blank">plc-dev-portal</a> <span class="dim mono">· 2026-04-18</span>
+              
+            </div>
             <div class="repo-desc">PLC&#x27;s Public API Dev Portal</div>
           </td>
           <td><span class="chip suite">PLC</span></td>
@@ -1382,11 +1280,13 @@
           <td class="deps">capital-mui-theme, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>3</span></td>
           <td class="deps">material <span class=ct>31</span> · material/styles <span class=ct>6</span> · icons-material/Delete <span class=ct>4</span> · icons-material/Visibility <span class=ct>3</span> · icons-material/VisibilityOff <span class=ct>3</span></td>
-          <td class="swatches"><span class=swatch style="background:#ef4444" title="#ef4444 — 2×"></span> <span class=swatch style="background:#adafb1" title="#adafb1 — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#ef4444" title="#ef4444 - 2×"></span> <span class=swatch style="background:#adafb1" title="#adafb1 - 1×"></span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="Strategic Init" data-name="visibility-portal">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/visibility-portal" target="_blank">visibility-portal</a> <span class="dim mono">· 2026-04-05</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/visibility-portal" target="_blank">visibility-portal</a> <span class="dim mono">· 2026-04-05</span>
+              
+            </div>
             <div class="repo-desc">OpenGov Visibility Portal repository</div>
           </td>
           <td><span class="chip suite">Strategic Init</span></td>
@@ -1396,14 +1296,16 @@
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#4B3FFF"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">&lt;span class=dim&gt;—&lt;/span&gt;</td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="deps">&lt;span class=dim&gt;-&lt;/span&gt;</td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-minimal" data-bucket="minimal" data-suite="GAB" data-name="gab-ogc-311">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/gab-ogc-311" target="_blank">gab-ogc-311</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/gab-ogc-311" target="_blank">gab-ogc-311</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">gab ogc 311 for gab</div>
           </td>
           <td><span class="chip suite">GAB</span></td>
@@ -1416,11 +1318,13 @@
           <td class="deps">capital-mui-theme, components-page-header, react-capital-assets</td>
           <td class="deps">capital-assets <span class=ct>2</span></td>
           <td class="deps">material/Box <span class=ct>25</span> · material/Typography <span class=ct>22</span> · material/Button <span class=ct>14</span> · material/Chip <span class=ct>11</span> · material/CircularProgress <span class=ct>10</span></td>
-          <td class="swatches"><span class=swatch style="background:#fff" title="#fff — 26×"></span> <span class=swatch style="background:#666" title="#666 — 6×"></span> <span class=swatch style="background:#e65100" title="#e65100 — 5×"></span> <span class=swatch style="background:#ffe082" title="#ffe082 — 5×"></span> <span class=swatch style="background:#fafafa" title="#fafafa — 5×"></span> <span class=swatch style="background:#f86a0b" title="#f86a0b — 4×"></span> <span class=swatch style="background:#1a1a2e" title="#1a1a2e — 3×"></span> <span class=swatch style="background:#fff8e1" title="#fff8e1 — 3×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#fff" title="#fff - 26×"></span> <span class=swatch style="background:#666" title="#666 - 6×"></span> <span class=swatch style="background:#e65100" title="#e65100 - 5×"></span> <span class=swatch style="background:#ffe082" title="#ffe082 - 5×"></span> <span class=swatch style="background:#fafafa" title="#fafafa - 5×"></span> <span class=swatch style="background:#f86a0b" title="#f86a0b - 4×"></span> <span class=swatch style="background:#1a1a2e" title="#1a1a2e - 3×"></span> <span class=swatch style="background:#fff8e1" title="#fff8e1 - 3×"></span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="PLC" data-name="plc-mobile-app">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/plc-mobile-app" target="_blank">plc-mobile-app</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/plc-mobile-app" target="_blank">plc-mobile-app</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">PLC Mobile App</div>
           </td>
           <td><span class="chip suite">PLC</span></td>
@@ -1431,13 +1335,15 @@
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
           <td class="deps">capital-assets</td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="Platform" data-name="spc-poc">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/spc-poc" target="_blank">spc-poc</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/spc-poc" target="_blank">spc-poc</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">spc poc for internal-tools</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -1447,14 +1353,16 @@
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#4B3FFF"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">&lt;span class=dim&gt;—&lt;/span&gt;</td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="deps">&lt;span class=dim&gt;-&lt;/span&gt;</td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-minimal" data-bucket="minimal" data-suite="Platform" data-name="gtm-accelerator">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/gtm-accelerator" target="_blank">gtm-accelerator</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/gtm-accelerator" target="_blank">gtm-accelerator</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">gtm accelerator for gab</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -1467,11 +1375,13 @@
           <td class="deps">capital-ag-grid-theme, capital-mui-theme, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>24</span> · icons-material/CheckCircle <span class=ct>3</span> · icons-material/Download <span class=ct>2</span> · icons-material/Delete <span class=ct>1</span> · icons-material/Menu <span class=ct>1</span></td>
-          <td class="swatches"><span class=swatch style="background:#fffde7" title="#fffde7 — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#fffde7" title="#fffde7 - 1×"></span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Platform" data-name="quaestor">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/quaestor" target="_blank">quaestor</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/quaestor" target="_blank">quaestor</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">Quaestor (Disbursement Management System) Repository</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -1484,11 +1394,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-og-grid-table, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>4</span> · components-nav-bar <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>21</span> · material/styles <span class=ct>5</span> · icons-material/Clear <span class=ct>2</span> · icons-material/Search <span class=ct>1</span> · icons-material/CheckCircle <span class=ct>1</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="GAB" data-name="gab-frontend">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/gab-frontend" target="_blank">gab-frontend</a> <span class="dim mono">· 2026-04-19</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/gab-frontend" target="_blank">gab-frontend</a> <span class="dim mono">· 2026-04-19</span>
+              
+            </div>
             <div class="repo-desc">Government App Builder frontend</div>
           </td>
           <td><span class="chip suite">GAB</span></td>
@@ -1499,13 +1411,15 @@
           <td><div class="pctcell"><span class="pctnum">53.8%</span><div class="bar"><div class="fill" style="width:53.8%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">3.8%</span><div class="bar"><div class="fill" style="width:3.8%;background:#F59E0B"></div></div></div></td>
           <td class="deps">capital-ag-grid-theme, components-nav-bar-bundled</td>
-          <td class="deps"><span class=dim>—</span></td>
+          <td class="deps"><span class=dim>-</span></td>
           <td class="deps">material/Button <span class=ct>7</span> · material <span class=ct>4</span> · material/TextField <span class=ct>3</span> · material/ButtonGroup <span class=ct>2</span> · x-date-pickers/DatePicker <span class=ct>2</span></td>
-          <td class="swatches"><span class=swatch style="background:#ccc" title="#ccc — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#ccc" title="#ccc - 1×"></span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="Platform" data-name="migration-orchestrator-app">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/migration-orchestrator-app" target="_blank">migration-orchestrator-app</a> <span class="dim mono">· 2026-03-27</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/migration-orchestrator-app" target="_blank">migration-orchestrator-app</a> <span class="dim mono">· 2026-03-27</span>
+              
+            </div>
             <div class="repo-desc">Frontend for the Migration Orchestrator</div>
           </td>
           <td><span class="chip suite">Platform</span></td>
@@ -1515,14 +1429,16 @@
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#4B3FFF"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">&lt;span class=dim&gt;—&lt;/span&gt;</td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="deps">&lt;span class=dim&gt;-&lt;/span&gt;</td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-partial" data-bucket="partial" data-suite="Access/PSS" data-name="user-mention-service">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/user-mention-service" target="_blank">user-mention-service</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/user-mention-service" target="_blank">user-mention-service</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">user mention service for platform</div>
           </td>
           <td><span class="chip suite">Access/PSS</span></td>
@@ -1535,11 +1451,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-page-header, components-result, react-capital-assets</td>
           <td class="deps">capital-mui-theme <span class=ct>2</span> · components-nav-bar <span class=ct>1</span> · components-page-header <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>11</span> · icons-material/WarningAmber <span class=ct>2</span> · icons-material/Block <span class=ct>1</span></td>
-          <td class="swatches"><span class=swatch style="background:#e3f2fd" title="#e3f2fd — 1×"></span></td>
+          <td class="swatches"><span class=swatch style="background:#e3f2fd" title="#e3f2fd - 1×"></span></td>
         </tr>
         <tr class="row bucket-minimal" data-bucket="minimal" data-suite="FIN/ERP/HCM" data-name="payroll">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/payroll" target="_blank">payroll</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/payroll" target="_blank">payroll</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">This is the payroll repository for OpenGov</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -1552,11 +1470,13 @@
           <td class="deps">capital-mui-theme, components-nav-bar, components-og-grid-table</td>
           <td class="deps">capital-mui-theme <span class=ct>1</span></td>
           <td class="deps">material <span class=ct>8</span> · icons-material/PlayCircleOutline <span class=ct>1</span> · icons-material/SettingsEthernet <span class=ct>1</span> · icons-material/Storage <span class=ct>1</span> · icons-material/Sync <span class=ct>1</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="Procurement" data-name="pro-monorepo-test">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/pro-monorepo-test" target="_blank">pro-monorepo-test</a> <span class="dim mono">· 2026-04-15</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/pro-monorepo-test" target="_blank">pro-monorepo-test</a> <span class="dim mono">· 2026-04-15</span>
+              
+            </div>
             <div class="repo-desc">Procurement Monorepo Test Repository</div>
           </td>
           <td><span class="chip suite">Procurement</span></td>
@@ -1566,14 +1486,16 @@
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#4B3FFF"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">14.3%</span><div class="bar"><div class="fill" style="width:14.3%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">&lt;span class=dim&gt;—&lt;/span&gt;</td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="swatches"><span class=swatch style="background:#3b82f6" title="#3b82f6 — 4×"></span> <span class=swatch style="background:#ffffff" title="#ffffff — 1×"></span> <span class=swatch style="background:#374151" title="#374151 — 1×"></span> <span class=swatch style="background:#e5e7eb" title="#e5e7eb — 1×"></span> <span class=swatch style="background:#fee2e2" title="#fee2e2 — 1×"></span> <span class=swatch style="background:#dc2626" title="#dc2626 — 1×"></span> <span class=swatch style="background:#7f1d1d" title="#7f1d1d — 1×"></span> <span class=swatch style="background:#f0f9ff" title="#f0f9ff — 1×"></span></td>
+          <td class="deps">&lt;span class=dim&gt;-&lt;/span&gt;</td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="swatches"><span class=swatch style="background:#3b82f6" title="#3b82f6 - 4×"></span> <span class=swatch style="background:#ffffff" title="#ffffff - 1×"></span> <span class=swatch style="background:#374151" title="#374151 - 1×"></span> <span class=swatch style="background:#e5e7eb" title="#e5e7eb - 1×"></span> <span class=swatch style="background:#fee2e2" title="#fee2e2 - 1×"></span> <span class=swatch style="background:#dc2626" title="#dc2626 - 1×"></span> <span class=swatch style="background:#7f1d1d" title="#7f1d1d - 1×"></span> <span class=swatch style="background:#f0f9ff" title="#f0f9ff - 1×"></span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="FIN/ERP/HCM" data-name="hcm-lms-app">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/hcm-lms-app" target="_blank">hcm-lms-app</a> <span class="dim mono">· 2026-04-16</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/hcm-lms-app" target="_blank">hcm-lms-app</a> <span class="dim mono">· 2026-04-16</span>
+              
+            </div>
             <div class="repo-desc">hcm lms app for fin</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -1584,13 +1506,15 @@
           <td><div class="pctcell"><span class="pctnum">33.3%</span><div class="bar"><div class="fill" style="width:33.3%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
           <td class="deps">capital-design-tokens, capital-mui-theme, react-capital-assets</td>
-          <td class="deps"><span class=dim>—</span></td>
+          <td class="deps"><span class=dim>-</span></td>
           <td class="deps">material <span class=ct>1</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr>
         <tr class="row bucket-none" data-bucket="none" data-suite="FIN/ERP/HCM" data-name="FinOps">
           <td class="repo">
-            <div class="repo-name"><a href="https://github.com/OpenGov/FinOps" target="_blank">FinOps</a> <span class="dim mono">· 2026-04-17</span></div>
+            <div class="repo-name"><a href="https://github.com/OpenGov/FinOps" target="_blank">FinOps</a> <span class="dim mono">· 2026-04-17</span>
+              
+            </div>
             <div class="repo-desc">Repository for FinOps scripts and tools</div>
           </td>
           <td><span class="chip suite">FIN/ERP/HCM</span></td>
@@ -1600,16 +1524,16 @@
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#4B3FFF"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#DC2626"></div></div></div></td>
           <td><div class="pctcell"><span class="pctnum">0.0%</span><div class="bar"><div class="fill" style="width:0%;background:#F59E0B"></div></div></div></td>
-          <td class="deps">&lt;span class=dim&gt;—&lt;/span&gt;</td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="deps"><span class=dim>—</span></td>
-          <td class="swatches"><span class=dim>—</span></td>
+          <td class="deps">&lt;span class=dim&gt;-&lt;/span&gt;</td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="deps"><span class=dim>-</span></td>
+          <td class="swatches"><span class=dim>-</span></td>
         </tr></tbody>
 </table>
 </div>
 
 <div class="card" style="margin-top: 18px">
-  <h2>Component drift — top recommendations <span class="h2meta">local components that duplicate CDS / themed-MUI primitives. CDS producer repos excluded.</span></h2>
+  <h2>Component drift - top recommendations <span class="h2meta">local components that duplicate CDS / themed-MUI primitives. CDS producer repos excluded.</span></h2>
   <table>
     <thead><tr>
       <th>Component</th>
