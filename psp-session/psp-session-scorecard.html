@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PSP Session Adoption Scorecard</title>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --ok: #16a34a;
+    --warn: #f59e0b;
+    --bad: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+  header { background: #ffffff; border-bottom: 1px solid var(--line); padding: 24px 32px; }
+  header h1 { margin: 0 0 4px; font-size: 22px; }
+  header .sub { color: var(--muted); font-size: 13px; }
+  header .meta { margin-top: 8px; color: var(--muted); font-size: 12px; }
+  header a { color: #2563eb; }
+  .axes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px 32px;
+    background: var(--card); border-bottom: 1px solid var(--line); }
+  .axis { background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 14px 18px; }
+  .axis h3 { margin: 0 0 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--muted); }
+  .axis .headline { font-size: 28px; font-weight: 600; }
+  .axis .desc { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .axis .bar { display: flex; height: 8px; border-radius: 999px; overflow: hidden;
+    margin-top: 10px; background: #e5e7eb; }
+  .axis .bar span { height: 100%; }
+  .axis .legend { display: flex; gap: 14px; margin-top: 8px; flex-wrap: wrap; font-size: 11px; }
+  .axis .legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px;
+    margin-right: 5px; vertical-align: middle; }
+  .toolbar { padding: 12px 32px; background: var(--card); border-bottom: 1px solid var(--line);
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .toolbar input[type="search"] { padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px;
+    width: 240px; font-size: 13px; }
+  .toolbar select { padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; font-size: 13px; }
+  table.scorecard { width: 100%; border-collapse: collapse; background: var(--card); }
+  th, td { padding: 10px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px;
+    color: var(--muted); background: #f8fafc; cursor: pointer; user-select: none; position: sticky; top: 0; z-index: 1; }
+  td.repo { min-width: 240px; }
+  td.repo a { color: var(--ink); font-weight: 600; text-decoration: none; }
+  td.repo a:hover { text-decoration: underline; }
+  td.repo .product { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  td.repo .meta { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .badge { color: white; padding: 2px 8px; border-radius: 999px; font-size: 11px;
+    font-weight: 600; letter-spacing: 0.3px; white-space: nowrap; }
+  .bicon { display: inline-block; width: 18px; height: 18px; line-height: 18px; text-align: center;
+    border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 2px; color: white; }
+  .bicon.ok { background: var(--ok); }
+  .bicon.no { background: #cbd5e1; }
+  .drift-yes .dnum { font-weight: 700; color: var(--bad); }
+  .drift-no .dnum { color: #cbd5e1; }
+  .gating-ok .dnum { font-weight: 700; color: var(--ok); }
+  .gating-bad .dnum { font-weight: 700; color: var(--bad); }
+  .gating-none .dnum { color: #cbd5e1; }
+  .gating .dpkg { font-size: 10px; color: #64748b; margin-top: 2px; }
+  .pkg { display: inline-block; background: #fee2e2; color: #991b1b; border-radius: 4px;
+    padding: 1px 6px; font-size: 10px; margin: 1px 2px 0 0; font-family: ui-monospace, monospace; }
+  .expand button { background: none; border: 1px solid var(--line); cursor: pointer; padding: 4px 8px;
+    border-radius: 4px; }
+  .detail { background: #f8fafc; padding: 16px; border-left: 4px solid #cbd5e1; }
+  .finding-section { margin: 12px 0; }
+  .finding-section h4 { margin: 0 0 6px; font-size: 13px; }
+  .finding-section .count { color: var(--muted); font-weight: 400; }
+  table.findings { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.findings td { border-bottom: 1px dashed #e2e8f0; padding: 4px 8px; }
+  table.findings code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px;
+    font-family: ui-monospace, monospace; font-size: 11px; }
+  .no-findings { color: var(--muted); font-style: italic; }
+  .more { color: var(--muted); font-size: 11px; margin-top: 4px; }
+  .pkg-summary { background: #fff7ed; border: 1px solid #fed7aa; padding: 8px 12px;
+    border-radius: 6px; margin-bottom: 12px; font-size: 12px; }
+  .tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 10px;
+    font-weight: 600; margin-left: 6px; }
+  .tag-ok { background: #dcfce7; color: #166534; }
+  .tag-bad { background: #fee2e2; color: #991b1b; }
+</style>
+</head>
+<body>
+<header>
+  <h1>PSP Session Adoption Scorecard</h1>
+  <div class="sub">Behavioral conformance (does it mount safely?) and contractual conformance (does it use the canonical types?), measured separately.</div>
+  <div class="meta">Generated 2026-05-04 19:10 · 23 PSP-mountable repos · See also: <a href="psp-session-executive-summary.html">Executive Summary →</a></div>
+</header>
+
+<div class="axes">
+  <div class="axis">
+    <h3>Behavioral conformance</h3>
+    <div class="headline">1 of 14 mount safely</div>
+    <div class="desc">Remote consumes <code>options.auth0Config</code> AND any <code>&lt;Auth0Provider&gt;</code> it instantiates is gated behind a standalone-mode check (so it does not fire inside the PSP shell).<br><strong style="color:#dc2626">12 repos</strong> have at least one <em>ungated</em> Auth0Provider; <strong>1 of 26</strong> Auth0Provider hits across the corpus are gated.</div>
+    <div class="bar">
+      <span style="width:7%; background:#16a34a"></span>
+      <span style="width:79%; background:#f59e0b"></span>
+      <span style="width:14%; background:#dc2626"></span>
+    </div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:#16a34a"></span>Conforming 1</span>
+      <span><span class="legend-dot" style="background:#f59e0b"></span>Partial 11</span>
+      <span><span class="legend-dot" style="background:#dc2626"></span>Drift 2</span>
+    </div>
+  </div>
+  <div class="axis">
+    <h3>Contractual conformance</h3>
+    <div class="headline">2 of 14 on the canonical contract</div>
+    <div class="desc">Remote imports <code>@opengov/psp-contract</code> for types instead of defining its own copy.</div>
+    <div class="bar">
+      <span style="width:14%; background:#16a34a"></span>
+      <span style="width:79%; background:#f59e0b"></span>
+      <span style="width:7%; background:#dc2626"></span>
+    </div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:#16a34a"></span>Canonical 2</span>
+      <span><span class="legend-dot" style="background:#f59e0b"></span>Local types 11</span>
+      <span><span class="legend-dot" style="background:#dc2626"></span>Alternate package 1</span>
+    </div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <input type="search" id="filter" placeholder="Filter by repo/product..." oninput="applyFilter()">
+  <select id="behave-filter" onchange="applyFilter()">
+    <option value="">All behavioral</option>
+    <option>Conforming</option>
+    <option>Partial</option>
+    <option>Drift</option>
+    <option>Not PSP</option>
+    <option>Producer</option>
+  </select>
+  <select id="contract-filter" onchange="applyFilter()">
+    <option value="">All contractual</option>
+    <option>Canonical</option>
+    <option>Local</option>
+    <option>Alternate</option>
+    <option>N/A</option>
+  </select>
+  <span style="color:var(--muted); font-size:12px">Click column headers to sort. Click ▶ to expand evidence.</span>
+</div>
+
+<table class="scorecard" id="board">
+  <thead><tr>
+    <th onclick="sortBy(0,true)">#</th>
+    <th onclick="sortBy(1)">Repo / Product</th>
+    <th onclick="sortBy(2)">Behavioral</th>
+    <th onclick="sortBy(3)">Contractual</th>
+    <th onclick="sortBy(4)">Boundary <small>(D·I·M·T)</small></th>
+    <th onclick="sortBy(5,true)" title="Auth0Provider hits gated by isStandalone / mountedInPSP">Auth0 gating</th>
+    <th onclick="sortBy(6,true)">Storage</th>
+    <th onclick="sortBy(7,true)">Parallel auth</th>
+    <th onclick="sortBy(8,true)">Alt contract</th>
+    <th onclick="sortBy(9,true)">JWT</th>
+    <th onclick="sortBy(10,true)">Session mw</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+    <tr class="repo-row" data-behavioral="Drift" data-contractual="Local" data-score="25.0">
+      <td class="rank">1</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/bnp-ui" target="_blank">bnp-ui</a>
+        <div class="product">Budgeting</div>
+        <div class="meta">last push 2026-05-03 · 1361 UI · 13 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#dc2626">Drift</span></td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Local</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon no" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-ok" data-count="1"><div class="dnum">1/1</div><div class="dpkg">all gated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(1)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/bnp-ui/blob/main/packages/budget/src/routes/App.tsx#L43" target="_blank">packages/budget/src/routes/App.tsx:43</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-ok">guarded</span></td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Drift" data-contractual="Alternate" data-score="25.0">
+      <td class="rank">2</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/reporting" target="_blank">reporting</a>
+        <div class="product">Reporting</div>
+        <div class="meta">last push 2026-05-04 · 3369 UI · 439 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#dc2626">Drift</span></td>
+      <td class="status"><span class="badge" style="background:#dc2626">Alternate</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon no" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="1"><div class="dnum">1/1</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-yes" data-count="6"><div class="dnum">6</div><div class="dpkg"></div></td><td class="drift-yes" data-count="0"><div class="dnum">0</div><div class="dpkg"><span class="pkg">jsonwebtoken</span></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">jsonwebtoken</span> <small>(custom_jwt)</small> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(1)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/reporting/blob/master/applications/reporting-app/module/routes/App.tsx#L31" target="_blank">applications/reporting-app/module/routes/App.tsx:31</a></td><td><code>&lt;Auth0Provider {...getAuthConfig(pspOptions)}&gt;</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div><div class="finding-section"><h4 style="color:#0891b2">Alternate contract import <span class="count">(6)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/reporting/blob/master/applications/reporting-app/module/routes/App.tsx#L5" target="_blank">applications/reporting-app/module/routes/App.tsx:5</a></td><td><code>import { PspOptions } from &#x27;@opengov/app-core/types/psp&#x27;;</code> </td></tr><tr><td><a href="https://github.com/OpenGov/reporting/blob/master/applications/reporting-app/module/routes/App.tsx#L5" target="_blank">applications/reporting-app/module/routes/App.tsx:5</a></td><td><code>import { PspOptions } from &#x27;@opengov/app-core/types/psp&#x27;;</code> </td></tr><tr><td><a href="https://github.com/OpenGov/reporting/blob/master/applications/reporting-app/psp/pspEntry.tsx#L5" target="_blank">applications/reporting-app/psp/pspEntry.tsx:5</a></td><td><code>import { PspOptions } from &#x27;@opengov/app-core/types/psp&#x27;;</code> </td></tr><tr><td><a href="https://github.com/OpenGov/reporting/blob/master/applications/reporting-app/psp/pspEntry.tsx#L5" target="_blank">applications/reporting-app/psp/pspEntry.tsx:5</a></td><td><code>import { PspOptions } from &#x27;@opengov/app-core/types/psp&#x27;;</code> </td></tr><tr><td><a href="https://github.com/OpenGov/reporting/blob/master/applications/reporting-app/src/utils/auth.ts#L2" target="_blank">applications/reporting-app/src/utils/auth.ts:2</a></td><td><code>import { PspOptions } from &#x27;@opengov/app-core/types/psp&#x27;;</code> </td></tr><tr><td><a href="https://github.com/OpenGov/reporting/blob/master/applications/reporting-app/src/utils/auth.ts#L2" target="_blank">applications/reporting-app/src/utils/auth.ts:2</a></td><td><code>import { PspOptions } from &#x27;@opengov/app-core/types/psp&#x27;;</code> </td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Partial" data-contractual="Local" data-score="48.7">
+      <td class="rank">3</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/chronos" target="_blank">chronos</a>
+        <div class="product">Audit Logs (Chronos)</div>
+        <div class="meta">last push 2026-04-27 · 78 UI · 9 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Partial</span></td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Local</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon ok" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="3"><div class="dnum">3/3</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(3)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/chronos/blob/main/apps/web/src/Auth0ProviderWithNavigate.tsx#L23" target="_blank">apps/web/src/Auth0ProviderWithNavigate.tsx:23</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/chronos/blob/main/apps/web/src/contexts/EntityContext.tsx#L188" target="_blank">apps/web/src/contexts/EntityContext.tsx:188</a></td><td><code>* Standalone variant: rendered only when an `&lt;Auth0Provider&gt;` is in the tree,</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/chronos/blob/main/apps/web/src/contexts/EntityContext.tsx#L210" target="_blank">apps/web/src/contexts/EntityContext.tsx:210</a></td><td><code>* `useAuth0` conditionally: in PSP mode there is no `&lt;Auth0Provider&gt;` in the</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Partial" data-contractual="Canonical" data-score="49.2">
+      <td class="rank">4</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/psp-demo-assistant" target="_blank">psp-demo-assistant</a>
+        <div class="product">Demo Guide</div>
+        <div class="meta">last push 2026-05-04 · 158 UI · 28 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Partial</span></td>
+      <td class="status"><span class="badge" style="background:#16a34a">Canonical</span></td>
+      <td class="boundary"><span class="bicon ok" title="declares @opengov/psp-contract">D</span><span class="bicon ok" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon ok" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="3"><div class="dnum">3/3</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(3)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/psp-demo-assistant/blob/main/apps/web/src/psp-module.tsx#L113" target="_blank">apps/web/src/psp-module.tsx:113</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/psp-demo-assistant/blob/main/apps/web/src/widget-module.tsx#L138" target="_blank">apps/web/src/widget-module.tsx:138</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/psp-demo-assistant/blob/main/apps/web/src/Auth0ProviderWithNavigate.tsx#L23" target="_blank">apps/web/src/Auth0ProviderWithNavigate.tsx:23</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Partial" data-contractual="Local" data-score="49.8">
+      <td class="rank">5</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/ai" target="_blank">ai</a>
+        <div class="product">Agent Studio</div>
+        <div class="meta">last push 2026-05-04 · 225 UI · 289 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Partial</span></td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Local</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon ok" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="1"><div class="dnum">1/1</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-yes" data-count="0"><div class="dnum">0</div><div class="dpkg"><span class="pkg">jsonwebtoken</span></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">jsonwebtoken</span> <small>(custom_jwt)</small> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(1)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/ai/blob/main/typescript/browser-app/src/components/auth/Auth0ProviderWithNavigate.tsx#L30" target="_blank">typescript/browser-app/src/components/auth/Auth0ProviderWithNavigate.tsx:30</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Partial" data-contractual="Local" data-score="49.8">
+      <td class="rank">6</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/bifrost-workflow-builder" target="_blank">bifrost-workflow-builder</a>
+        <div class="product">Workflow Builder</div>
+        <div class="meta">last push 2026-05-04 · 360 UI · 51 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Partial</span></td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Local</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon ok" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="1"><div class="dnum">1/1</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-yes" data-count="0"><div class="dnum">0</div><div class="dpkg"><span class="pkg">jsonwebtoken</span></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">jsonwebtoken</span> <small>(custom_jwt)</small> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(1)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/bifrost-workflow-builder/blob/main/apps/frontend/src/app/features/auth/auth-provider.tsx#L13" target="_blank">apps/frontend/src/app/features/auth/auth-provider.tsx:13</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Partial" data-contractual="Local" data-score="49.8">
+      <td class="rank">7</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/fin-pa-ui" target="_blank">fin-pa-ui</a>
+        <div class="product">Project Accounting</div>
+        <div class="meta">last push 2026-05-04 · 358 UI · 1 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Partial</span></td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Local</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon ok" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="1"><div class="dnum">1/1</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(1)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/fin-pa-ui/blob/main/src/layout/Auth0Wrapper/Auth0Wrapper.tsx#L34" target="_blank">src/layout/Auth0Wrapper/Auth0Wrapper.tsx:34</a></td><td><code>&lt;Auth0Provider domain={domain} clientId={clientId} authorizationParams={auth0params} onRedirectCallback={onRedirectCallback}&gt;</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Partial" data-contractual="Canonical" data-score="49.8">
+      <td class="rank">8</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/product-ops-tools" target="_blank">product-ops-tools</a>
+        <div class="product">Product Ops Tools</div>
+        <div class="meta">last push 2026-05-04 · 1067 UI · 243 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Partial</span></td>
+      <td class="status"><span class="badge" style="background:#16a34a">Canonical</span></td>
+      <td class="boundary"><span class="bicon ok" title="declares @opengov/psp-contract">D</span><span class="bicon ok" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon ok" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="5"><div class="dnum">5/5</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-yes" data-count="2"><div class="dnum">2</div><div class="dpkg"><span class="pkg">jsonwebtoken</span></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">jsonwebtoken</span> <small>(custom_jwt)</small> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(5)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/product-ops-tools/blob/main/apps/kb/web/src/psp-module.tsx#L65" target="_blank">apps/kb/web/src/psp-module.tsx:65</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/product-ops-tools/blob/main/apps/kb/web/src/Auth0ProviderWithNavigate.tsx#L29" target="_blank">apps/kb/web/src/Auth0ProviderWithNavigate.tsx:29</a></td><td><code>return &lt;Auth0Provider {...auth0Props} /&gt;;</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/product-ops-tools/blob/main/apps/web/src/psp-module.tsx#L85" target="_blank">apps/web/src/psp-module.tsx:85</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/product-ops-tools/blob/main/apps/web/src/Auth0ProviderWithNavigate.tsx#L23" target="_blank">apps/web/src/Auth0ProviderWithNavigate.tsx:23</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/product-ops-tools/blob/main/apps/psp-web/src/main.tsx#L62" target="_blank">apps/psp-web/src/main.tsx:62</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div><div class="finding-section"><h4 style="color:#dc2626">Browser-side JWT signing <span class="count">(2)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/product-ops-tools/blob/main/packages/bedrock/src/mcp-jwt/index.ts#L60" target="_blank">packages/bedrock/src/mcp-jwt/index.ts:60</a></td><td><code>jwt.sign(</code> </td></tr><tr><td><a href="https://github.com/OpenGov/product-ops-tools/blob/main/apps/psp-web/lib/og-assist/mintKbToken.ts#L13" target="_blank">apps/psp-web/lib/og-assist/mintKbToken.ts:13</a></td><td><code>return jwt.sign(</code> </td></tr></tbody></table></div><div class="finding-section"><h4 style="color:#64748b">JWT decoding (informational) <span class="count">(1)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/product-ops-tools/blob/main/apps/psp-web/e2e/utils/auth-utils.ts#L62" target="_blank">apps/psp-web/e2e/utils/auth-utils.ts:62</a></td><td><code>export function decodeJwt(token: string): Record&lt;string, unknown&gt; {</code> </td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Partial" data-contractual="Local" data-score="49.8">
+      <td class="rank">9</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/vendor-management" target="_blank">vendor-management</a>
+        <div class="product">Vendor Management</div>
+        <div class="meta">last push 2026-05-04 · 506 UI · 162 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Partial</span></td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Local</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon ok" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="2"><div class="dnum">2/2</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(2)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/vendor-management/blob/main/apps/client/src/app/providers/PspProviders.tsx#L111" target="_blank">apps/client/src/app/providers/PspProviders.tsx:111</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/vendor-management/blob/main/apps/client/src/layout/Auth0Wrapper/Auth0Wrapper.tsx#L27" target="_blank">apps/client/src/layout/Auth0Wrapper/Auth0Wrapper.tsx:27</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Partial" data-contractual="Local" data-score="49.9">
+      <td class="rank">10</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/erp-fin-ap" target="_blank">erp-fin-ap</a>
+        <div class="product">Accounts Payable</div>
+        <div class="meta">last push 2026-05-04 · 751 UI · 241 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Partial</span></td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Local</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon ok" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="1"><div class="dnum">1/1</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-yes" data-count="0"><div class="dnum">0</div><div class="dpkg"><span class="pkg">jsonwebtoken</span></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">jsonwebtoken</span> <small>(custom_jwt)</small> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(1)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/erp-fin-ap/blob/main/apps/frontend/src/layouts/Auth0Wrapper/Auth0Wrapper.tsx#L45" target="_blank">apps/frontend/src/layouts/Auth0Wrapper/Auth0Wrapper.tsx:45</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Partial" data-contractual="Local" data-score="49.9">
+      <td class="rank">11</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/utility-billing" target="_blank">utility-billing</a>
+        <div class="product">Utility Billing</div>
+        <div class="meta">last push 2026-05-04 · 2920 UI · 285 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Partial</span></td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Local</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon ok" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="3"><div class="dnum">3/3</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-yes" data-count="0"><div class="dnum">0</div><div class="dpkg"><span class="pkg">jsonwebtoken</span></div></td><td class="drift-yes" data-count="0"><div class="dnum">0</div><div class="dpkg"><span class="pkg">express-session</span></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">jsonwebtoken</span> <small>(custom_jwt)</small> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small> <span class="pkg">@auth0/auth0-spa-js</span> <small>(independent_auth0)</small> <span class="pkg">express-session</span> <small>(server_session_middleware)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(3)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/utility-billing/blob/main/apps/ar/apps/web/src/Auth0ProviderWithNavigate.tsx#L44" target="_blank">apps/ar/apps/web/src/Auth0ProviderWithNavigate.tsx:44</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/utility-billing/blob/main/apps/admin-ui/src/lib/feature/authentication/auth0.ts#L14" target="_blank">apps/admin-ui/src/lib/feature/authentication/auth0.ts:14</a></td><td><code>auth0Client = createAuth0Client({</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/utility-billing/blob/main/apps/admin-ui/src/routes/Auth0ProviderWithNavigate.tsx#L31" target="_blank">apps/admin-ui/src/routes/Auth0ProviderWithNavigate.tsx:31</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Partial" data-contractual="Local" data-score="50.0">
+      <td class="rank">12</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/erp-fin-gl" target="_blank">erp-fin-gl</a>
+        <div class="product">General Ledger</div>
+        <div class="meta">last push 2026-05-04 · 2497 UI · 804 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Partial</span></td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Local</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon ok" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="2"><div class="dnum">2/2</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-yes" data-count="0"><div class="dnum">0</div><div class="dpkg"><span class="pkg">jose</span></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">jose</span> <small>(custom_jwt)</small> <span class="pkg">jwt-decode</span> <small>(jwt_decode)</small> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(2)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/erp-fin-gl/blob/main/apps/frontend/src/providers/AppAuth0Provider.tsx#L17" target="_blank">apps/frontend/src/providers/AppAuth0Provider.tsx:17</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/erp-fin-gl/blob/main/apps/gl-frontend/src/app/providers.tsx#L30" target="_blank">apps/gl-frontend/src/app/providers.tsx:30</a></td><td><code>&lt;Auth0Provider&gt;</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Partial" data-contractual="Local" data-score="50.0">
+      <td class="rank">13</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/pro-app" target="_blank">pro-app</a>
+        <div class="product">Procurement</div>
+        <div class="meta">last push 2026-05-04 · 6281 UI · 229 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Partial</span></td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Local</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon ok" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="2"><div class="dnum">2/2</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-yes" data-count="0"><div class="dnum">0</div><div class="dpkg"><span class="pkg">jsonwebtoken</span></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">jsonwebtoken</span> <small>(custom_jwt)</small> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(2)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/pro-app/blob/master/apps/pro-client/src/psp-module.jsx#L185" target="_blank">apps/pro-client/src/psp-module.jsx:185</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/pro-app/blob/master/apps/pro-client/src/app/index.jsx#L106" target="_blank">apps/pro-client/src/app/index.jsx:106</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Conforming" data-contractual="Local" data-score="80.0">
+      <td class="rank">14</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/pss-access-control-apps" target="_blank">pss-access-control-apps</a>
+        <div class="product">Admin Settings</div>
+        <div class="meta">last push 2026-05-03 · 807 UI · 0 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#16a34a">Conforming</span></td>
+      <td class="status"><span class="badge" style="background:#f59e0b">Local</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon ok" title="exports mount/unmount">M</span><span class="bicon ok" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-none" data-count="0"><div class="dnum">0</div><div class="dpkg">no Auth0Provider</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          
+          <div class="no-findings">No code-level drift signals found.</div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Not PSP" data-contractual="N/A" data-score="0.0">
+      <td class="rank">15</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/beacon" target="_blank">beacon</a>
+        <div class="product">Tasks and Notifications</div>
+        <div class="meta">last push 2026-05-04 · 66 UI · 10 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#94a3b8">Not PSP</span></td>
+      <td class="status"><span class="badge" style="background:#94a3b8">N/A</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon no" title="exports mount/unmount">M</span><span class="bicon no" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-none" data-count="0"><div class="dnum">0</div><div class="dpkg">no Auth0Provider</div></td><td class="drift-yes" data-count="1"><div class="dnum">1</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          
+          <div class="finding-section"><h4 style="color:#dc2626">Storage writes <span class="count">(1)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/beacon/blob/main/apps/api/live/src/docs.ts#L197" target="_blank">apps/api/live/src/docs.ts:197</a></td><td><code>sessionStorage.setItem(&#x27;beacon_doc_token&#x27;, token);</code> </td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Not PSP" data-contractual="N/A" data-score="0.0">
+      <td class="rank">16</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/cash-receipts" target="_blank">cash-receipts</a>
+        <div class="product">Cash Receipts</div>
+        <div class="meta">last push 2025-03-26 · 115 UI · 74 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#94a3b8">Not PSP</span></td>
+      <td class="status"><span class="badge" style="background:#94a3b8">N/A</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon no" title="exports mount/unmount">M</span><span class="bicon no" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-none" data-count="0"><div class="dnum">0</div><div class="dpkg">no Auth0Provider</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-yes" data-count="0"><div class="dnum">0</div><div class="dpkg"><span class="pkg">jsonwebtoken</span></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">jsonwebtoken</span> <small>(custom_jwt)</small></div>
+          <div class="no-findings">No code-level drift signals found.</div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Not PSP" data-contractual="N/A" data-score="0.0">
+      <td class="rank">17</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/eam-client" target="_blank">eam-client</a>
+        <div class="product">Asset Management (EAM)</div>
+        <div class="meta">last push 2026-05-04 · 1373 UI · 1 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#94a3b8">Not PSP</span></td>
+      <td class="status"><span class="badge" style="background:#94a3b8">N/A</span></td>
+      <td class="boundary"><span class="bicon ok" title="declares @opengov/psp-contract">D</span><span class="bicon ok" title="imports @opengov/psp-contract">I</span><span class="bicon no" title="exports mount/unmount">M</span><span class="bicon no" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-none" data-count="0"><div class="dnum">0</div><div class="dpkg">no Auth0Provider</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          
+          <div class="no-findings">No code-level drift signals found.</div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Not PSP" data-contractual="N/A" data-score="0.0">
+      <td class="rank">18</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/eam-server" target="_blank">eam-server</a>
+        <div class="product">Asset Management (EAM server)</div>
+        <div class="meta">last push 2026-05-04 · 0 UI · 0 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#94a3b8">Not PSP</span></td>
+      <td class="status"><span class="badge" style="background:#94a3b8">N/A</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon no" title="exports mount/unmount">M</span><span class="bicon no" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-none" data-count="0"><div class="dnum">0</div><div class="dpkg">no Auth0Provider</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          
+          <div class="no-findings">No code-level drift signals found.</div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Not PSP" data-contractual="N/A" data-score="0.0">
+      <td class="rank">19</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/fin-bankrec" target="_blank">fin-bankrec</a>
+        <div class="product">Bank Reconciliation</div>
+        <div class="meta">last push 2026-05-04 · 437 UI · 104 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#94a3b8">Not PSP</span></td>
+      <td class="status"><span class="badge" style="background:#94a3b8">N/A</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon no" title="exports mount/unmount">M</span><span class="bicon no" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="1"><div class="dnum">1/1</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">jwt-decode</span> <small>(jwt_decode)</small> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(1)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/fin-bankrec/blob/main/ui/src/layouts/Auth0Wrapper.tsx#L28" target="_blank">ui/src/layouts/Auth0Wrapper.tsx:28</a></td><td><code>return &lt;Auth0Provider {...{ ...defaultAuth0ClientOptions, ...auth0ClientOptions }}&gt;{children}&lt;/Auth0Provider&gt;;</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div><div class="finding-section"><h4 style="color:#64748b">JWT decoding (informational) <span class="count">(3)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/fin-bankrec/blob/main/security/src/userMiddleware.ts#L9" target="_blank">security/src/userMiddleware.ts:9</a></td><td><code>jwtDecode(token);</code> </td></tr><tr><td><a href="https://github.com/OpenGov/fin-bankrec/blob/main/security/src/authzMiddleware.ts#L22" target="_blank">security/src/authzMiddleware.ts:22</a></td><td><code>const decodedToken: { exp?: number } = jwtDecode(token);</code> </td></tr><tr><td><a href="https://github.com/OpenGov/fin-bankrec/blob/main/security/src/entityLookupMiddleware.ts#L21" target="_blank">security/src/entityLookupMiddleware.ts:21</a></td><td><code>const decodedToken: { &#x27;https://opengov.com/primary_entity&#x27;?: { uuid: string } } = jwtDecode(token);</code> </td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Not PSP" data-contractual="N/A" data-score="0.0">
+      <td class="rank">20</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/financials" target="_blank">financials</a>
+        <div class="product">Subsidiary Ledgers</div>
+        <div class="meta">last push 2026-05-04 · 55 UI · 0 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#94a3b8">Not PSP</span></td>
+      <td class="status"><span class="badge" style="background:#94a3b8">N/A</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon no" title="exports mount/unmount">M</span><span class="bicon no" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-none" data-count="0"><div class="dnum">0</div><div class="dpkg">no Auth0Provider</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          
+          <div class="no-findings">No code-level drift signals found.</div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Not PSP" data-contractual="N/A" data-score="0.0">
+      <td class="rank">21</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/gab-frontend" target="_blank">gab-frontend</a>
+        <div class="product">App Builder</div>
+        <div class="meta">last push 2026-05-04 · 709 UI · 9 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#94a3b8">Not PSP</span></td>
+      <td class="status"><span class="badge" style="background:#94a3b8">N/A</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon no" title="exports mount/unmount">M</span><span class="bicon no" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="3"><div class="dnum">3/3</div><div class="dpkg">ungated</div></td><td class="drift-yes" data-count="2"><div class="dnum">2</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(3)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/gab-frontend/blob/main/src/app/core/services/og-auth0.service.ts#L46" target="_blank">src/app/core/services/og-auth0.service.ts:46</a></td><td><code>return createAuth0Client(config);</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/gab-frontend/blob/main/src/app/core/services/auth0-multi-login.util.ts#L5" target="_blank">src/app/core/services/auth0-multi-login.util.ts:5</a></td><td><code>create: (config: Auth0ClientOptions) =&gt; createAuth0Client(config),</code> <span class="tag tag-bad">unguarded</span></td></tr><tr><td><a href="https://github.com/OpenGov/gab-frontend/blob/main/src/app/modules/auth/callback/callback.component.ts#L18" target="_blank">src/app/modules/auth/callback/callback.component.ts:18</a></td><td><code>create: (config: any) =&gt; createAuth0Client(config),</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div><div class="finding-section"><h4 style="color:#dc2626">Storage writes <span class="count">(2)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/gab-frontend/blob/main/src/app/modules/application/notification/notification.component.ts#L225" target="_blank">src/app/modules/application/notification/notification.component.ts:225</a></td><td><code>localStorage.setItem(&#x27;N8ntoken&#x27;, tokenData.data.data.token);</code> </td></tr><tr><td><a href="https://github.com/OpenGov/gab-frontend/blob/main/src/app/modules/application/notification/upsert/webhook/webhook.component.ts#L65" target="_blank">src/app/modules/application/notification/upsert/webhook/webhook.component.ts:65</a></td><td><code>localStorage.setItem(&#x27;N8ntoken&#x27;, data.data.data.token);</code> </td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Not PSP" data-contractual="N/A" data-score="0.0">
+      <td class="rank">22</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/plc-ember-apps" target="_blank">plc-ember-apps</a>
+        <div class="product">Permitting &amp; Licensing</div>
+        <div class="meta">last push 2026-05-04 · 1390 UI · 235 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#94a3b8">Not PSP</span></td>
+      <td class="status"><span class="badge" style="background:#94a3b8">N/A</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon no" title="exports mount/unmount">M</span><span class="bicon no" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="1"><div class="dnum">1/1</div><div class="dpkg">ungated</div></td><td class="drift-yes" data-count="1"><div class="dnum">1</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-yes" data-count="0"><div class="dnum">0</div><div class="dpkg"><span class="pkg">express-session</span></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">jwt-decode</span> <small>(jwt_decode)</small> <span class="pkg">@auth0/auth0-spa-js</span> <small>(independent_auth0)</small> <span class="pkg">express-session</span> <small>(server_session_middleware)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(1)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/plc-ember-apps/blob/main/apps/employee/app/adapters/app-store-service-api.js#L46" target="_blank">apps/employee/app/adapters/app-store-service-api.js:46</a></td><td><code>this._auth0Client = await createAuth0Client({</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div><div class="finding-section"><h4 style="color:#dc2626">Storage writes <span class="count">(1)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/plc-ember-apps/blob/main/addons/authentication/addon/services/auth.js#L58" target="_blank">addons/authentication/addon/services/auth.js:58</a></td><td><code>return localStorage.setItem(&#x27;access_token&#x27;, value);</code> </td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Not PSP" data-contractual="N/A" data-score="0.0">
+      <td class="rank">23</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/tnr-app-core" target="_blank">tnr-app-core</a>
+        <div class="product">Tax &amp; Revenue</div>
+        <div class="meta">last push 2026-05-04 · 1229 UI · 1 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#94a3b8">Not PSP</span></td>
+      <td class="status"><span class="badge" style="background:#94a3b8">N/A</span></td>
+      <td class="boundary"><span class="bicon no" title="declares @opengov/psp-contract">D</span><span class="bicon no" title="imports @opengov/psp-contract">I</span><span class="bicon no" title="exports mount/unmount">M</span><span class="bicon no" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-none" data-count="0"><div class="dnum">0</div><div class="dpkg">no Auth0Provider</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">jwt-decode</span> <small>(jwt_decode)</small> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="no-findings">No code-level drift signals found.</div>
+        </div>
+      </td>
+    </tr>
+    
+    <tr class="repo-row" data-behavioral="Producer" data-contractual="Producer" data-score="99.4">
+      <td class="rank">24</td>
+      <td class="repo">
+        <a href="https://github.com/OpenGov/public-service-platform" target="_blank">public-service-platform</a>
+        <div class="product">PSP Shell</div>
+        <div class="meta">last push 2026-05-04 · 235 UI · 4 server files</div>
+      </td>
+      <td class="status"><span class="badge" style="background:#7c3aed">Producer</span></td>
+      <td class="status"><span class="badge" style="background:#7c3aed">Producer</span></td>
+      <td class="boundary"><span class="bicon ok" title="declares @opengov/psp-contract">D</span><span class="bicon ok" title="imports @opengov/psp-contract">I</span><span class="bicon no" title="exports mount/unmount">M</span><span class="bicon no" title="consumes auth0Config">T</span></td>
+      <td class="gating gating-bad" data-count="1"><div class="dnum">1/1</div><div class="dpkg">ungated</div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td><td class="drift-no" data-count="0"><div class="dnum">0</div><div class="dpkg"></div></td>
+      <td class="expand"><button onclick="toggleDetail(this)">▶</button></td>
+    </tr>
+    <tr class="detail-row" style="display:none">
+      <td colspan="12">
+        <div class="detail">
+          <div class="pkg-summary"><strong>Suspicious packages declared:</strong> <span class="pkg">@auth0/auth0-react</span> <small>(independent_auth0)</small></div>
+          <div class="finding-section"><h4 style="color:#dc2626">Independent Auth0 init <span class="count">(1)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/public-service-platform/blob/main/apps/psp-web/src/main.tsx#L62" target="_blank">apps/psp-web/src/main.tsx:62</a></td><td><code>&lt;Auth0Provider</code> <span class="tag tag-bad">unguarded</span></td></tr></tbody></table></div><div class="finding-section"><h4 style="color:#64748b">JWT decoding (informational) <span class="count">(1)</span></h4><table class="findings"><tbody><tr><td><a href="https://github.com/OpenGov/public-service-platform/blob/main/apps/psp-web/e2e/utils/auth-utils.ts#L62" target="_blank">apps/psp-web/e2e/utils/auth-utils.ts:62</a></td><td><code>export function decodeJwt(token: string): Record&lt;string, unknown&gt; {</code> </td></tr></tbody></table></div>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+</table>
+
+<script>
+function toggleDetail(btn) {
+  const detailRow = btn.closest('tr').nextElementSibling;
+  if (!detailRow || !detailRow.classList.contains('detail-row')) return;
+  const showing = detailRow.style.display !== 'none';
+  detailRow.style.display = showing ? 'none' : 'table-row';
+  btn.textContent = showing ? '▶' : '▼';
+}
+function applyFilter() {
+  const q = document.getElementById('filter').value.toLowerCase();
+  const b = document.getElementById('behave-filter').value;
+  const c = document.getElementById('contract-filter').value;
+  document.querySelectorAll('.repo-row').forEach(row => {
+    const text = row.innerText.toLowerCase();
+    const matchQ = !q || text.includes(q);
+    const matchB = !b || row.dataset.behavioral === b;
+    const matchC = !c || row.dataset.contractual === c;
+    const visible = matchQ && matchB && matchC;
+    row.style.display = visible ? '' : 'none';
+    const detail = row.nextElementSibling;
+    if (detail && detail.classList.contains('detail-row')) {
+      detail.style.display = 'none';
+    }
+  });
+}
+let lastSort = {col: -1, asc: true};
+function sortBy(col, numeric) {
+  const tbody = document.querySelector('#board tbody');
+  const groups = [];
+  Array.from(tbody.querySelectorAll('.repo-row')).forEach(r => {
+    const detail = r.nextElementSibling;
+    groups.push([r, detail && detail.classList.contains('detail-row') ? detail : null]);
+  });
+  const asc = lastSort.col === col ? !lastSort.asc : true;
+  lastSort = {col, asc};
+  groups.sort(([a], [b]) => {
+    let av, bv;
+    if (numeric) {
+      av = parseFloat(a.cells[col].dataset.count || a.cells[col].innerText) || 0;
+      bv = parseFloat(b.cells[col].dataset.count || b.cells[col].innerText) || 0;
+    } else {
+      av = a.cells[col].innerText.toLowerCase(); bv = b.cells[col].innerText.toLowerCase();
+    }
+    if (av < bv) return asc ? -1 : 1;
+    if (av > bv) return asc ? 1 : -1;
+    return 0;
+  });
+  tbody.innerHTML = '';
+  groups.forEach(([r, d], i) => {
+    r.cells[0].innerText = i + 1;
+    tbody.appendChild(r);
+    if (d) tbody.appendChild(d);
+  });
+}
+</script>
+</body>
+</html>

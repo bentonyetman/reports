@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PSP Session Adoption - Executive Summary</title>
+<style>
+  body { margin: 0; background: #f8fafc; color: #0f172a;
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+  .page { max-width: 920px; margin: 0 auto; background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 48px 56px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 18px; margin: 32px 0 8px; padding-bottom: 6px; border-bottom: 1px solid #e2e8f0; }
+  .sub { color: #64748b; font-size: 13px; }
+  .axes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+  .axis { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
+    padding: 18px 22px; }
+  .axis h3 { margin: 0 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.6px;
+    color: #64748b; }
+  .axis .headline { font-size: 26px; font-weight: 600; line-height: 1.2; }
+  .axis .desc { color: #475569; font-size: 13px; margin-top: 6px; }
+  .axis .bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden;
+    margin-top: 14px; background: #e5e7eb; }
+  .axis .bar span { height: 100%; }
+  .axis .legend { display: flex; gap: 14px; margin-top: 8px; flex-wrap: wrap; font-size: 12px; }
+  .axis .legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px;
+    margin-right: 5px; vertical-align: middle; }
+  .callout { background: #fef3c7; border: 1px solid #fde68a; border-left: 4px solid #d97706;
+    padding: 14px 18px; border-radius: 6px; margin: 16px 0; }
+  .callout-bad { background: #fee2e2; border-color: #fecaca; border-left-color: #dc2626; }
+  .callout-good { background: #dcfce7; border-color: #bbf7d0; border-left-color: #16a34a; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; vertical-align: top; }
+  th { background: #f8fafc; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; color: #64748b; }
+  .badge { color: white; padding: 2px 8px; border-radius: 999px; font-size: 11px;
+    font-weight: 600; letter-spacing: 0.3px; }
+  .matrix { border-collapse: separate; border-spacing: 4px; margin: 16px 0; }
+  .matrix td { padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0;
+    border-radius: 6px; min-width: 140px; vertical-align: top; }
+  .matrix th { background: transparent; border: none; font-size: 11px; padding: 4px 10px;
+    color: #64748b; }
+  .matrix .cell-count { font-size: 22px; font-weight: 600; line-height: 1; }
+  .matrix .cell-label { font-size: 11px; color: #64748b; margin-top: 4px; }
+  .matrix .cell-repos { font-size: 11px; color: #334155; margin-top: 6px; line-height: 1.4; }
+  .cell-good { background: #dcfce7 !important; border-color: #bbf7d0 !important; }
+  .cell-warn { background: #fef3c7 !important; border-color: #fde68a !important; }
+  .cell-bad  { background: #fee2e2 !important; border-color: #fecaca !important; }
+  ol.recs li { margin-bottom: 12px; }
+  .cta { background: #0f172a; color: white; padding: 16px 22px; border-radius: 8px;
+    margin-top: 32px; display: flex; align-items: center; justify-content: space-between; }
+  .cta a { color: white; text-decoration: underline; }
+  .footer { color: #94a3b8; font-size: 11px; margin-top: 24px; text-align: center; }
+  code { background: #f1f5f9; padding: 1px 5px; border-radius: 3px; font-size: 12px;
+    font-family: ui-monospace, monospace; }
+  @media print { body { background: white; } .page { box-shadow: none; padding: 24px; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>PSP Session Adoption</h1>
+<div class="sub">Executive summary · 2026-05-04 19:10 · 14 PSP-mountable repos (23 repos audited; 9 have no mount entry)</div>
+
+<h2>Headline</h2>
+<p><strong>Remotes get the boundary right.</strong> 12 of 14 PSP-mountable repos (86%) consume the <code>auth0Config</code> PSP supplies. The contract is being honored at the mount call.<br><br><strong>Each remote also creates its own <code>&lt;Auth0Provider&gt;</code>, ungated.</strong> Across the corpus, <strong>1 of 26</strong> Auth0Provider instantiations are wrapped in a runtime check (<code>isStandalone</code> / <code>!options.auth0Config</code> / equivalent). <strong>12 of 14 repos</strong> instantiate one unconditionally. <em>Runtime verification on staging shows these parallel Providers reuse the shell's <code>clientId</code>, so they share the same <code>@@auth0spajs@@</code> localStorage cache - the runtime impact is softer than the static finding suggests (separate React state and refresh timers, but one shared token cache). The static fix - add the gate - is still correct hygiene; urgency is lower than "users have two different tokens".</em><br><br><strong style='color:#dc2626'>2 repos drift harder than that</strong> - either bypassing PSP auth entirely or using a parallel mount-contract package. Worth handling separately.<br><br><strong style='color:#dc2626'>Runtime turned up something the static audit missed.</strong> On the bare PSP shell at staging, <strong>two distinct Auth0 client IDs</strong> are already authenticated before any remote is navigated to: the shell's own client (audience <code>opengov</code>) and a second application (audience <code>default</code>) whose origin is unidentified. This is a separate Auth0 application, not the parallel-Provider pattern. Worth investigating before the gate work, since it represents a real cross-application session.<br><br><strong>Contract governance is the longer-term concern.</strong> Only 2 of 14 (14%) import <code>@opengov/psp-contract</code> for types. 11 repos redefine the types locally; 1 import from a parallel package. The canonical contract has no single source of truth today.</p>
+
+<h2>Runtime verification (staging)</h2>
+<p>Static analysis can't see whether a remote initializes its Auth0Provider but then short-circuits at
+runtime, so the findings above were verified against a live signed-in session at <code>psp.ogstaging.us</code>.</p>
+
+<table>
+<thead><tr><th>Observation</th><th>Implication</th></tr></thead>
+<tbody>
+<tr>
+  <td>Bare PSP shell (Command Center, no remote navigated to) has <strong>2 distinct Auth0 client IDs</strong>
+      in <code>localStorage</code>: <code>vLbqnFiT...</code> (audience <code>opengov</code>) and
+      <code>bC1CU3RK...</code> (audience <code>default</code>). Each has its own
+      <code>auth0.&lt;clientId&gt;.is.authenticated</code> cookie.</td>
+  <td>Two <em>separate</em> Auth0 applications are signing in the same user. The second is not the parallel-Provider
+      pattern; it's a cross-application session. Origin is unidentified - worth tracking down.</td>
+</tr>
+<tr>
+  <td>Mounting Vendor Management, Utility Billing, and Procurement &amp; Contract Management each:
+      <strong>did not add a new client ID</strong> to <code>localStorage</code>. The remotes' parallel
+      <code>&lt;Auth0Provider&gt;</code> instances reuse the shell's <code>clientId</code>.</td>
+  <td>Despite the static finding that every remote creates an ungated Provider, those Providers share the
+      shell's <code>@@auth0spajs@@</code> cache via the same clientId. Runtime impact is softer than
+      "two diverging token caches"; closer to "two React contexts reading from one cache". Race conditions
+      and split <code>isAuthenticated</code> state still possible, but no token-cache split.</td>
+</tr>
+<tr>
+  <td>Procurement remote made an <code>/authorize</code> call to <code>login.ogstaging.us</code> with
+      <code>client_id=vLbqnFiT...</code> (the shell's clientId), <code>audience=opengov</code>.</td>
+  <td>Confirms the remote's Auth0Provider acts on the shell's identity, not a separate one.</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>What this changes.</strong> The parallel-<code>&lt;Auth0Provider&gt;</code> pattern is real in code,
+but at runtime it's not producing two diverging tokens - it's producing two React contexts that share one
+token cache. The static fix (gate the Provider) is still right, but the production-safety urgency is lower
+than the static report alone implied. The <strong>genuinely unexpected runtime finding</strong> is the second
+Auth0 application (<code>bC1CU3RK</code> / audience <code>default</code>), which the static audit could not
+have caught.</p>
+
+<h2>Two axes of conformance</h2>
+
+<div class="axes">
+  <div class="axis">
+    <h3>Behavioral conformance</h3>
+    <div class="headline">1 of 14</div>
+    <div class="desc">mount safely - consume the PSP-supplied <code>auth0Config</code> and run no parallel session.<br>
+    <strong>This is the production-safety axis.</strong> Failures here cause the symptoms you described: stale tokens, broken logout, session leaks.</div>
+    <div class="bar">
+      <span style="width:7%; background:#16a34a"></span>
+      <span style="width:79%; background:#f59e0b"></span>
+      <span style="width:14%; background:#dc2626"></span>
+    </div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:#16a34a"></span>Conforming 1</span>
+      <span><span class="legend-dot" style="background:#f59e0b"></span>Partial 11</span>
+      <span><span class="legend-dot" style="background:#dc2626"></span>Drift 2</span>
+    </div>
+  </div>
+  <div class="axis">
+    <h3>Contractual conformance</h3>
+    <div class="headline">2 of 14</div>
+    <div class="desc">import <code>@opengov/psp-contract</code> for types instead of redefining them.<br>
+    <strong>This is the governance axis.</strong> Failures here mean the contract has no enforced source of truth - changes ripple silently and remotes can drift behaviorally over time without warning.</div>
+    <div class="bar">
+      <span style="width:14%; background:#16a34a"></span>
+      <span style="width:79%; background:#f59e0b"></span>
+      <span style="width:7%; background:#dc2626"></span>
+    </div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:#16a34a"></span>Canonical 2</span>
+      <span><span class="legend-dot" style="background:#f59e0b"></span>Local types 11</span>
+      <span><span class="legend-dot" style="background:#dc2626"></span>Alternate package 1</span>
+    </div>
+  </div>
+</div>
+
+<h2>The full picture</h2>
+<p>Every mountable repo lands in one of these cells. The diagonal (top-left to bottom-right) is the cleanest path; the off-diagonal cells are where attention is needed.</p>
+
+<table class="matrix"><thead><tr><th></th><th>Canonical</th><th>Local</th><th>Alternate</th></tr></thead><tbody><tr><th>Conforming</th><td class="cell-good"><div class="cell-count">0</div><div class="cell-label">repos</div><div class="cell-repos">&nbsp;</div></td><td class="cell-warn"><div class="cell-count">1</div><div class="cell-label">repos</div><div class="cell-repos"><a href="https://github.com/OpenGov/pss-access-control-apps" target="_blank" style="color:#0f172a; text-decoration:none">pss-access-control-apps</a></div></td><td class="cell-bad"><div class="cell-count">0</div><div class="cell-label">repos</div><div class="cell-repos">&nbsp;</div></td></tr><tr><th>Partial</th><td class="cell-warn"><div class="cell-count">2</div><div class="cell-label">repos</div><div class="cell-repos"><a href="https://github.com/OpenGov/product-ops-tools" target="_blank" style="color:#0f172a; text-decoration:none">product-ops-tools</a><br><a href="https://github.com/OpenGov/psp-demo-assistant" target="_blank" style="color:#0f172a; text-decoration:none">psp-demo-assistant</a></div></td><td class="cell-warn"><div class="cell-count">9</div><div class="cell-label">repos</div><div class="cell-repos"><a href="https://github.com/OpenGov/ai" target="_blank" style="color:#0f172a; text-decoration:none">ai</a><br><a href="https://github.com/OpenGov/bifrost-workflow-builder" target="_blank" style="color:#0f172a; text-decoration:none">bifrost-workflow-builder</a><br><a href="https://github.com/OpenGov/chronos" target="_blank" style="color:#0f172a; text-decoration:none">chronos</a><br><a href="https://github.com/OpenGov/erp-fin-ap" target="_blank" style="color:#0f172a; text-decoration:none">erp-fin-ap</a><br><a href="https://github.com/OpenGov/erp-fin-gl" target="_blank" style="color:#0f172a; text-decoration:none">erp-fin-gl</a><br><a href="https://github.com/OpenGov/fin-pa-ui" target="_blank" style="color:#0f172a; text-decoration:none">fin-pa-ui</a><br><span style="color:#64748b">+3 more</span></div></td><td class="cell-bad"><div class="cell-count">0</div><div class="cell-label">repos</div><div class="cell-repos">&nbsp;</div></td></tr><tr><th>Drift</th><td class="cell-bad"><div class="cell-count">0</div><div class="cell-label">repos</div><div class="cell-repos">&nbsp;</div></td><td class="cell-bad"><div class="cell-count">1</div><div class="cell-label">repos</div><div class="cell-repos"><a href="https://github.com/OpenGov/bnp-ui" target="_blank" style="color:#0f172a; text-decoration:none">bnp-ui</a></div></td><td class="cell-bad"><div class="cell-count">1</div><div class="cell-label">repos</div><div class="cell-repos"><a href="https://github.com/OpenGov/reporting" target="_blank" style="color:#0f172a; text-decoration:none">reporting</a></div></td></tr></tbody></table>
+
+<h2>Where action is needed</h2>
+
+<h3 style="font-size: 14px; color: #475569; margin-top: 16px;">Urgent (behavioral drift)</h3>
+<table><thead><tr><th>Repo</th><th>Behavioral</th><th>Contractual</th><th>Headline drift</th></tr></thead><tbody><tr><td><a href="https://github.com/OpenGov/bnp-ui" target="_blank">bnp-ui</a><br><small style="color:#64748b">Budgeting</small></td><td><span class="badge" style="background:#dc2626">Drift</span></td><td><span class="badge" style="background:#f59e0b">Local</span></td><td>mounts but never reads <code>auth0Config</code></td></tr><tr><td><a href="https://github.com/OpenGov/reporting" target="_blank">reporting</a><br><small style="color:#64748b">Reporting</small></td><td><span class="badge" style="background:#dc2626">Drift</span></td><td><span class="badge" style="background:#dc2626">Alternate</span></td><td>1 unguarded Auth0 calls; 6 alt-contract imports</td></tr></tbody></table>
+
+<h3 style="font-size: 14px; color: #475569; margin-top: 16px;">Notable (behavioral partial drift)</h3>
+<table><thead><tr><th>Repo</th><th>Behavioral</th><th>Contractual</th><th>Headline drift</th></tr></thead><tbody><tr><td><a href="https://github.com/OpenGov/chronos" target="_blank">chronos</a><br><small style="color:#64748b">Audit Logs (Chronos)</small></td><td><span class="badge" style="background:#f59e0b">Partial</span></td><td><span class="badge" style="background:#f59e0b">Local</span></td><td>3 unguarded Auth0 calls</td></tr><tr><td><a href="https://github.com/OpenGov/psp-demo-assistant" target="_blank">psp-demo-assistant</a><br><small style="color:#64748b">Demo Guide</small></td><td><span class="badge" style="background:#f59e0b">Partial</span></td><td><span class="badge" style="background:#16a34a">Canonical</span></td><td>3 unguarded Auth0 calls</td></tr><tr><td><a href="https://github.com/OpenGov/ai" target="_blank">ai</a><br><small style="color:#64748b">Agent Studio</small></td><td><span class="badge" style="background:#f59e0b">Partial</span></td><td><span class="badge" style="background:#f59e0b">Local</span></td><td>1 unguarded Auth0 calls</td></tr><tr><td><a href="https://github.com/OpenGov/bifrost-workflow-builder" target="_blank">bifrost-workflow-builder</a><br><small style="color:#64748b">Workflow Builder</small></td><td><span class="badge" style="background:#f59e0b">Partial</span></td><td><span class="badge" style="background:#f59e0b">Local</span></td><td>1 unguarded Auth0 calls</td></tr><tr><td><a href="https://github.com/OpenGov/fin-pa-ui" target="_blank">fin-pa-ui</a><br><small style="color:#64748b">Project Accounting</small></td><td><span class="badge" style="background:#f59e0b">Partial</span></td><td><span class="badge" style="background:#f59e0b">Local</span></td><td>1 unguarded Auth0 calls</td></tr><tr><td><a href="https://github.com/OpenGov/product-ops-tools" target="_blank">product-ops-tools</a><br><small style="color:#64748b">Product Ops Tools</small></td><td><span class="badge" style="background:#f59e0b">Partial</span></td><td><span class="badge" style="background:#16a34a">Canonical</span></td><td>5 unguarded Auth0 calls; 2 browser JWT signing calls</td></tr><tr><td><a href="https://github.com/OpenGov/vendor-management" target="_blank">vendor-management</a><br><small style="color:#64748b">Vendor Management</small></td><td><span class="badge" style="background:#f59e0b">Partial</span></td><td><span class="badge" style="background:#f59e0b">Local</span></td><td>2 unguarded Auth0 calls</td></tr><tr><td><a href="https://github.com/OpenGov/erp-fin-ap" target="_blank">erp-fin-ap</a><br><small style="color:#64748b">Accounts Payable</small></td><td><span class="badge" style="background:#f59e0b">Partial</span></td><td><span class="badge" style="background:#f59e0b">Local</span></td><td>1 unguarded Auth0 calls</td></tr><tr><td><a href="https://github.com/OpenGov/utility-billing" target="_blank">utility-billing</a><br><small style="color:#64748b">Utility Billing</small></td><td><span class="badge" style="background:#f59e0b">Partial</span></td><td><span class="badge" style="background:#f59e0b">Local</span></td><td>3 unguarded Auth0 calls; server session mw</td></tr><tr><td><a href="https://github.com/OpenGov/erp-fin-gl" target="_blank">erp-fin-gl</a><br><small style="color:#64748b">General Ledger</small></td><td><span class="badge" style="background:#f59e0b">Partial</span></td><td><span class="badge" style="background:#f59e0b">Local</span></td><td>2 unguarded Auth0 calls</td></tr><tr><td><a href="https://github.com/OpenGov/pro-app" target="_blank">pro-app</a><br><small style="color:#64748b">Procurement</small></td><td><span class="badge" style="background:#f59e0b">Partial</span></td><td><span class="badge" style="background:#f59e0b">Local</span></td><td>2 unguarded Auth0 calls</td></tr></tbody></table>
+
+<h3 style="font-size: 14px; color: #475569; margin-top: 16px;">Governance (behaving correctly, off-contract types)</h3>
+<table><thead><tr><th>Repo</th><th>Behavioral</th><th>Contractual</th><th>Notes</th></tr></thead><tbody><tr><td><a href="https://github.com/OpenGov/pss-access-control-apps" target="_blank">pss-access-control-apps</a><br><small style="color:#64748b">Admin Settings</small></td><td><span class="badge" style="background:#16a34a">Conforming</span></td><td><span class="badge" style="background:#f59e0b">Local</span></td><td><span style="color:#94a3b8">no signals</span></td></tr></tbody></table>
+
+<h2>Drift signal hot spots</h2>
+<table>
+<thead><tr><th>Signal</th><th>Repos affected</th><th>Why it matters</th></tr></thead>
+<tbody>
+<tr><td>Independent Auth0 init (unguarded)</td><td>15</td>
+<td>Two Auth0 clients in one shell can race the token refresh and surface stale tokens to the API.</td></tr>
+<tr><td>Direct cookie / localStorage of auth</td><td>3</td>
+<td>Per-product token storage breaks SSO logout and creates session leaks across tabs.</td></tr>
+<tr><td>Parallel auth library declared</td><td>0</td>
+<td>Replaces PSP's identity provider entirely; the user can be "logged in" to PSP and "logged out" of the remote.</td></tr>
+<tr><td>Alternate mount-contract import</td><td>1</td>
+<td>Remote uses a parallel contract package (<code>@opengov/app-core/types/psp</code>); silent drift if the canonical contract evolves.</td></tr>
+<tr><td>Browser-side JWT signing</td><td>1</td>
+<td>Clients cannot mint tokens the API will trust. Server-side signing (in <code>apps/api/...</code>, etc.) is excluded; only browser-path hits count here.</td></tr>
+<tr><td>JWT decoding (informational)</td><td>2</td>
+<td>Read-only - inspecting claims like <code>exp</code> or <code>primary_entity</code>. Not drift; surfaced as evidence in case a team is decoding a token they shouldn't have.</td></tr>
+<tr><td>Server session middleware (browser-touching)</td><td>2</td>
+<td>Sets cookies that the PSP shell does not know about; ambiguous source of truth on logout.</td></tr>
+</tbody>
+</table>
+
+<h2>Recommendations</h2>
+<ol class="recs">
+<li><strong>Investigate the second Auth0 application first.</strong> Runtime verification on staging found a second client ID (<code>bC1CU3RK...</code>, audience <code>default</code>) authenticated on the bare PSP shell, separate from the shell's own <code>vLbqnFiT...</code> / audience <code>opengov</code> client. That's not the parallel-Provider pattern this audit primarily covers - it's a separate Auth0 application. Find the OpenGov product registering it (Auth0 admin console, <code>client_id=bC1CU3RK</code>), decide whether it consolidates into the shell's app or remains intentionally separate. If users see session symptoms today, this is a more plausible cause than the parallel-Provider pattern.</li><li><strong>Handle 2 hard-drift repos separately.</strong> These bypass PSP auth in ways that are not just a missing gate (e.g., parallel mount contract, browser-side token storage, cookie session middleware). Each needs a targeted review.</li><li><strong>Add the standalone-mode gate to 15 repos (lower urgency).</strong> Every PSP-mountable remote needs its own Auth0 setup for standalone use - that's not the issue. The issue is that none of them gate it, so the standalone Auth0Provider also fires when PSP mounts them. Runtime data shows these parallel Providers share the shell's clientId and localStorage cache, so the production-safety risk is latent rather than active. Still worth fixing - one conditional per repo: <code>{!options?.auth0Config && &lt;Auth0Provider...&gt;}</code> (or equivalent). Publish a reference example in <code>@opengov/psp-contract</code> so teams can copy it.</li><li><strong>Pick one canonical contract package.</strong> 1 repos import PSP types from <code>@opengov/app-core/types/psp</code> instead of <code>@opengov/psp-contract</code>. Either deprecate the alternate or migrate the canonical to <code>app-core</code> - having both is the worst outcome.</li><li><strong>Migrate 11 repos with locally-defined types onto <code>@opengov/psp-contract</code>.</strong> Behavior is correct today but the contract has no enforced source of truth. When PSP adds a new field (e.g., a new Auth0Config property), nothing surfaces it to the remotes - they all silently start ignoring it.</li><li><strong>Add a CI lint rule.</strong> Once the reference gate pattern exists, an ESLint rule can fail PRs that introduce <code>&lt;Auth0Provider&gt;</code> in a file outside an <code>isStandalone</code>/<code>!options.auth0Config</code> conditional. Catches the next instance before it ships.</li>
+</ol>
+
+<div class="cta">
+  <div><strong>See per-repo evidence</strong><br><span style="color:#94a3b8">file paths, line numbers, code snippets</span></div>
+  <a href="psp-session-scorecard.html">Open the interactive scorecard →</a>
+</div>
+
+<div class="footer">
+  Generated from 23 repos, 279 drift signals, 29340 source files. Data: scan_results.json.
+</div>
+
+</div>
+</body>
+</html>
