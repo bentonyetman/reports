@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenGov Platform — Core Domain Model</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Theme tokens ────────────────────────── */
+:root {
+  --bg:         #0d1117;
+  --surface:    #161b22;
+  --border:     #21262d;
+  --text:       #f0f6fc;
+  --text-muted: #8b949e;
+  --text-dim:   #484f58;
+  --accent:     #388bfd;
+  --scroll:     #30363d;
+  --item-bg:    #0d1117;
+  --item-hover: #1c2128;
+  --conn-text:  #c9d1d9;
+  --tip-bg:     #1c2128;
+}
+[data-theme="light"] {
+  --bg:         #f6f8fa;
+  --surface:    #ffffff;
+  --border:     #d0d7de;
+  --text:       #1f2328;
+  --text-muted: #57606a;
+  --text-dim:   #8c959f;
+  --accent:     #0969da;
+  --scroll:     #d0d7de;
+  --item-bg:    #f6f8fa;
+  --item-hover: #eaeef2;
+  --conn-text:  #24292f;
+  --tip-bg:     #ffffff;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  transition: background .2s, color .2s;
+}
+
+/* ── Top bar ─────────────────────────────── */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  transition: background .2s, border-color .2s;
+}
+.brand {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-right: 6px;
+  white-space: nowrap;
+}
+.brand em { color: var(--accent); font-style: normal; }
+.wf-btn {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all .18s;
+  background: transparent;
+  letter-spacing: .2px;
+  white-space: nowrap;
+}
+.wf-btn:hover { opacity: .85; }
+.wf-btn.active { color: #fff; }
+.sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+.search {
+  padding: 5px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+  background: var(--item-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 170px;
+  transition: border-color .15s, background .2s;
+}
+.search:focus { outline: none; border-color: var(--accent); }
+.search::placeholder { color: var(--text-dim); }
+
+/* theme toggle button */
+.theme-btn {
+  margin-left: auto;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--item-bg);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  transition: all .18s;
+  flex-shrink: 0;
+}
+.theme-btn:hover { border-color: var(--accent); color: var(--text); }
+
+/* ── Main layout ─────────────────────────── */
+.main { display: flex; flex: 1; overflow: hidden; }
+
+#canvas { flex: 1; overflow: hidden; position: relative; }
+svg { width: 100%; height: 100%; display: block; }
+
+/* ── Side panel ──────────────────────────── */
+.panel {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: background .2s, border-color .2s;
+}
+.panel-inner {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 16px;
+}
+.panel-inner::-webkit-scrollbar { width: 4px; }
+.panel-inner::-webkit-scrollbar-track { background: transparent; }
+.panel-inner::-webkit-scrollbar-thumb { background: var(--scroll); border-radius: 2px; }
+
+.panel-hint {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text-dim);
+  font-size: 12px;
+  text-align: center;
+  padding: 24px;
+  line-height: 1.6;
+}
+.panel-hint svg { opacity: .25; }
+
+.obj-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+.obj-suite {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+}
+.obj-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+.conn-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.conn-list { display: flex; flex-direction: column; gap: 3px; }
+.conn-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 8px;
+  border-radius: 7px;
+  background: var(--item-bg);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.conn-item:hover { border-color: var(--accent); background: var(--item-hover); }
+.conn-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.conn-dir { font-size: 10px; color: var(--text-dim); flex-shrink: 0; }
+.conn-rel { font-size: 9px; color: var(--text-dim); flex-shrink: 0; max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.conn-name { font-size: 11px; color: var(--conn-text); font-weight: 500; }
+
+/* ── Workflow story strip ────────────────── */
+.story-strip {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  transition: max-height .25s ease, background .2s;
+  max-height: 0;
+  overflow: hidden;
+}
+.story-strip.open { max-height: 90px; }
+.story-inner {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+}
+.story-inner::-webkit-scrollbar { height: 3px; }
+.story-inner::-webkit-scrollbar-track { background: transparent; }
+.story-inner::-webkit-scrollbar-thumb { background: var(--scroll); }
+.story-step {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+}
+.step-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 16px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.step-pill:hover { opacity: .85; }
+.step-num {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: rgba(128,128,128,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.step-arrow {
+  color: var(--text-dim);
+  font-size: 14px;
+  padding: 0 4px;
+}
+
+/* ── Graph elements ──────────────────────── */
+.link {
+  stroke-width: 1.5;
+  opacity: .18;
+  transition: opacity .25s, stroke-width .25s;
+}
+.link.lit { opacity: .85; stroke-width: 2.5; }
+.link.faded { opacity: .04; }
+
+.node-g { cursor: grab; }
+.node-g:active { cursor: grabbing; }
+.node-bg { transition: opacity .25s; }
+.node-bg.faded { opacity: .1; }
+.node-glow { fill: none; opacity: 0; transition: opacity .2s; }
+.node-glow.on { opacity: 1; }
+.node-label { pointer-events: none; transition: opacity .25s; font-weight: 600; fill: #ffffff; }
+[data-theme="light"] .node-label { fill: #1f2328; }
+.node-label.faded { opacity: .1; }
+
+/* Tooltip */
+#tip {
+  position: absolute;
+  background: var(--tip-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--conn-text);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .12s;
+  z-index: 50;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+/* Legend dots in panel */
+.legend-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text-muted); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">OpenGov <em>Platform</em> — Core Domain Model</span>
+  <div class="sep"></div>
+  <button class="wf-btn active" data-wf="all"   style="--c:#8b949e; color:#8b949e; border-color:#30363d">All Objects</button>
+  <button class="wf-btn" data-wf="p2p"           style="--c:#4ade80">Procure-to-Pay</button>
+  <button class="wf-btn" data-wf="budget"        style="--c:#c084fc">Budget Cycle</button>
+  <button class="wf-btn" data-wf="financial"     style="--c:#60a5fa">Financial Reporting</button>
+  <button class="wf-btn" data-wf="eam"           style="--c:#fb923c">Asset Management</button>
+  <button class="wf-btn" data-wf="capital"       style="--c:#f472b6">Capital Projects</button>
+  <button class="wf-btn" data-wf="plc"           style="--c:#22d3ee">Permitting</button>
+  <button class="wf-btn" data-wf="billing"       style="--c:#facc15">Revenue &amp; Billing</button>
+  <input class="search" id="search" placeholder="Find an object…">
+  <button class="theme-btn" id="theme-btn" title="Toggle light/dark mode">☀️</button>
+</div>
+
+<div class="main">
+  <div id="canvas">
+    <svg id="svg"></svg>
+    <div id="tip"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-inner" id="panel-inner">
+      <div class="panel-hint">
+        <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/>
+          <circle cx="7"  cy="12" r="2.5"/>
+          <circle cx="17" cy="12" r="2.5"/>
+          <circle cx="12" cy="7"  r="2.5"/>
+          <line x1="9" y1="12" x2="14.5" y2="12"/>
+          <line x1="11.2" y1="9.5" x2="11.2" y2="9.5"/>
+        </svg>
+        <div>Click any object to explore its description and relationships.<br><br>Use the workflow filters to trace how objects connect across the platform.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- workflow story strip spans full width below canvas+panel -->
+<div class="story-strip" id="story-strip">
+  <div class="story-inner" id="story-inner"></div>
+</div>
+
+<script>
+// ──────────────────────────────────────────────────────────
+// SUITE CONFIG
+// ──────────────────────────────────────────────────────────
+const S = {
+  platform: { color:"#94a3b8", label:"Platform" },
+  fin:      { color:"#60a5fa", label:"Finance" },
+  pro:      { color:"#4ade80", label:"Procurement" },
+  ap:       { color:"#38bdf8", label:"Accounts Payable" },
+  bp:       { color:"#c084fc", label:"Budget & Planning" },
+  eam:      { color:"#fb923c", label:"Asset Management" },
+  plc:      { color:"#22d3ee", label:"Licensing & Compliance" },
+  ub:       { color:"#facc15", label:"Utility Billing" },
+  tr:       { color:"#f87171", label:"Tax & Revenue" },
+  cross:    { color:"#f472b6", label:"Cross-Suite" },
+};
+
+// ──────────────────────────────────────────────────────────
+// WORKFLOW CONFIG  (ordered steps + description)
+// ──────────────────────────────────────────────────────────
+const WORKFLOWS = {
+  all: { label:"All Objects", color:"#8b949e", steps:[], desc:"" },
+  p2p: {
+    label:"Procure-to-Pay", color:"#4ade80",
+    desc:"From sourcing a supplier through solicitation and contract, to purchasing, receiving goods, and paying the vendor.",
+    steps:["supplier","solicitation","contract","vendor","item","request","purchase_order","receipt","invoice","ap_payment","journal_entry"],
+  },
+  budget: {
+    label:"Budget Cycle", color:"#c084fc",
+    desc:"From department-level workforce and proposal planning through legislative adoption, amendment, and budget control.",
+    steps:["department","employee","workforce_plan","budget_proposal","budget","fund","coa","budget_amendment"],
+  },
+  financial: {
+    label:"Financial Reporting", color:"#60a5fa",
+    desc:"The financial backbone: chart of accounts, funds, journal entries, and the general ledger that ties everything together.",
+    steps:["gov_entity","coa","fund","gl","journal_entry","fund_balance","fiscal_year","fixed_asset"],
+  },
+  eam: {
+    label:"Asset Management", color:"#fb923c",
+    desc:"Maintaining public infrastructure from condition inspection and scenario planning through work orders, tasks, and cost tracking.",
+    steps:["infra_asset","inspection","eam_scenario","work_order","labor_task","labor_resource","equipment","materials","journal_entry"],
+  },
+  capital: {
+    label:"Capital Projects", color:"#f472b6",
+    desc:"Funding infrastructure investment from grant award through project budget, procurement, and fixed asset capitalization.",
+    steps:["grant","project","budget","purchase_order","receipt","fixed_asset","gl","journal_entry"],
+  },
+  plc: {
+    label:"Permitting & Licensing", color:"#22d3ee",
+    desc:"The pathway from citizen to applicant through permit or license approval, fee billing, and enforcement via code cases.",
+    steps:["constituent","applicant","permit","license","location","bill","receivable"],
+  },
+  billing: {
+    label:"Revenue & Billing", color:"#facc15",
+    desc:"Delivering utility services to customers, generating bills from rate codes, collecting payments, and posting revenue.",
+    steps:["utility_customer","service_account","utility_service","rate_code","bill","cash_receipt","journal_entry"],
+  },
+};
+
+// ──────────────────────────────────────────────────────────
+// NODES
+// ──────────────────────────────────────────────────────────
+// size: "xl"=34, "lg"=27, "md"=21, "sm"=16
+const NODES = [
+  // ── Platform root
+  { id:"gov_entity",      label:"Government\nEntity",      suite:"platform", size:"xl",
+    suites:["ALL"],
+    desc:"A government organization with legal authority to govern, provide services, collect revenue, and manage public resources. The root organizational context across all OpenGov products." },
+  { id:"gov_user",        label:"Government\nUser",        suite:"platform", size:"lg",
+    suites:["ALL"],
+    desc:"A user employed by a Government Entity who has been granted access to one or more OpenGov products. Government Users are not necessarily Employees (e.g., contractors may have access)." },
+  { id:"department",      label:"Department",              suite:"platform", size:"lg",
+    suites:["B&P","EAM","FIN","PLC","PRO"],
+    desc:"An organizational unit within a Government Entity used to align Budget Proposals, Employees, Requests, Permits, and Chart of Accounts segments. Currently has multiple implementations across suites — a key area for canonical alignment." },
+  { id:"constituent",     label:"Constituent",             suite:"platform", size:"md",
+    suites:["PLC","B&P","EAM","T&R","UB","311"],
+    desc:"An individual within the jurisdiction of a Government Entity served by its programs, services, and policies. Constituents may interact anonymously (311 complaint) or as authenticated users (taxes, bills, permits)." },
+  { id:"employee",        label:"Employee",                suite:"platform", size:"lg",
+    suites:["Payroll","EAM"],
+    desc:"An individual employed by a Government Entity, included in payroll and subject to tax withholdings. Employees ≠ Government Users — contractors may be Users but not Employees." },
+  { id:"location",        label:"Location",                suite:"platform", size:"md",
+    suites:["PLC","EAM","UB","T&R"],
+    desc:"A common spatial reference for the physical location of Infrastructure Assets, Labor Tasks, Permits, Licenses, Utility Service Accounts, EAM Scenarios, and Applicants. System of Record: Spatial Service." },
+
+  // ── Finance / GL
+  { id:"coa",             label:"Chart of\nAccounts",      suite:"fin", size:"xl",
+    suites:["ALL"],
+    desc:"The structured framework organizing all accounts used to record financial transactions. Segmented into Fund, Department, Program, Object (natural account), Project, and Grant dimensions. The backbone of budgeting, accounting, and reporting across all suites." },
+  { id:"fund",            label:"Fund",                    suite:"fin", size:"xl",
+    suites:["ALL"],
+    desc:"A fiscal and accounting entity with a self-balancing set of accounts, segregated for specific activities subject to legal or contractual restrictions. Budgets are developed and controlled at the fund level. GASB requires reporting by fund type (general, special revenue, capital projects, etc.)." },
+  { id:"gl",              label:"General\nLedger",         suite:"fin", size:"xl",
+    suites:["ALL"],
+    desc:"The central record-keeping system containing all financial transactions of a Government Entity, organized by Chart of Accounts. Provides the authoritative source for financial statements, audits, and budgetary control. The GL is the single source of truth for what happened financially." },
+  { id:"journal_entry",   label:"Journal\nEntry",          suite:"fin", size:"lg",
+    suites:["FIN","EAM","PLC","PRO"],
+    desc:"An individual transaction record documenting the accounts involved, debit and credit amounts, date, and description. The atomic unit of accounting — every financial event (payment, cost posting, revenue) ultimately creates one or more Journal Entries in the GL." },
+  { id:"fund_balance",    label:"Fund Balance",            suite:"fin", size:"md",
+    suites:["B&P","AP","PRO"],
+    desc:"The difference between a Government Entity's assets and liabilities within a specific fund. Includes restricted, committed, assigned, and unassigned balances, as well as pre-encumbrances (planned) and encumbrances (obligated). Used when checking if budget is available for a Request." },
+  { id:"fixed_asset",     label:"Fixed Asset",             suite:"fin", size:"md",
+    suites:["EAM","FIN"],
+    desc:"A tangible or intangible long-term asset recorded for financial reporting, depreciated or amortized over its useful life. Infrastructure Assets that meet the capitalization threshold become Fixed Assets. Acquired primarily through capital procurement." },
+  { id:"fiscal_year",     label:"Fiscal Year",             suite:"fin", size:"sm",
+    suites:["FIN"],
+    desc:"A fiscal year containing open or closed fiscal periods. Controls which periods are available for Journal Entry posting. Fiscal year close is a critical financial process that locks historical periods." },
+
+  // ── Procurement
+  { id:"vendor",          label:"Vendor",                  suite:"pro", size:"lg",
+    suites:["FIN","PRO","EAM","R&T"],
+    desc:"An external company or individual that a Government Entity does business with. A Supplier becomes a Vendor once onboarded in Financials and approved to engage in transactions (contracts, purchase orders, invoices, payments)." },
+  { id:"supplier",        label:"Supplier",                suite:"pro", size:"lg",
+    suites:["PRO"],
+    desc:"A company or individual that can provide goods or services to a Government Entity. Suppliers exist independently of any specific government — they are part of a single national registry. A Supplier does not become a Vendor until a specific Government Entity onboards and approves them for transactions. One Supplier can be a Vendor with many Government Entities simultaneously." },
+  { id:"solicitation",    label:"Solicitation",            suite:"pro", size:"md",
+    suites:["PRO"],
+    desc:"A formal request issued by a Government Entity to obtain competitive responses from Suppliers for specified goods or services. May be an RFP, RFI, IFB, or other procurement vehicle. The formal start of competitive sourcing." },
+  { id:"contract",        label:"Contract",                suite:"pro", size:"lg",
+    suites:["FIN","PRO","EAM"],
+    desc:"A legal agreement specifying goods or services to be provided at agreed terms, along with a Budget. A Contract can release both Purchase Orders and Change Orders over its lifetime. Budget checks apply when creating either. Binds a Vendor to deliver and the Government Entity to pay." },
+  { id:"contract_chg",    label:"Change\nOrder",           suite:"pro", size:"md",
+    suites:["AP","PRO","EAM"],
+    desc:"A formal document issued by a Government Entity to a Vendor, authorizing a change to an existing agreement for specific goods or services at agreed prices and terms. Change Orders are issued against a Contract — at the same level as a Purchase Order. Budget checks apply when creating a Change Order, just as they do for Purchase Orders." },
+  { id:"contractor",      label:"Contractor",              suite:"pro", size:"sm",
+    suites:["B&P","EAM","PLC","PRO"],
+    desc:"A company or individual providing specialized services based on a Contract. Responsible for their own taxes, insurance, and benefits — distinct from an Employee. Used in EAM as a Labor Resource type." },
+  { id:"item",            label:"Item",                    suite:"pro", size:"md",
+    suites:["B&P","PRO","EAM"],
+    desc:"A defined good or service that can be requested, purchased, stocked, or billed. Items standardize procurement by providing a catalog with description, unit of measure, price, and GL account classification — used consistently across requisitions, POs, receipts, and invoices." },
+  { id:"request",         label:"Request /\nRequisition",  suite:"pro", size:"lg",
+    suites:["FIN","PRO"],
+    desc:"An internal request for goods or services created by a department. Reviewed and approved against available Budget before procurement proceeds. Converted into a Purchase Order or fulfilled via contract. Includes line items specifying Items, quantities, and cost." },
+  { id:"purchase_line",   label:"Purchase\nLine Item",     suite:"pro", size:"sm",
+    suites:["FIN","PRO","EAM"],
+    desc:"An individual line item within a Request specifying a distinct good or service being requested, including Item, quantity, estimated cost, and accounting coding." },
+  { id:"purchase_order",  label:"Purchase\nOrder",         suite:"pro", size:"lg",
+    suites:["AP","PRO","EAM"],
+    desc:"A formal document issued by a Government Entity to a Vendor, authorizing purchase of specific goods or services at agreed prices and terms. Creates a legal obligation and an encumbrance against the Budget. Required for the three-way match with Receipt and Invoice." },
+  { id:"po_amendment",    label:"PO\nAmendment",           suite:"pro", size:"sm",
+    suites:["FIN","PRO"],
+    desc:"An official change to an existing Purchase Order adjusting quantities, prices, delivery dates, or scope. Maintains an auditable record while keeping the Vendor and Government Entity aligned on revised terms." },
+  { id:"receipt",         label:"Receipt",                 suite:"pro", size:"md",
+    suites:["PRO","AP","EAM"],
+    desc:"A record in the ERP confirming goods or services were received against a Purchase Order. Specifies items received, quantities, delivery date, and condition. Required for the three-way match (PO + Receipt + Invoice) before payment can be made." },
+
+  // ── Purchasing Card
+  { id:"card_program",    label:"Card\nProgram",           suite:"ap", size:"sm",
+    suites:["AP"],
+    desc:"Configuration record for a purchasing card program at an entity. Defines credit limits, approval routing, statement cycle dates, GL clearing account, and bank vendor link. The governance framework for all cards in the program." },
+  { id:"cardholder",      label:"Cardholder",              suite:"ap", size:"sm",
+    suites:["AP","FIN"],
+    desc:"An Employee enrolled in the purchasing card program. Tracks default GL coding preferences, approver assignment, and lifecycle status independent of the individual card." },
+  { id:"pcard_txn",       label:"PCard\nTransaction",      suite:"ap", size:"sm",
+    suites:["AP","FIN"],
+    desc:"A bank-feed transaction imported from the card processor. Tracks merchant details, amount, and lifecycle through cardholder coding, manager approval, and GL posting." },
+  { id:"pcard_stmt",      label:"PCard\nStatement",        suite:"ap", size:"sm",
+    suites:["AP"],
+    desc:"A per-card monthly billing statement grouping all transactions for a period. Lifecycle: OPEN → SUBMITTED → APPROVED/REJECTED → INVOICED → PAID. GL posting is statement-level." },
+
+  // ── AP
+  { id:"invoice",         label:"Invoice",                 suite:"ap", size:"lg",
+    suites:["AP","PRO"],
+    desc:"An itemized document submitted by a Vendor requesting payment for goods or services delivered. References the Purchase Order and applicable payment terms. May be PO-based or non-PO (rent, subscriptions). Enables the three-way match." },
+  { id:"ap_payment",      label:"AP Payment",              suite:"ap", size:"lg",
+    suites:["AP"],
+    desc:"The disbursement of Government Entity funds to a Vendor for goods and services accepted. Payment methods include check, ACH, or wire transfer. Clears the Invoice from Accounts Payable and posts to the General Ledger." },
+
+  // ── B&P
+  { id:"budget",          label:"Budget",                  suite:"bp", size:"xl",
+    suites:["ALL"],
+    desc:"A financial plan that outlines expected revenues and planned expenditures for a defined period. Authorizes Government Entities to allocate funds for programs, services, contracts, and operations. Legally adopted by the governing body. Touches every suite that spends or collects money." },
+  { id:"budget_proposal", label:"Budget\nProposal",        suite:"bp", size:"lg",
+    suites:["B&P","R&T","EAM"],
+    desc:"The executive's recommended budget plan for the coming fiscal year, submitted to the legislative body for review and adoption. Includes proposed operating revenues, expenditures, and capital budget (from the CIP). Developed using Budget Proposal Line Items tied to the Chart of Accounts." },
+  { id:"bp_line_item",    label:"Budget Proposal\nLine Item", suite:"bp", size:"sm",
+    suites:["B&P","FIN"],
+    desc:"An individual entry within a Budget Proposal detailing a specific planned revenue or expenditure — salaries, equipment, program costs. Tied to Chart of Accounts segments. Rolls up into the overall Budget Proposal." },
+  { id:"budget_amend",    label:"Budget\nAmendment",       suite:"bp", size:"md",
+    suites:["B&P","FIN"],
+    desc:"A formal action by the governing body to revise the legally adopted budget. Must follow the same legal process as adoption. GASB requires presenting both the original and final (amended) budget in budget-to-actual comparisons." },
+  { id:"workforce_plan",  label:"Workforce\nPlan",         suite:"bp", size:"md",
+    suites:["B&P","R&T"],
+    desc:"A Budget Proposal focused on Employee funding needs — staffing forecasts, position requirements, retirements, and recruitment. Developed alongside the main budget proposal to ensure personnel costs are sustainable and aligned with service objectives." },
+
+  // ── EAM
+  { id:"infra_asset",     label:"Infrastructure\nAsset",   suite:"eam", size:"lg",
+    suites:["EAM","PLC","UB","PRO"],
+    desc:"An asset maintained by a Government Entity to deliver essential public services: roads, bridges, water/sewer systems, parks, and public buildings. May be a capitalized Fixed Asset or an operational-only asset below the capitalization threshold. The central object of the EAM suite." },
+  { id:"work_order",      label:"Work Order",              suite:"eam", size:"md",
+    suites:["EAM"],
+    desc:"An operational document authorizing, scheduling, and tracking maintenance activities on a physical asset. A container for related Labor Tasks. May be preventive, corrective, inspection, or upgrade work. Work Orders do not authorize payment — a Purchase Order does." },
+  { id:"labor_task",      label:"Labor Task",              suite:"eam", size:"md",
+    suites:["EAM","UB"],
+    desc:"An individual unit of work assigned to one or more Labor Resources, tracking labor, equipment, and materials costs at the task level. The atomic unit of work in EAM — distinct from a generic platform Task. Costs post directly to the GL." },
+  { id:"labor_resource",  label:"Labor\nResource",         suite:"eam", size:"sm",
+    suites:["EAM"],
+    desc:"A named person or crew member assigned to perform a Labor Task. Time spent is tracked in a Labor Log. Can include Employees and Contractors." },
+  { id:"equipment",       label:"Equipment\n(Resource)",   suite:"eam", size:"sm",
+    suites:["EAM","FIN"],
+    desc:"Vehicles, specialty equipment, or heavy machinery required to perform a Labor Task. Usage (time, mileage) is tracked in an Equipment Log and posted as cost." },
+  { id:"materials",       label:"Materials\n(Resource)",   suite:"eam", size:"sm",
+    suites:["EAM","FIN","PRO"],
+    desc:"Consumable items or parts (asphalt, pipes, signage) needed to complete a Labor Task. Quantities consumed are tracked in a Materials Log and posted to the GL on consumption." },
+  { id:"inspection",      label:"Inspection",              suite:"eam", size:"sm",
+    suites:["EAM"],
+    desc:"A structured assessment of an asset's condition — PCI for pavement, safety rating for a playground, flow test for a hydrant. Captures scores and condition data feeding asset condition indexes, risk models, and capital planning. Can generate Work Orders for remediation." },
+  { id:"eam_scenario",    label:"EAM\nScenario",           suite:"eam", size:"md",
+    suites:["EAM","B&P"],
+    desc:"A planning record modeling maintenance and capital funding strategies. Uses deterioration curves, inspection results, and service level goals to align Labor Tasks with Infrastructure Assets and produce defensible Budget Proposals or optimized task sets from available funding." },
+  { id:"material_plan",   label:"Material Plan",           suite:"eam", size:"sm",
+    suites:["EAM","PRO"],
+    desc:"The estimated quantity of Materials needed to complete a collection of Labor Tasks or Work Orders. May inform Budget Proposal Line Items or Items in a Solicitation or Purchase Order." },
+
+  // ── PLC
+  { id:"permit",          label:"Permit",                  suite:"plc", size:"md",
+    suites:["EAM","PLC"],
+    desc:"An official authorization issued by a Government Entity allowing an individual or organization to perform a specific activity (construction, operation, event use). Activity-specific and time-limited. Requires an application process, compliance review, and fee payment." },
+  { id:"license",         label:"License",                 suite:"plc", size:"md",
+    suites:["PLC"],
+    desc:"An official approval granting ongoing legal right to perform an activity or operate a business. Person or entity-specific, typically valid for a set term (annual renewal). Requires demonstration of competence and fee payment. Differs from a Permit in its ongoing, credential-like nature." },
+  { id:"applicant",       label:"Applicant",               suite:"plc", size:"sm",
+    suites:["PLC"],
+    desc:"An individual, business, or organization that submits a request to a Government Entity for official authorization (permit, license) or that responds to an enforcement action (code case). The context in which a Constituent interacts with PLC." },
+  { id:"code_case",       label:"Code Case",               suite:"plc", size:"sm",
+    suites:["PLC"],
+    desc:"A record managing enforcement of municipal codes and ordinances: complaints, inspections, notices, violations, fines, and compliance actions. Workflow-driven and violation-focused — the enforcement side of community development, contrasting with permits (authorization)." },
+
+  // ── UB / Revenue
+  { id:"utility_customer",label:"Utility\nCustomer",       suite:"ub", size:"md",
+    suites:["UB","EAM","PLC"],
+    desc:"An individual, household, or organization that receives utility services (water, electricity, gas, waste management). Billed based on usage or agreed rates. A Constituent becomes a Utility Customer when they establish utility service." },
+  { id:"service_account", label:"Service\nAccount",        suite:"ub", size:"md",
+    suites:["UB","T&R","EAM"],
+    desc:"The account record tied to a specific service Location where utility services are delivered. Remains associated with the property even if the Utility Customer changes. Tracks usage, bills, payments, and service status for that location." },
+  { id:"utility_service", label:"Utility\nService",        suite:"ub", size:"sm",
+    suites:["UB"],
+    desc:"A utility service definition (water, sewer, electricity, gas) that can be assigned to a customer Service Account at a specific service location. Defines the type of service delivered." },
+  { id:"rate_code",       label:"Rate Code",               suite:"ub", size:"sm",
+    suites:["UB"],
+    desc:"A code defining the rates or tariffs used to calculate charges for a service account. Different customer classes or service types have distinct rate codes (residential vs. commercial water, for example)." },
+  { id:"bill",            label:"Bill",                    suite:"ub", size:"md",
+    suites:["AR","PLC","T&R","UB"],
+    desc:"A record of charges issued by a Government Entity to a customer for services provided (utility bill, permit fee, tax bill). Includes service period, usage, rates, adjustments, and total amount due. The basis for payment collection and revenue recognition." },
+  { id:"cash_receipt",    label:"Cash Receipt",            suite:"ub", size:"sm",
+    suites:["AR","UB"],
+    desc:"The collection of money from a customer in settlement of a bill, invoice, or other charge. Applied to outstanding balances and reducing accounts receivable. May be cash, check, EFT, credit card, or lockbox deposit." },
+  { id:"receivable",      label:"Receivable",              suite:"tr", size:"sm",
+    suites:["AR"],
+    desc:"An amount owed to a Government Entity for goods, services, or taxes provided but not yet paid. Recorded as an asset in the financial system and tracked until collected. Supports cash flow management and financial reporting." },
+
+  // ── T&R
+  { id:"tax",             label:"Tax",                     suite:"tr", size:"md",
+    suites:["T&R"],
+    desc:"A mandatory financial charge imposed on individuals or organizations to generate revenue for public purposes. Nonexchange transactions — payers don't receive goods/services directly proportional to the amount paid. May be property tax, sales tax, income tax, or utility tax." },
+
+  // ── Cross-suite
+  { id:"project",         label:"Project",                 suite:"cross", size:"md",
+    suites:["PLC","EAM","FIN","PRO","B&P","GAB"],
+    desc:"A temporary endeavor with defined scope, Budget, schedule, and objectives. Tracked for performance, financial management, and accountability. May be capital construction, a grant-funded program, or an internal initiative. Referenced by 6 suites." },
+  { id:"grant",           label:"Grant",                   suite:"cross", size:"md",
+    suites:["FIN","B&P"],
+    desc:"A contribution of cash or other assets from a grantor to the Government Entity for a specific purpose. Carries legal or contractual requirements. Under GASB 33, grants are recognized as revenue when all eligibility requirements are met. Typically funds Projects." },
+];
+
+// ──────────────────────────────────────────────────────────
+// LINKS
+// ──────────────────────────────────────────────────────────
+const LINKS = [
+  // P2P
+  { source:"supplier",       target:"vendor",         label:"onboarded as",  wf:"p2p" },
+  { source:"supplier",       target:"solicitation",   label:"responds to",   wf:"p2p" },
+  { source:"solicitation",   target:"contract",       label:"awarded as",    wf:"p2p" },
+  { source:"contract",       target:"vendor",         label:"with",          wf:"p2p" },
+  { source:"department",     target:"request",        label:"submits",       wf:"p2p" },
+  { source:"request",        target:"item",           label:"specifies",     wf:"p2p" },
+  { source:"request",        target:"purchase_line",  label:"has",           wf:"p2p" },
+  { source:"budget",         target:"request",        label:"budget check",  wf:"p2p" },
+  { source:"request",        target:"purchase_order", label:"converted to",  wf:"p2p" },
+  { source:"contract",       target:"purchase_order", label:"releases",      wf:"p2p" },
+  { source:"purchase_order", target:"vendor",         label:"issued to",     wf:"p2p" },
+  { source:"purchase_order", target:"receipt",        label:"confirmed by",  wf:"p2p" },
+  { source:"vendor",         target:"invoice",        label:"submits",       wf:"p2p" },
+  { source:"invoice",        target:"purchase_order", label:"references",    wf:"p2p" },
+  { source:"receipt",        target:"invoice",        label:"3-way match",   wf:"p2p" },
+  { source:"invoice",        target:"ap_payment",     label:"settled by",    wf:"p2p" },
+  { source:"ap_payment",     target:"journal_entry",  label:"posts to",      wf:"p2p" },
+  { source:"purchase_order", target:"po_amendment",   label:"amended by",    wf:"p2p" },
+  { source:"contract",       target:"contract_chg",   label:"releases",      wf:"p2p" },
+  { source:"budget",         target:"contract_chg",   label:"budget check",  wf:"p2p" },
+  { source:"contractor",     target:"contract",       label:"engaged via",   wf:"p2p" },
+  // PCard
+  { source:"card_program",   target:"cardholder",     label:"has",           wf:"p2p" },
+  { source:"cardholder",     target:"pcard_txn",      label:"makes",         wf:"p2p" },
+  { source:"pcard_txn",      target:"pcard_stmt",     label:"grouped in",    wf:"p2p" },
+  { source:"pcard_txn",      target:"journal_entry",  label:"posts to",      wf:"p2p" },
+  // Budget
+  { source:"department",     target:"budget_proposal",label:"submits",       wf:"budget" },
+  { source:"employee",       target:"workforce_plan", label:"included in",   wf:"budget" },
+  { source:"workforce_plan", target:"budget_proposal",label:"informs",       wf:"budget" },
+  { source:"budget_proposal",target:"bp_line_item",   label:"has",           wf:"budget" },
+  { source:"bp_line_item",   target:"coa",            label:"maps to",       wf:"budget" },
+  { source:"budget_proposal",target:"budget",         label:"adopted as",    wf:"budget" },
+  { source:"budget",         target:"fund",           label:"allocated by",  wf:"budget" },
+  { source:"budget",         target:"coa",            label:"uses",          wf:"budget" },
+  { source:"budget",         target:"budget_amend",   label:"amended by",    wf:"budget" },
+  { source:"eam_scenario",   target:"budget_proposal",label:"produces",      wf:"budget" },
+  // Financial
+  { source:"gov_entity",     target:"coa",            label:"owns",          wf:"financial" },
+  { source:"gov_entity",     target:"fund",           label:"manages",       wf:"financial" },
+  { source:"coa",            target:"fund",           label:"segment incl.", wf:"financial" },
+  { source:"coa",            target:"department",     label:"segment incl.", wf:"financial" },
+  { source:"gl",             target:"journal_entry",  label:"records",       wf:"financial" },
+  { source:"journal_entry",  target:"coa",            label:"posted to",     wf:"financial" },
+  { source:"fund_balance",   target:"gl",             label:"derived from",  wf:"financial" },
+  { source:"fixed_asset",    target:"journal_entry",  label:"depreciation",  wf:"financial" },
+  { source:"fiscal_year",    target:"gl",             label:"controls",      wf:"financial" },
+  // EAM
+  { source:"infra_asset",    target:"location",       label:"located at",    wf:"eam" },
+  { source:"infra_asset",    target:"work_order",     label:"maintained by", wf:"eam" },
+  { source:"infra_asset",    target:"inspection",     label:"assessed by",   wf:"eam" },
+  { source:"inspection",     target:"work_order",     label:"generates",     wf:"eam" },
+  { source:"work_order",     target:"labor_task",     label:"contains",      wf:"eam" },
+  { source:"labor_task",     target:"labor_resource", label:"uses",          wf:"eam" },
+  { source:"labor_task",     target:"equipment",      label:"uses",          wf:"eam" },
+  { source:"labor_task",     target:"materials",      label:"consumes",      wf:"eam" },
+  { source:"labor_task",     target:"journal_entry",  label:"cost posts",    wf:"eam" },
+  { source:"eam_scenario",   target:"infra_asset",    label:"optimizes",     wf:"eam" },
+  { source:"work_order",     target:"purchase_order", label:"funded by",     wf:"eam" },
+  { source:"infra_asset",    target:"fixed_asset",    label:"capitalized as",wf:"eam" },
+  { source:"material_plan",  target:"materials",      label:"estimates",     wf:"eam" },
+  // Capital
+  { source:"grant",          target:"project",        label:"funds",         wf:"capital" },
+  { source:"project",        target:"budget",         label:"has",           wf:"capital" },
+  { source:"project",        target:"purchase_order", label:"funded via",    wf:"capital" },
+  { source:"purchase_order", target:"fixed_asset",    label:"acquires",      wf:"capital" },
+  { source:"fixed_asset",    target:"gl",             label:"recorded in",   wf:"capital" },
+  // PLC
+  { source:"constituent",    target:"applicant",      label:"becomes",       wf:"plc" },
+  { source:"applicant",      target:"permit",         label:"applies for",   wf:"plc" },
+  { source:"applicant",      target:"license",        label:"applies for",   wf:"plc" },
+  { source:"permit",         target:"location",       label:"at",            wf:"plc" },
+  { source:"permit",         target:"infra_asset",    label:"related to",    wf:"plc" },
+  { source:"permit",         target:"bill",           label:"fees generate", wf:"plc" },
+  { source:"code_case",      target:"location",       label:"at",            wf:"plc" },
+  { source:"code_case",      target:"applicant",      label:"involves",      wf:"plc" },
+  // Billing
+  { source:"constituent",    target:"utility_customer",label:"becomes",      wf:"billing" },
+  { source:"utility_customer",target:"service_account",label:"has",         wf:"billing" },
+  { source:"service_account",target:"location",       label:"at",            wf:"billing" },
+  { source:"service_account",target:"utility_service",label:"delivers",      wf:"billing" },
+  { source:"utility_service",target:"rate_code",      label:"priced by",     wf:"billing" },
+  { source:"service_account",target:"bill",           label:"generates",     wf:"billing" },
+  { source:"bill",           target:"rate_code",      label:"calc. by",      wf:"billing" },
+  { source:"bill",           target:"receivable",     label:"creates",       wf:"billing" },
+  { source:"cash_receipt",   target:"bill",           label:"settles",       wf:"billing" },
+  { source:"cash_receipt",   target:"journal_entry",  label:"posts revenue", wf:"billing" },
+  { source:"tax",            target:"bill",           label:"generates",     wf:"billing" },
+  { source:"tax",            target:"journal_entry",  label:"posts to",      wf:"billing" },
+  // Platform
+  { source:"gov_entity",     target:"department",     label:"has",           wf:"financial" },
+  { source:"gov_entity",     target:"gov_user",       label:"employs",       wf:"financial" },
+  { source:"employee",       target:"department",     label:"belongs to",    wf:"budget" },
+  { source:"constituent",    target:"utility_customer",label:"can be",       wf:"billing" },
+  { source:"project",        target:"eam_scenario",   label:"drives",        wf:"eam" },
+  { source:"material_plan",  target:"budget_proposal",label:"informs",       wf:"budget" },
+];
+
+// ──────────────────────────────────────────────────────────
+// SETUP
+// ──────────────────────────────────────────────────────────
+const nodeById = Object.fromEntries(NODES.map(n => [n.id, n]));
+const wfNodeSets = {};
+Object.keys(WORKFLOWS).forEach(wf => {
+  wfNodeSets[wf] = new Set(
+    wf === "all"
+      ? NODES.map(n => n.id)
+      : LINKS.filter(l => l.wf === wf).flatMap(l => [l.source, l.target])
+  );
+});
+
+function sizeR(s) { return s==="xl"?40:s==="lg"?32:s==="md"?25:19; }
+function col(suite) { return (S[suite]||S.platform).color; }
+
+let activeWf = "all";
+let selectedId = null;
+
+// ──────────────────────────────────────────────────────────
+// SVG / ZOOM
+// ──────────────────────────────────────────────────────────
+const canvasEl = document.getElementById("canvas");
+let W = canvasEl.clientWidth, H = canvasEl.clientHeight;
+
+const svg = d3.select("#svg");
+const defs = svg.append("defs");
+
+// Arrow markers per workflow
+Object.entries(WORKFLOWS).forEach(([wf, cfg]) => {
+  ["dim","lit"].forEach(state => {
+    const op = state==="lit"?0.8:0.3;
+    defs.append("marker").attr("id",`arr-${wf}-${state}`)
+      .attr("viewBox","0 -4 8 8").attr("refX",7).attr("refY",0)
+      .attr("markerWidth",6).attr("markerHeight",6).attr("orient","auto")
+      .append("path").attr("d","M0,-4L8,0L0,4")
+      .attr("fill", cfg.color).attr("opacity",op);
+  });
+});
+// default arrow
+defs.append("marker").attr("id","arr-default")
+  .attr("viewBox","0 -4 8 8").attr("refX",7).attr("refY",0)
+  .attr("markerWidth",5).attr("markerHeight",5).attr("orient","auto")
+  .append("path").attr("d","M0,-4L8,0L0,4")
+  .attr("fill","#8b949e").attr("opacity",.4);
+
+const root = svg.append("g");
+const zoom = d3.zoom().scaleExtent([0.1,5])
+  .on("zoom", e => root.attr("transform", e.transform));
+svg.call(zoom);
+svg.on("click", e => {
+  if (e.target === svg.node()) clearSel();
+});
+
+// ──────────────────────────────────────────────────────────
+// SIMULATION
+// ──────────────────────────────────────────────────────────
+const sim = d3.forceSimulation(NODES)
+  .force("link", d3.forceLink(LINKS).id(d=>d.id).distance(d=>{
+    const s=nodeById[d.source.id||d.source], t=nodeById[d.target.id||d.target];
+    return 55+(s?sizeR(s.size):19)+(t?sizeR(t.size):19);
+  }).strength(0.45))
+  .force("charge", d3.forceManyBody().strength(d => -380 - sizeR(d.size)*8))
+  .force("center", d3.forceCenter(W/2, H/2))
+  .force("collide", d3.forceCollide().radius(d=>sizeR(d.size)+12).strength(0.85))
+  .alphaDecay(0.016);
+
+// ──────────────────────────────────────────────────────────
+// DRAW LINKS
+// ──────────────────────────────────────────────────────────
+const linkG = root.append("g");
+const linkEls = linkG.selectAll("line").data(LINKS).join("line")
+  .attr("class","link")
+  .attr("stroke", d => WORKFLOWS[d.wf]?.color || "#8b949e")
+  .attr("marker-end","url(#arr-default)");
+
+// ──────────────────────────────────────────────────────────
+// DRAW NODES
+// ──────────────────────────────────────────────────────────
+const nodeG = root.append("g").selectAll(".node-g").data(NODES).join("g")
+  .attr("class","node-g")
+  .call(d3.drag()
+    .on("start",(e,d)=>{ if(!e.active) sim.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; })
+    .on("drag",(e,d)=>{ d.fx=e.x; d.fy=e.y; })
+    .on("end",(e,d)=>{ if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+  .on("click",(e,d)=>{ e.stopPropagation(); toggleSel(d); });
+
+// Glow ring (selected)
+nodeG.append("circle").attr("class","node-glow")
+  .attr("r", d => sizeR(d.size)+9)
+  .attr("fill", d => col(d.suite))
+  .attr("filter","url(#glow)");
+
+// Main circle
+nodeG.append("circle").attr("class","node-bg")
+  .attr("r", d => sizeR(d.size))
+  .attr("fill", d => col(d.suite));
+
+// Labels (multi-line)
+nodeG.each(function(d) {
+  const el = d3.select(this);
+  const r = sizeR(d.size);
+  const lines = d.label.split("\n");
+  const lh = r >= 32 ? 13 : 12;
+  lines.forEach((ln, i) => {
+    el.append("text").attr("class","node-label")
+      .attr("text-anchor","middle").attr("dominant-baseline","central")
+      .attr("y", -((lines.length-1)*lh)/2 + i*lh)
+      .attr("font-size", r>=36?"13px":r>=28?"12px":r>=22?"11px":"10px")
+      .attr("fill", d.suite==="ub"?"#1f2328":null) // UB (yellow) always needs dark text; others via CSS
+      .text(ln);
+  });
+});
+
+// Tooltip
+nodeG.on("mouseenter",(e,d)=>{
+  const tip = document.getElementById("tip");
+  tip.textContent = d.label.replace(/\n/g," ") + " · " + (S[d.suite]||S.platform).label;
+  tip.style.opacity="1"; tip.style.left=(e.clientX+12)+"px"; tip.style.top=(e.clientY-8)+"px";
+}).on("mousemove",e=>{
+  const tip=document.getElementById("tip");
+  tip.style.left=(e.clientX+12)+"px"; tip.style.top=(e.clientY-8)+"px";
+}).on("mouseleave",()=>{
+  document.getElementById("tip").style.opacity="0";
+});
+
+// Glow filter
+defs.append("filter").attr("id","glow")
+  .append("feGaussianBlur").attr("stdDeviation","6").attr("result","blur");
+const glowFilter = defs.select("#glow");
+glowFilter.append("feMerge").selectAll("feMergeNode")
+  .data(["blur","SourceGraphic"]).join("feMergeNode")
+  .attr("in",d=>d);
+
+// ──────────────────────────────────────────────────────────
+// TICK
+// ──────────────────────────────────────────────────────────
+sim.on("tick",()=>{
+  linkEls
+    .attr("x1",d=>d.source.x).attr("y1",d=>d.source.y)
+    .attr("x2",d=>{
+      const dx=d.target.x-d.source.x, dy=d.target.y-d.source.y;
+      const dist=Math.sqrt(dx*dx+dy*dy)||1;
+      return d.target.x-(dx/dist)*(sizeR(d.target.size||"sm")+9);
+    })
+    .attr("y2",d=>{
+      const dx=d.target.x-d.source.x, dy=d.target.y-d.source.y;
+      const dist=Math.sqrt(dx*dx+dy*dy)||1;
+      return d.target.y-(dy/dist)*(sizeR(d.target.size||"sm")+9);
+    });
+  nodeG.attr("transform",d=>`translate(${d.x},${d.y})`);
+});
+
+// ──────────────────────────────────────────────────────────
+// HIGHLIGHT
+// ──────────────────────────────────────────────────────────
+function getNeighborhood(id) {
+  const ids = new Set([id]);
+  const lIdx = new Set();
+  LINKS.forEach((l,i)=>{
+    const s=l.source.id||l.source, t=l.target.id||l.target;
+    if(s===id||t===id){ ids.add(s); ids.add(t); lIdx.add(i); }
+  });
+  return { ids, lIdx };
+}
+
+function applyHighlight() {
+  const wfNodes = wfNodeSets[activeWf];
+  const nb = selectedId ? getNeighborhood(selectedId) : null;
+
+  nodeG.each(function(d) {
+    const inWf = wfNodes.has(d.id);
+    const inNb = nb ? nb.ids.has(d.id) : true;
+    const visible = (activeWf==="all" ? true : inWf) && inNb;
+    const op = visible ? 1 : 0.07;
+    d3.select(this).selectAll(".node-bg,.node-label").style("opacity",op);
+    d3.select(this).select(".node-glow").classed("on", d.id===selectedId);
+  });
+
+  linkEls.each(function(l,i){
+    const s=l.source.id||l.source, t=l.target.id||l.target;
+    const inWf = activeWf==="all" || l.wf===activeWf;
+    const inNb = nb ? nb.lIdx.has(i) : true;
+    const isLight = document.documentElement.getAttribute("data-theme") === "light";
+    let op = isLight ? 0.45 : 0.18;
+    if(nb) op = nb.lIdx.has(i) ? 0.9 : 0.04;
+    else if(!inWf) op = 0.04;
+    else if(activeWf!=="all") op = isLight ? 0.8 : 0.6;
+    d3.select(this).style("opacity",op)
+      .attr("stroke-width", (nb&&nb.lIdx.has(i)) || (activeWf!=="all"&&inWf) ? 2 : 1.5);
+  });
+}
+
+// ──────────────────────────────────────────────────────────
+// SELECTION
+// ──────────────────────────────────────────────────────────
+function toggleSel(d) {
+  selectedId = selectedId===d.id ? null : d.id;
+  applyHighlight();
+  selectedId ? showPanel(d) : showHint();
+}
+function clearSel() {
+  selectedId=null; applyHighlight(); showHint();
+}
+function showHint() {
+  document.getElementById("panel-inner").innerHTML=`
+    <div class="panel-hint">
+      <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"/><circle cx="7" cy="12" r="2.5"/>
+        <circle cx="17" cy="12" r="2.5"/><circle cx="12" cy="7" r="2.5"/>
+        <line x1="9.5" y1="12" x2="14.5" y2="12"/>
+        <line x1="12" y1="9.5" x2="12" y2="9.5"/>
+      </svg>
+      <div>Click any object to explore its description and relationships.<br><br>Use workflow filters above to trace how objects connect.</div>
+    </div>`;
+}
+function showPanel(d) {
+  const connections = [];
+  LINKS.forEach(l=>{
+    const s=l.source.id||l.source, t=l.target.id||l.target;
+    if(s===d.id){ const n=nodeById[t]; if(n) connections.push({dir:"out",node:n,rel:l.label}); }
+    if(t===d.id){ const n=nodeById[s]; if(n) connections.push({dir:"in",node:n,rel:l.label}); }
+  });
+  const connHTML = connections.map(c=>`
+    <div class="conn-item" onclick="jumpTo('${c.node.id}')">
+      <div class="conn-dot" style="background:${col(c.node.suite)}"></div>
+      <span class="conn-dir">${c.dir==="out"?"→":"←"}</span>
+      <span class="conn-rel">${c.rel}</span>
+      <span class="conn-name">${c.node.label.replace(/\n/g," ")}</span>
+    </div>`).join("");
+
+  const suiteMeta = S[d.suite]||S.platform;
+  document.getElementById("panel-inner").innerHTML=`
+    <div class="obj-name">${d.label.replace(/\n/g," ")}</div>
+    <span class="obj-suite" style="background:${suiteMeta.color}22;color:${suiteMeta.color};border:1px solid ${suiteMeta.color}33">${suiteMeta.label}</span>
+    <div class="obj-desc">${d.desc}</div>
+    <div class="conn-label">Connected Objects (${connections.length})</div>
+    <div class="conn-list">${connHTML||"<div style='font-size:11px;color:#484f58'>No connections</div>"}</div>`;
+}
+
+window.jumpTo = function(id) {
+  const d = nodeById[id];
+  if(!d) return;
+  selectedId = id;
+  applyHighlight();
+  showPanel(d);
+  // Pan to node
+  const t = d3.zoomTransform(svg.node());
+  const tx = W/2 - t.k*d.x;
+  const ty = H/2 - t.k*d.y;
+  svg.transition().duration(450).call(zoom.transform, d3.zoomIdentity.translate(tx,ty).scale(t.k));
+};
+
+// ──────────────────────────────────────────────────────────
+// WORKFLOW BUTTONS
+// ──────────────────────────────────────────────────────────
+document.querySelectorAll(".wf-btn").forEach(btn=>{
+  const wf = btn.dataset.wf;
+  const cfg = WORKFLOWS[wf];
+  btn.addEventListener("click",()=>{
+    activeWf=wf; selectedId=null;
+    document.querySelectorAll(".wf-btn").forEach(b=>{
+      const c=WORKFLOWS[b.dataset.wf]?.color||"#8b949e";
+      b.classList.remove("active");
+      b.style.background="transparent"; b.style.borderColor="#30363d"; b.style.color=c;
+    });
+    btn.classList.add("active");
+    btn.style.background=cfg.color+"22"; btn.style.borderColor=cfg.color+"66"; btn.style.color=cfg.color;
+    applyHighlight();
+    buildStoryStrip(wf);
+    showHint();
+  });
+});
+
+// ──────────────────────────────────────────────────────────
+// STORY STRIP
+// ──────────────────────────────────────────────────────────
+function buildStoryStrip(wf) {
+  const strip = document.getElementById("story-strip");
+  const inner = document.getElementById("story-inner");
+  const cfg = WORKFLOWS[wf];
+  if(!cfg||!cfg.steps.length){ strip.classList.remove("open"); return; }
+  strip.classList.add("open");
+  inner.innerHTML = cfg.steps.map((id,i)=>{
+    const n=nodeById[id];
+    if(!n) return "";
+    const c=cfg.color;
+    return `<div class="story-step">
+      <div class="step-pill" style="background:${c}18;border-color:${c}44;color:${c}"
+           onclick="jumpTo('${id}')">
+        <span class="step-num" style="background:${c}33">${i+1}</span>
+        ${n.label.replace(/\n/g," ")}
+      </div>
+      ${i<cfg.steps.length-1?`<span class="step-arrow">›</span>`:""}
+    </div>`;
+  }).join("");
+}
+
+// ──────────────────────────────────────────────────────────
+// SEARCH
+// ──────────────────────────────────────────────────────────
+document.getElementById("search").addEventListener("input",function(){
+  const q=this.value.trim().toLowerCase();
+  if(!q){ clearSel(); return; }
+  const match=NODES.find(n=>n.label.toLowerCase().replace(/\n/g," ").includes(q)||(n.desc&&n.desc.toLowerCase().includes(q)));
+  if(match) jumpTo(match.id);
+});
+
+// ──────────────────────────────────────────────────────────
+// RESIZE
+// ──────────────────────────────────────────────────────────
+new ResizeObserver(()=>{
+  W=canvasEl.clientWidth; H=canvasEl.clientHeight;
+  sim.force("center",d3.forceCenter(W/2,H/2)).alpha(0.05).restart();
+}).observe(canvasEl);
+
+// ──────────────────────────────────────────────────────────
+// INITIAL POSITIONS  (cluster by workflow affinity)
+// ──────────────────────────────────────────────────────────
+const POS = {
+  // Platform (top center)
+  gov_entity:{x:.50,y:.07}, gov_user:{x:.38,y:.09}, department:{x:.50,y:.18}, constituent:{x:.25,y:.14}, employee:{x:.36,y:.19}, location:{x:.50,y:.90},
+  // Finance (left)
+  coa:{x:.18,y:.30}, fund:{x:.09,y:.26}, gl:{x:.12,y:.43}, journal_entry:{x:.09,y:.56}, fund_balance:{x:.18,y:.55}, fixed_asset:{x:.22,y:.67}, fiscal_year:{x:.20,y:.44},
+  // Procurement (right upper)
+  vendor:{x:.82,y:.22}, supplier:{x:.92,y:.13}, solicitation:{x:.97,y:.22}, contract:{x:.87,y:.32}, contract_chg:{x:.95,y:.38}, contractor:{x:.78,y:.14},
+  item:{x:.77,y:.42}, request:{x:.70,y:.32}, purchase_line:{x:.62,y:.40}, purchase_order:{x:.76,y:.54}, po_amendment:{x:.87,y:.56}, receipt:{x:.86,y:.65},
+  // PCard (right, between procurement and AP)
+  card_program:{x:.97,y:.50}, cardholder:{x:.97,y:.60}, pcard_txn:{x:.97,y:.70}, pcard_stmt:{x:.97,y:.79},
+  // AP (far right)
+  invoice:{x:.88,y:.75}, ap_payment:{x:.88,y:.86},
+  // B&P (center-left)
+  budget:{x:.36,y:.30}, budget_proposal:{x:.28,y:.42}, bp_line_item:{x:.20,y:.50}, budget_amend:{x:.30,y:.52}, workforce_plan:{x:.16,y:.64},
+  // EAM (bottom right)
+  infra_asset:{x:.65,y:.66}, work_order:{x:.74,y:.76}, labor_task:{x:.82,y:.84}, labor_resource:{x:.92,y:.88}, equipment:{x:.75,y:.90}, materials:{x:.64,y:.88}, inspection:{x:.55,y:.74}, eam_scenario:{x:.48,y:.68}, material_plan:{x:.56,y:.85},
+  // PLC (bottom center)
+  permit:{x:.42,y:.84}, license:{x:.35,y:.92}, applicant:{x:.34,y:.78}, code_case:{x:.26,y:.86},
+  // UB (bottom left)
+  utility_customer:{x:.14,y:.78}, service_account:{x:.20,y:.84}, utility_service:{x:.12,y:.88}, rate_code:{x:.22,y:.92}, bill:{x:.30,y:.73}, cash_receipt:{x:.30,y:.82}, receivable:{x:.14,y:.68},
+  // T&R
+  tax:{x:.08,y:.74},
+  // Cross
+  project:{x:.46,y:.50}, grant:{x:.38,y:.59},
+};
+NODES.forEach(n=>{
+  const p=POS[n.id];
+  n.x=(p?p.x:0.4+Math.random()*.2)*W;
+  n.y=(p?p.y:0.4+Math.random()*.2)*H;
+});
+
+sim.alpha(1).restart();
+applyHighlight();
+
+// ── Light / dark toggle ───────────────────────────────────────────────
+document.getElementById("theme-btn").addEventListener("click", function() {
+  const isLight = document.documentElement.getAttribute("data-theme") === "light";
+  document.documentElement.setAttribute("data-theme", isLight ? "dark" : "light");
+  this.textContent = isLight ? "☀️" : "🌙";
+
+  // Re-tint the "All Objects" default button border to match new theme
+  const allBtn = document.querySelector("[data-wf='all']");
+  if (allBtn && !allBtn.classList.contains("active")) {
+    allBtn.style.borderColor = isLight ? "#30363d" : "#d0d7de";
+  }
+
+  // Node labels stay white on colored nodes — no SVG changes needed.
+  // UB (yellow) nodes already use dark text inline — also unchanged.
+});
+</script>
+</body>
+</html>

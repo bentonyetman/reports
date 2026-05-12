@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenGov Core Domain Object Graph</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  background: #0f172a; color: #f1f5f9;
+  height: 100vh; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 16px; background: #1e293b;
+  border-bottom: 1px solid #334155; flex-shrink: 0; gap: 12px; flex-wrap: wrap;
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.logo { font-size: 14px; font-weight: 700; color: #f8fafc; }
+.logo span { color: #60a5fa; }
+.tagline { font-size: 11px; color: #475569; }
+.stats-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.stat-chip {
+  font-size: 11px; background: #0f172a; border: 1px solid #334155;
+  border-radius: 6px; padding: 3px 9px; color: #94a3b8;
+}
+.stat-chip strong { color: #e2e8f0; }
+.stat-chip.warn { border-color: #f59e0b44; }
+.stat-chip.warn strong { color: #fbbf24; }
+.stat-chip.ok strong { color: #4ade80; }
+.controls {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 16px; background: #1e293b;
+  border-bottom: 1px solid #334155; flex-shrink: 0; flex-wrap: wrap;
+}
+.ctrl-label { font-size: 10px; color: #475569; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+.btn-group { display: flex; gap: 3px; flex-wrap: wrap; }
+.btn {
+  padding: 3px 9px; border-radius: 5px; font-size: 11px; font-weight: 500;
+  cursor: pointer; border: 1px solid #334155;
+  transition: all .15s; background: #0f172a; color: #94a3b8;
+}
+.btn:hover { border-color: #475569; color: #e2e8f0; }
+.btn.active { color: #fff; border-color: transparent; background: #1d4ed8; }
+.btn.active.wf-p2p     { background: #15803d; }
+.btn.active.wf-budget  { background: #6d28d9; }
+.btn.active.wf-financial { background: #1d4ed8; }
+.btn.active.wf-eam     { background: #c2410c; }
+.btn.active.wf-plc     { background: #0e7490; }
+.btn.active.wf-ub      { background: #92400e; }
+.btn.active.wf-platform{ background: #374151; }
+.divider { width: 1px; height: 18px; background: #334155; margin: 0 3px; }
+.search-box {
+  margin-left: auto; padding: 3px 9px; border-radius: 5px; font-size: 11px;
+  background: #0f172a; border: 1px solid #334155; color: #e2e8f0; width: 150px;
+}
+.search-box:focus { outline: none; border-color: #3b82f6; }
+.search-box::placeholder { color: #475569; }
+.main { display: flex; flex: 1; overflow: hidden; }
+#canvas-container { flex: 1; position: relative; overflow: hidden; }
+svg { width: 100%; height: 100%; }
+.panel {
+  width: 288px; flex-shrink: 0;
+  background: #1e293b; border-left: 1px solid #334155;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.panel-empty {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  color: #475569; font-size: 12px; gap: 8px; padding: 24px; text-align: center;
+}
+.panel-content { flex: 1; overflow-y: auto; padding: 14px; display: none; }
+.panel-content.visible { display: block; }
+.panel-name { font-size: 15px; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }
+.badge-row { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+.badge {
+  font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px;
+  text-transform: uppercase; letter-spacing: .4px;
+}
+.badge.priority { background: #1e3a5f; color: #60a5fa; }
+.badge.bifrost-yes  { background: #14532d; color: #4ade80; }
+.badge.bifrost-no   { background: #3b0000; color: #f87171; }
+.badge.bifrost-part { background: #3b1f00; color: #fbbf24; }
+.badge.adr-score    { background: #1e1b4b; color: #a5b4fc; }
+.panel-desc { font-size: 11px; color: #94a3b8; line-height: 1.6; margin-bottom: 12px; }
+.panel-section { font-size: 10px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+/* ADR-65 checklist */
+.adr-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 12px;
+}
+.adr-item {
+  display: flex; align-items: center; gap: 5px; font-size: 10px;
+  padding: 4px 6px; border-radius: 5px;
+}
+.adr-item.met   { background: #14532d22; color: #4ade80; }
+.adr-item.unmet { background: #3b000022; color: #f87171; }
+.adr-item.na    { background: #1e293b; color: #475569; }
+.adr-item .adr-icon { font-size: 11px; flex-shrink: 0; }
+.adr-item .adr-name { font-weight: 500; }
+/* Relationships */
+.rel-list { display: flex; flex-direction: column; gap: 3px; margin-bottom: 12px; }
+.rel-item {
+  display: flex; align-items: center; gap: 5px; font-size: 11px;
+  padding: 5px 7px; border-radius: 5px; background: #0f172a;
+  border: 1px solid #1e293b; cursor: pointer; transition: border-color .15s;
+}
+.rel-item:hover { border-color: #334155; }
+.rel-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.rel-arrow { color: #475569; font-size: 10px; flex-shrink: 0; }
+.rel-label { color: #475569; font-size: 9px; flex-shrink: 0; max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rel-name { color: #cbd5e1; font-weight: 500; font-size: 11px; }
+.suite-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
+.suite-tag {
+  font-size: 9px; padding: 2px 6px; border-radius: 4px;
+  border: 1px solid; font-weight: 600; text-transform: uppercase; letter-spacing: .3px;
+}
+/* Legend */
+.legend { border-top: 1px solid #334155; padding: 10px 14px; flex-shrink: 0; }
+.legend-title { font-size: 10px; color: #475569; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+.legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #94a3b8; }
+.legend-swatch { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.legend-swatch.gap { background: transparent; border: 1.5px dashed #64748b; }
+/* ── View mode tab ── */
+.view-tabs {
+  display: flex; border-bottom: 1px solid #334155;
+  flex-shrink: 0; background: #1e293b;
+}
+.view-tab {
+  flex: 1; padding: 5px; font-size: 10px; font-weight: 600; text-align: center;
+  cursor: pointer; color: #475569; border-bottom: 2px solid transparent;
+  transition: all .15s; text-transform: uppercase; letter-spacing: .4px;
+}
+.view-tab.active { color: #60a5fa; border-color: #3b82f6; }
+/* ADR maturity bar */
+.maturity-bar { display: flex; gap: 2px; margin-bottom: 10px; }
+.maturity-seg { height: 6px; border-radius: 3px; flex: 1; }
+/* Graph elements */
+.link { stroke-width: 1.5; opacity: .3; transition: opacity .2s, stroke-width .2s; }
+.link-label { font-size: 9px; fill: #64748b; pointer-events: none; opacity: 0; }
+.link-label.visible { opacity: 1; }
+.node-circle { cursor: grab; }
+.node-circle:active { cursor: grabbing; }
+.node-label { pointer-events: none; }
+#tooltip {
+  position: absolute; background: #1e293b; border: 1px solid #334155;
+  border-radius: 6px; padding: 5px 9px; font-size: 11px; color: #cbd5e1;
+  pointer-events: none; opacity: 0; transition: opacity .15s;
+  max-width: 200px; z-index: 100; line-height: 1.5;
+}
+/* ADR color ramp */
+.adr-ramp-8 { color: #22c55e; }
+.adr-ramp-6 { color: #84cc16; }
+.adr-ramp-4 { color: #eab308; }
+.adr-ramp-2 { color: #f97316; }
+.adr-ramp-0 { color: #ef4444; }
+@keyframes dash-spin { to { stroke-dashoffset: -24; } }
+.gap-anim { animation: dash-spin 5s linear infinite; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo">OpenGov <span>Domain Object Graph</span></div>
+    <div class="tagline">ADR-65 · Bifrost coverage · Relationships · Workflows</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-chip"><strong id="stat-total">—</strong> objects</div>
+    <div class="stat-chip ok"><strong id="stat-bifrost">—</strong> in Bifrost</div>
+    <div class="stat-chip warn"><strong id="stat-gaps">—</strong> gaps</div>
+    <div class="stat-chip ok"><strong id="stat-adr-full">—</strong> fully ADR-65</div>
+    <div class="stat-chip warn"><strong id="stat-adr-partial">—</strong> partial ADR-65</div>
+  </div>
+</div>
+
+<div class="controls">
+  <span class="ctrl-label">Workflow</span>
+  <div class="btn-group">
+    <button class="btn active" data-workflow="all">All</button>
+    <button class="btn wf-p2p" data-workflow="p2p">Procure-to-Pay</button>
+    <button class="btn wf-budget" data-workflow="budget">Budget Cycle</button>
+    <button class="btn wf-financial" data-workflow="financial">Financial</button>
+    <button class="btn wf-eam" data-workflow="eam">Asset Mgmt</button>
+    <button class="btn wf-plc" data-workflow="plc">Licensing</button>
+    <button class="btn wf-ub" data-workflow="ub">Revenue &amp; Billing</button>
+    <button class="btn wf-platform" data-workflow="platform">Platform</button>
+  </div>
+  <div class="divider"></div>
+  <span class="ctrl-label">Color</span>
+  <div class="btn-group">
+    <button class="btn active" id="color-suite-btn">By Suite</button>
+    <button class="btn" id="color-adr-btn">By ADR-65</button>
+  </div>
+  <div class="divider"></div>
+  <div class="btn-group">
+    <button class="btn active" id="toggle-gaps-btn">Gaps</button>
+    <button class="btn active" id="toggle-modeled-btn">Modeled</button>
+    <button class="btn" id="toggle-labels-btn">Edge labels</button>
+  </div>
+  <input type="text" class="search-box" id="search-input" placeholder="Search objects…">
+</div>
+
+<div class="main">
+  <div id="canvas-container">
+    <svg id="graph-svg"></svg>
+    <div id="tooltip"></div>
+  </div>
+  <div class="panel">
+    <div class="view-tabs">
+      <div class="view-tab active" id="tab-object" onclick="switchTab('object')">Object</div>
+      <div class="view-tab" id="tab-adr" onclick="switchTab('adr')">ADR-65</div>
+      <div class="view-tab" id="tab-legend" onclick="switchTab('legend')">Legend</div>
+    </div>
+    <!-- Object tab -->
+    <div id="pane-object" class="panel-content visible">
+      <div id="panel-empty-msg" style="color:#475569;font-size:12px;text-align:center;padding:32px 16px;">
+        Click any node to explore relationships
+      </div>
+      <div id="panel-detail" style="display:none">
+        <div class="panel-name" id="panel-name"></div>
+        <div class="badge-row" id="panel-badges"></div>
+        <div class="suite-tags" id="panel-suites"></div>
+        <div class="panel-desc" id="panel-desc"></div>
+        <div class="panel-section">ADR-65 Principles</div>
+        <div class="adr-grid" id="panel-adr"></div>
+        <div class="panel-section">Connected Objects</div>
+        <div class="rel-list" id="panel-rels"></div>
+      </div>
+    </div>
+    <!-- ADR-65 tab -->
+    <div id="pane-adr" class="panel-content">
+      <div class="panel-name" style="font-size:13px;margin-bottom:10px">ADR-65: Shared Domain Object</div>
+      <div class="panel-desc">Adopted principles for maximizing the value of shared domain objects across the OpenGov platform.</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+        <div class="adr-item met" style="border-radius:6px">
+          <span class="adr-icon">👤</span>
+          <div><div class="adr-name">Single Owner</div><div style="font-size:9px;color:#94a3b8">One domain team responsible</div></div>
+        </div>
+        <div class="adr-item met" style="border-radius:6px">
+          <span class="adr-icon">🔌</span>
+          <div><div class="adr-name">Service / APIs</div><div style="font-size:9px;color:#94a3b8">Authoritative REST API with CRUD ops</div></div>
+        </div>
+        <div class="adr-item met" style="border-radius:6px">
+          <span class="adr-icon">📡</span>
+          <div><div class="adr-name">Eventing</div><div style="font-size:9px;color:#94a3b8">Emits Kafka events for consumers</div></div>
+        </div>
+        <div class="adr-item met" style="border-radius:6px">
+          <span class="adr-icon">📊</span>
+          <div><div class="adr-name">Analytical Sink</div><div style="font-size:9px;color:#94a3b8">Analytical data products for reporting</div></div>
+        </div>
+        <div class="adr-item met" style="border-radius:6px">
+          <span class="adr-icon">🏷</span>
+          <div><div class="adr-name">Versioned</div><div style="font-size:9px;color:#94a3b8">Versioned schema with stable contracts</div></div>
+        </div>
+        <div class="adr-item met" style="border-radius:6px">
+          <span class="adr-icon">📝</span>
+          <div><div class="adr-name">Documented</div><div style="font-size:9px;color:#94a3b8">Intent, use, and support documented</div></div>
+        </div>
+        <div class="adr-item met" style="border-radius:6px">
+          <span class="adr-icon">🤖</span>
+          <div><div class="adr-name">MCP Server</div><div style="font-size:9px;color:#94a3b8">Basic ops via AI MCP server</div></div>
+        </div>
+        <div class="adr-item met" style="border-radius:6px">
+          <span class="adr-icon">🏗</span>
+          <div><div class="adr-name">Gov App Builder</div><div style="font-size:9px;color:#94a3b8">Discoverable in GAB for new apps</div></div>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding:10px;background:#0f172a;border-radius:6px;border:1px solid #334155">
+        <div style="font-size:10px;color:#60a5fa;font-weight:700;margin-bottom:4px">Color mode: By ADR-65</div>
+        <div style="font-size:10px;color:#94a3b8;line-height:1.6">Switch to "By ADR-65" color mode above to see each node's maturity score. Click any node for its principle checklist.</div>
+      </div>
+      <div style="margin-top:8px;padding:10px;background:#0f172a;border-radius:6px;border:1px solid #334155">
+        <div style="font-size:10px;color:#fbbf24;font-weight:700;margin-bottom:4px">Key insight from ADR-65</div>
+        <div style="font-size:10px;color:#94a3b8;line-height:1.6">"Domain Objects should be specific and opinionated." — This is why Labor Task ≠ generic Task, and why Supplier ≠ Vendor.</div>
+      </div>
+    </div>
+    <!-- Legend tab -->
+    <div id="pane-legend" class="panel-content">
+      <div class="panel-section" style="margin-bottom:8px">Bifrost Status</div>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">
+        <div class="legend-item"><div class="legend-swatch" style="background:#3b82f6"></div> Modeled in Bifrost</div>
+        <div class="legend-item"><div class="legend-swatch gap"></div> Gap — not yet in Bifrost</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:repeating-linear-gradient(45deg,#a855f7 0px,#a855f7 2px,transparent 2px,transparent 6px)"></div> Partial coverage</div>
+        <div class="legend-item"><div style="width:8px;height:8px;border-radius:50%;background:#4ade80;flex-shrink:0"></div> Green dot = in Bifrost</div>
+        <div class="legend-item"><div style="width:8px;height:8px;border-radius:50%;background:#1d4ed8;flex-shrink:0"></div> Blue dot = P0 priority</div>
+      </div>
+      <div class="panel-section" style="margin-bottom:8px">Suites (By Suite mode)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:14px" id="suite-legend"></div>
+      <div class="panel-section" style="margin-bottom:8px">ADR-65 Maturity (By ADR-65 mode)</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div class="legend-item"><div class="legend-swatch" style="background:#22c55e"></div> 7-8 / 8 principles</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#84cc16"></div> 5-6 / 8 principles</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#eab308"></div> 3-4 / 8 principles</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#f97316"></div> 1-2 / 8 principles</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#ef4444"></div> 0 principles met</div>
+        <div class="legend-item"><div class="legend-swatch gap"></div> Not in Bifrost (gap)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Config ───────────────────────────────────────────────────────────
+const SUITES = {
+  platform: { color:"#64748b", label:"Platform" },
+  fin:      { color:"#3b82f6", label:"Finance (FIN)" },
+  pro:      { color:"#22c55e", label:"Procurement (PRO)" },
+  ap:       { color:"#0ea5e9", label:"Accounts Payable (AP)" },
+  bp:       { color:"#a855f7", label:"Budget & Planning (B&P)" },
+  eam:      { color:"#f97316", label:"Asset Mgmt (EAM)" },
+  plc:      { color:"#06b6d4", label:"Licensing (PLC)" },
+  ub:       { color:"#eab308", label:"Utility Billing (UB)" },
+  tr:       { color:"#ef4444", label:"Tax & Revenue (T&R)" },
+  cross:    { color:"#ec4899", label:"Cross-Suite" },
+};
+const WFCOLOR = {
+  all:"#94a3b8", p2p:"#22c55e", budget:"#a855f7",
+  financial:"#3b82f6", eam:"#f97316", plc:"#06b6d4",
+  ub:"#eab308", platform:"#64748b",
+};
+// ADR-65 principle keys
+const ADR_KEYS = ["owner","service","events","analytics","versioned","documented","mcp","gab"];
+const ADR_META = {
+  owner:      { icon:"👤", name:"Single Owner" },
+  service:    { icon:"🔌", name:"Service / API" },
+  events:     { icon:"📡", name:"Eventing" },
+  analytics:  { icon:"📊", name:"Analytics Sink" },
+  versioned:  { icon:"🏷",  name:"Versioned" },
+  documented: { icon:"📝", name:"Documented" },
+  mcp:        { icon:"🤖", name:"MCP Server" },
+  gab:        { icon:"🏗",  name:"Gov App Builder" },
+};
+
+// ADR score → fill color
+function adrColor(score, total=8) {
+  const r = score / total;
+  if (r >= 0.875) return "#22c55e";
+  if (r >= 0.625) return "#84cc16";
+  if (r >= 0.375) return "#eab308";
+  if (r >= 0.125) return "#f97316";
+  return "#ef4444";
+}
+function adrScore(d) {
+  if (!d.adr65) return 0;
+  return ADR_KEYS.filter(k => d.adr65[k] === true).length;
+}
+
+// ── Nodes ─────────────────────────────────────────────────────────────
+// adr65: each key = true(met) | false(unmet) | null(N/A, not yet relevant)
+const NODES = [
+  // ── Platform ──
+  { id:"gov_entity", label:"Government\nEntity", suite:"platform", suites:["all"], priority:0, inBifrost:false,
+    adr65:{ owner:true, service:true, events:true, analytics:false, versioned:true, documented:true, mcp:null, gab:null },
+    desc:"A government organization with legal authority to govern, provide services, collect revenue, and manage public resources. Root tenant in OpenGov. Owner: Access Control." },
+  { id:"gov_user", label:"Government\nUser", suite:"platform", suites:["all"], priority:0, inBifrost:false,
+    adr65:{ owner:true, service:true, events:true, analytics:false, versioned:true, documented:true, mcp:null, gab:null },
+    desc:"A user employed by a Government Entity with access to one or more OpenGov products. Owner: Access Control. Analytics missing per ADR-65 examples." },
+  { id:"department", label:"Department", suite:"platform", suites:["bp","eam","fin","plc","pro"], priority:1, inBifrost:false,
+    adr65:null,
+    desc:"Org unit within a Government Entity. Currently has MULTIPLE IMPLEMENTATIONS across suites — no single SOR defined. This is the Department problem flagged in the spreadsheet as P1." },
+  { id:"constituent", label:"Constituent", suite:"platform", suites:["plc","bp","eam","tr","ub"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"An individual within the jurisdiction served by a Government Entity. May interact anonymously (311) or authenticated (taxes, bills). SOR: Platform Access Control." },
+  { id:"employee", label:"Employee", suite:"platform", suites:["payroll","eam"], priority:0, inBifrost:false,
+    adr65:null,
+    desc:"An individual employed by a Government Entity, on payroll and subject to tax withholdings. Employees ≠ Government Users (e.g., a contractor may be a User but not an Employee)." },
+  { id:"location", label:"Location", suite:"platform", suites:["plc","eam","ub","tr"], priority:2, inBifrost:false,
+    adr65:null,
+    desc:"Spatial reference for the physical location of Infrastructure Assets, Labor Tasks, Permits, Utility Customers, and more. SOR: Spatial Service (not yet in Bifrost)." },
+  { id:"project", label:"Project", suite:"cross", suites:["plc","eam","fin","pro","bp"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"A temporary endeavor with defined scope, Budget, schedule, and objectives. Referenced by 6 suites with no agreed SOR." },
+  { id:"grant", label:"Grant", suite:"cross", suites:["fin","bp"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"A contribution from one government organization to another for a specific purpose. Carries compliance requirements (GASB 33)." },
+
+  // ── Finance / GL ──
+  { id:"coa", label:"Chart of\nAccounts", suite:"fin", suites:["all"], priority:0, inBifrost:true, bifrostDomain:"GeneralLedger",
+    adr65:{ owner:true, service:true, events:false, analytics:false, versioned:true, documented:true, mcp:true, gab:false },
+    desc:"Structured framework organizing all accounts for financial transactions. Segmented by Fund, Department, Program, Object, Project, Grant. SOR: CoA Service. Undergoing rewrite." },
+  { id:"fund", label:"Fund", suite:"fin", suites:["all"], priority:0, inBifrost:"partial", bifrostDomain:"GeneralLedger",
+    adr65:{ owner:true, service:true, events:false, analytics:false, versioned:true, documented:false, mcp:false, gab:false },
+    desc:"A fiscal and accounting entity with a self-balancing set of accounts. Bifrost has FundConfig/FundAccountMapping but no Fund as a first-class domain entity. P0 gap." },
+  { id:"gl", label:"General\nLedger", suite:"fin", suites:["all"], priority:0, inBifrost:true, bifrostDomain:"GeneralLedger",
+    adr65:{ owner:true, service:true, events:false, analytics:false, versioned:true, documented:true, mcp:true, gab:false },
+    desc:"Central record-keeping system for all financial transactions, organized by Chart of Accounts. Authoritative source for financial reporting and budgetary control. SOR: GL Service." },
+  { id:"journal_entry", label:"Journal\nEntry", suite:"fin", suites:["fin","eam","plc","pro"], priority:0, inBifrost:true, bifrostDomain:"GeneralLedger",
+    adr65:{ owner:true, service:true, events:false, analytics:false, versioned:true, documented:true, mcp:true, gab:false },
+    desc:"Individual transaction record documenting accounts, debits/credits, date, and description. The atomic unit of accounting data. Bifrost ID: JournalEntryControl (v1.0.9)." },
+  { id:"fund_balance", label:"Fund Balance", suite:"fin", suites:["bp","ap","pro"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Difference between a Government Entity's assets and liabilities within a specific fund. Tracks restricted, committed, assigned, and unassigned balances including encumbrances. SOR: GL Service." },
+  { id:"fixed_asset", label:"Fixed Asset", suite:"fin", suites:["eam","fin"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Long-term tangible or intangible asset recorded for financial reporting, depreciated/amortized. Acquired through capital procurement. Sits at intersection of EAM and Finance." },
+  { id:"fiscal_year", label:"Fiscal Year", suite:"fin", suites:["fin"], priority:null, inBifrost:true, bifrostDomain:"GeneralLedger",
+    adr65:{ owner:true, service:true, events:false, analytics:false, versioned:true, documented:true, mcp:true, gab:false },
+    desc:"A fiscal year containing fiscal periods. Can be open or closed. Controls what periods are available for Journal Entry posting. Bifrost: FiscalYear entity (v1.0.9)." },
+
+  // ── Procurement / PRO ──
+  { id:"vendor", label:"Vendor", suite:"pro", suites:["fin","pro","eam","rt"], priority:1, inBifrost:true, bifrostDomain:"VendorManagement",
+    adr65:{ owner:true, service:true, events:true, analytics:false, versioned:true, documented:true, mcp:true, gab:false },
+    desc:"An external company doing business with a Government Entity. Supplier becomes a Vendor once onboarded in Financials. Currently 5 different implementations — canonical reconciliation is P1." },
+  { id:"supplier", label:"Supplier", suite:"pro", suites:["pro"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"A potential Vendor invited to respond to Solicitations. Represents a single national list. A Supplier can become a Vendor with multiple Government Entities. Pre-onboarding concept not in Bifrost." },
+  { id:"solicitation", label:"Solicitation", suite:"pro", suites:["pro"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Formal invitation by a Government Entity to obtain competitive responses for goods or services (RFP, RFI, bid). Entire sourcing/solicitation process not yet modeled in Bifrost." },
+  { id:"contract", label:"Contract", suite:"pro", suites:["fin","pro","eam"], priority:1, inBifrost:"partial", bifrostDomain:"Contracts",
+    adr65:{ owner:true, service:false, events:false, analytics:false, versioned:true, documented:false, mcp:false, gab:false },
+    desc:"Legal agreement specifying goods/services at agreed terms. Bifrost: Contracts domain (v1.0.0) exists but has ZERO entities catalogued. Marked 'not complete' in spreadsheet. P1 gap." },
+  { id:"item", label:"Item", suite:"pro", suites:["bp","pro","eam"], priority:1, inBifrost:false,
+    adr65:null,
+    desc:"A defined good or service that can be requested, purchased, stocked, or billed. Standardizes procurement. Attributes: description, unit of measure, price, GL account. P1 — used by B&P, PRO, EAM." },
+  { id:"request", label:"Request /\nRequisition", suite:"pro", suites:["fin","pro"], priority:1, inBifrost:true, bifrostDomain:"Requisitions",
+    adr65:{ owner:true, service:true, events:false, analytics:false, versioned:true, documented:true, mcp:true, gab:false },
+    desc:"Internal request for goods/services reviewed against Budget before procurement. Bifrost: Requisitions domain (v1.0.4) with approval workflows via ReviewSequence/ReviewGroup." },
+  { id:"purchase_order", label:"Purchase\nOrder", suite:"pro", suites:["ap","pro","eam"], priority:2, inBifrost:true, bifrostDomain:"PurchaseOrder",
+    adr65:{ owner:true, service:true, events:true, analytics:false, versioned:true, documented:true, mcp:true, gab:false },
+    desc:"Formal document authorizing purchase of specific goods/services at agreed prices and terms. Bifrost: PurchaseOrder domain (v2.0.5) including ChangeOrder for post-issuance amendments." },
+  { id:"receipt", label:"Receipt", suite:"pro", suites:["pro"], priority:null, inBifrost:true, bifrostDomain:"Receipts",
+    adr65:{ owner:true, service:true, events:false, analytics:false, versioned:true, documented:true, mcp:true, gab:false },
+    desc:"Record confirming goods/services received against a Purchase Order. Part of the three-way match (PO + Receipt + Invoice). Bifrost: Receipts domain (v1.0.6)." },
+  { id:"pcard", label:"Purchasing\nCard", suite:"ap", suites:["ap","fin"], priority:null, inBifrost:true, bifrostDomain:"PurchasingCard",
+    adr65:{ owner:true, service:true, events:false, analytics:false, versioned:true, documented:true, mcp:true, gab:false },
+    desc:"Corporate card program for employee purchases. Bifrost: full domain (v1.0.2) — Card, Cardholder, CardProgram, Transaction, Statement. ⚠ NOT in domain inventory spreadsheet — needs to be added." },
+
+  // ── AP ──
+  { id:"invoice", label:"Invoice", suite:"ap", suites:["ap","pro"], priority:null, inBifrost:true, bifrostDomain:"AccountsPayable",
+    adr65:{ owner:true, service:true, events:true, analytics:false, versioned:true, documented:true, mcp:true, gab:false },
+    desc:"Document from Vendor requesting payment for goods/services delivered. Includes PO reference and line items. May be PO-based or non-PO (rent, subscriptions). SOR: Accounts Payable." },
+  { id:"payment", label:"AP Payment", suite:"ap", suites:["ap"], priority:null, inBifrost:true, bifrostDomain:"AccountsPayable",
+    adr65:{ owner:true, service:true, events:false, analytics:false, versioned:true, documented:true, mcp:true, gab:false },
+    desc:"Disbursement of Government Entity funds to a Vendor. Methods: check, ACH, wire. Bifrost: PaymentRun entity orchestrates batch payment processing (v1.0.8)." },
+
+  // ── B&P ──
+  { id:"budget", label:"Budget", suite:"bp", suites:["all"], priority:1, inBifrost:false,
+    adr65:null,
+    desc:"Financial plan authorizing allocation of funds for programs, services, contracts, and operations. Touches ALL suites. SOR: Budget Service. Entire B&P domain absent from Bifrost — P1 critical gap." },
+  { id:"budget_proposal", label:"Budget\nProposal", suite:"bp", suites:["bp","rt","eam"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Executive's recommended budget plan for the coming fiscal year, submitted to legislative body for review and adoption. Includes both operating and capital budgets." },
+  { id:"budget_amendment", label:"Budget\nAmendment", suite:"bp", suites:["bp","fin"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Formal action by the governing body to revise the legally adopted budget. Must follow same legal process as adoption. GASB requires both original and final budget to be presented." },
+  { id:"workforce_plan", label:"Workforce\nPlan", suite:"bp", suites:["bp","rt"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Budget Proposal focused on Employee funding needs — staffing forecasts, retirements, recruitment needs, position classifications. Developed alongside the main budget proposal." },
+
+  // ── EAM ──
+  { id:"infra_asset", label:"Infrastructure\nAsset", suite:"eam", suites:["eam","plc","ub","pro"], priority:2, inBifrost:false,
+    adr65:null,
+    desc:"Asset maintained by a Government Entity to deliver public services: roads, bridges, water/sewer systems, buildings. May be a capitalized Fixed Asset or operational-only. P2 — used by 4 suites." },
+  { id:"work_order", label:"Work Order", suite:"eam", suites:["eam"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Operational document authorizing, scheduling, and tracking maintenance on a physical asset. Container for related Labor Tasks. May originate from PLC or UB. Note: ≠ Purchase Order." },
+  { id:"labor_task", label:"Labor Task", suite:"eam", suites:["eam","ub"], priority:1, inBifrost:false,
+    adr65:null,
+    desc:"Individual unit of work assigned to Labor Resources. Tracks labor, equipment, and materials costs. Costs post directly to GL. ADR-65 notes this is specific/opinionated — not a generic Task." },
+  { id:"labor_resource", label:"Labor\nResource", suite:"eam", suites:["eam"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Named person or crew assigned to perform a Labor Task. Time tracked in Labor Logs. Can include contractors as well as employees." },
+  { id:"equipment_res", label:"Equipment\n(Resource)", suite:"eam", suites:["eam","fin"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Vehicles, specialty equipment, or heavy machinery needed for a Labor Task. Usage (time, mileage) tracked in Equipment Logs." },
+  { id:"materials_res", label:"Materials\n(Resource)", suite:"eam", suites:["eam","fin","pro"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Consumable materials or parts (asphalt, pipes, signage) for a Labor Task. Quantities tracked in Materials Logs, posted to GL on consumption." },
+  { id:"inspection", label:"Inspection", suite:"eam", suites:["eam"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Assessment of asset condition (PCI for pavement, safety check for playground). Captures ratings, scores, and condition data feeding capital planning and risk models." },
+  { id:"eam_scenario", label:"EAM\nScenario", suite:"eam", suites:["eam","bp"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Planning record modeling maintenance/capital funding strategies. Uses deterioration curves, inspection results, and service goals to produce defensible Budget Proposals." },
+
+  // ── PLC ──
+  { id:"permit", label:"Permit", suite:"plc", suites:["eam","plc"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Official authorization for an individual or organization to perform a specific activity. Activity-specific, time-limited, requires application review and fee payment." },
+  { id:"license", label:"License", suite:"plc", suites:["plc"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Official approval for ongoing right to perform an activity or operate a business. Person/entity-specific, requires renewal. Different from a Permit (ongoing vs. activity-specific)." },
+  { id:"applicant", label:"Applicant", suite:"plc", suites:["plc"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Individual or organization submitting a request for official authorization (permit, license) or responding to enforcement (code case). Constituent becomes Applicant in PLC context." },
+  { id:"code_case", label:"Code Case", suite:"plc", suites:["plc"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Record managing enforcement of municipal codes: complaints, inspections, notices, violations, fines, and compliance actions. The enforcement side of community development." },
+
+  // ── UB / Revenue ──
+  { id:"utility_customer", label:"Utility\nCustomer", suite:"ub", suites:["ub","eam","plc"], priority:null, inBifrost:true, bifrostDomain:"RevenueCore",
+    adr65:{ owner:true, service:true, events:false, analytics:false, versioned:true, documented:false, mcp:false, gab:false },
+    desc:"Individual, household, or organization receiving utility services (water, electricity, gas). Billed based on usage or agreed rates. Bifrost: RevenueCore.Customer (v1.0.0 — early)." },
+  { id:"service_account", label:"Service\nAccount", suite:"ub", suites:["ub","tr","eam"], priority:null, inBifrost:true, bifrostDomain:"RevenueCore",
+    adr65:{ owner:true, service:true, events:false, analytics:false, versioned:true, documented:false, mcp:false, gab:false },
+    desc:"Account tied to a specific service location where utility services are delivered. Remains with the property even if the customer changes. Bifrost: RevenueCore.Account (v1.0.0)." },
+  { id:"bill", label:"Bill", suite:"ub", suites:["ar","plc","tr","ub"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Record of charges issued to a customer for services (utility bill, permit fee, tax bill). Includes service period, usage, rates, adjustments. SOR: AR Service. Used by 4 suites." },
+  { id:"rate_code", label:"Rate Code", suite:"ub", suites:["ub"], priority:null, inBifrost:true, bifrostDomain:"RevenueCore",
+    adr65:{ owner:true, service:true, events:false, analytics:false, versioned:true, documented:false, mcp:false, gab:false },
+    desc:"Code defining rates or tariffs used to calculate charges for a service account. Different customer classes have distinct rate codes. Bifrost: RevenueCore.RateCode (v1.0.0)." },
+
+  // ── T&R ──
+  { id:"tax", label:"Tax", suite:"tr", suites:["tr"], priority:null, inBifrost:false,
+    adr65:null,
+    desc:"Mandatory financial charge on individuals or organizations. Nonexchange transactions — payers don't receive proportional goods/services. Entire T&R suite absent from Bifrost." },
+];
+
+// ── Links ─────────────────────────────────────────────────────────────
+const LINKS = [
+  // P2P
+  { source:"supplier",       target:"solicitation",   label:"responds to",   workflow:"p2p" },
+  { source:"solicitation",   target:"contract",       label:"awarded as",    workflow:"p2p" },
+  { source:"contract",       target:"vendor",         label:"with",          workflow:"p2p" },
+  { source:"department",     target:"request",        label:"submits",       workflow:"p2p" },
+  { source:"request",        target:"item",           label:"specifies",     workflow:"p2p" },
+  { source:"budget",         target:"request",        label:"budget check",  workflow:"p2p" },
+  { source:"request",        target:"purchase_order", label:"converted to",  workflow:"p2p" },
+  { source:"contract",       target:"purchase_order", label:"releases",      workflow:"p2p" },
+  { source:"purchase_order", target:"vendor",         label:"issued to",     workflow:"p2p" },
+  { source:"purchase_order", target:"receipt",        label:"confirmed by",  workflow:"p2p" },
+  { source:"vendor",         target:"invoice",        label:"submits",       workflow:"p2p" },
+  { source:"invoice",        target:"purchase_order", label:"references",    workflow:"p2p" },
+  { source:"receipt",        target:"invoice",        label:"enables 3-way", workflow:"p2p" },
+  { source:"invoice",        target:"payment",        label:"settled by",    workflow:"p2p" },
+  { source:"payment",        target:"journal_entry",  label:"posts to",      workflow:"p2p" },
+  { source:"pcard",          target:"journal_entry",  label:"expense posts", workflow:"p2p" },
+  // Budget
+  { source:"department",     target:"budget_proposal",label:"submits",       workflow:"budget" },
+  { source:"workforce_plan", target:"budget_proposal",label:"informs",       workflow:"budget" },
+  { source:"budget_proposal",target:"budget",         label:"adopted as",    workflow:"budget" },
+  { source:"budget",         target:"fund",           label:"allocated by",  workflow:"budget" },
+  { source:"budget",         target:"coa",            label:"uses",          workflow:"budget" },
+  { source:"budget",         target:"budget_amendment",label:"amended by",   workflow:"budget" },
+  { source:"eam_scenario",   target:"budget_proposal",label:"produces",      workflow:"budget" },
+  { source:"employee",       target:"workforce_plan", label:"included in",   workflow:"budget" },
+  { source:"project",        target:"budget",         label:"has",           workflow:"budget" },
+  { source:"grant",          target:"project",        label:"funds",         workflow:"budget" },
+  // Financial
+  { source:"coa",            target:"fund",           label:"segments incl.",workflow:"financial" },
+  { source:"coa",            target:"department",     label:"segments incl.",workflow:"financial" },
+  { source:"gl",             target:"journal_entry",  label:"records",       workflow:"financial" },
+  { source:"journal_entry",  target:"coa",            label:"posted to",     workflow:"financial" },
+  { source:"fund_balance",   target:"gl",             label:"tracked in",    workflow:"financial" },
+  { source:"gl",             target:"fund_balance",   label:"derives",       workflow:"financial" },
+  { source:"fixed_asset",    target:"gl",             label:"depreciation",  workflow:"financial" },
+  { source:"fiscal_year",    target:"gl",             label:"controls",      workflow:"financial" },
+  // EAM
+  { source:"infra_asset",    target:"location",       label:"located at",    workflow:"eam" },
+  { source:"infra_asset",    target:"work_order",     label:"maintained by", workflow:"eam" },
+  { source:"infra_asset",    target:"inspection",     label:"assessed by",   workflow:"eam" },
+  { source:"work_order",     target:"labor_task",     label:"contains",      workflow:"eam" },
+  { source:"labor_task",     target:"labor_resource", label:"assigned to",   workflow:"eam" },
+  { source:"labor_task",     target:"equipment_res",  label:"uses",          workflow:"eam" },
+  { source:"labor_task",     target:"materials_res",  label:"consumes",      workflow:"eam" },
+  { source:"eam_scenario",   target:"infra_asset",    label:"optimizes",     workflow:"eam" },
+  { source:"work_order",     target:"purchase_order", label:"funded by",     workflow:"eam" },
+  { source:"labor_task",     target:"journal_entry",  label:"cost posts",    workflow:"eam" },
+  { source:"infra_asset",    target:"fixed_asset",    label:"capitalized as",workflow:"eam" },
+  // PLC
+  { source:"applicant",      target:"permit",         label:"applies for",   workflow:"plc" },
+  { source:"applicant",      target:"license",        label:"applies for",   workflow:"plc" },
+  { source:"permit",         target:"location",       label:"at",            workflow:"plc" },
+  { source:"permit",         target:"infra_asset",    label:"related to",    workflow:"plc" },
+  { source:"constituent",    target:"applicant",      label:"becomes",       workflow:"plc" },
+  { source:"permit",         target:"bill",           label:"fees generate", workflow:"plc" },
+  { source:"code_case",      target:"location",       label:"at",            workflow:"plc" },
+  // UB
+  { source:"utility_customer",target:"service_account",label:"has",          workflow:"ub" },
+  { source:"service_account",target:"location",       label:"at",            workflow:"ub" },
+  { source:"service_account",target:"bill",           label:"billed via",    workflow:"ub" },
+  { source:"bill",           target:"rate_code",      label:"calc. by",      workflow:"ub" },
+  { source:"bill",           target:"journal_entry",  label:"revenue posts", workflow:"ub" },
+  { source:"tax",            target:"journal_entry",  label:"posts to",      workflow:"ub" },
+  // Platform
+  { source:"gov_entity",     target:"department",     label:"has",           workflow:"platform" },
+  { source:"gov_entity",     target:"gov_user",       label:"employs",       workflow:"platform" },
+  { source:"gov_entity",     target:"coa",            label:"owns",          workflow:"platform" },
+  { source:"gov_entity",     target:"fund",           label:"manages",       workflow:"platform" },
+  { source:"constituent",    target:"utility_customer",label:"can be",       workflow:"platform" },
+  { source:"employee",       target:"department",     label:"belongs to",    workflow:"platform" },
+  { source:"project",        target:"purchase_order", label:"funded via",    workflow:"platform" },
+  { source:"fixed_asset",    target:"purchase_order", label:"acquired via",  workflow:"platform" },
+];
+
+// ── State ──────────────────────────────────────────────────────────────
+let selectedNode = null;
+let activeWorkflow = "all";
+let colorMode = "suite";   // "suite" | "adr"
+let showGaps = true;
+let showModeled = true;
+let showEdgeLabels = false;
+let searchTerm = "";
+let activeTab = "object";
+
+const nodeById = Object.fromEntries(NODES.map(n => [n.id, n]));
+
+// ── Helpers ────────────────────────────────────────────────────────────
+function nodeRadius(d) {
+  if (d.priority === 0) return 29;
+  if (d.priority === 1) return 23;
+  if (d.priority === 2) return 19;
+  return 14;
+}
+function suiteColor(s) { return (SUITES[s] || SUITES.platform).color; }
+function nodeFillColor(d) {
+  if (d.inBifrost === false) return "#0f172a";
+  if (colorMode === "adr") {
+    if (d.inBifrost === "partial") return adrColor(adrScore(d));
+    if (d.inBifrost === true) return adrColor(adrScore(d));
+    return "#0f172a";
+  }
+  if (d.inBifrost === "partial") return "url(#hatch)";
+  return suiteColor(d.suite);
+}
+function nodeStrokeColor(d) {
+  if (colorMode === "adr" && d.inBifrost !== false) return adrColor(adrScore(d));
+  return suiteColor(d.suite);
+}
+function isVisible(d) {
+  if (!showGaps && d.inBifrost === false) return false;
+  if (!showModeled && d.inBifrost !== false) return false;
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    return d.label.toLowerCase().replace(/\n/g," ").includes(q) ||
+           (d.desc && d.desc.toLowerCase().includes(q));
+  }
+  return true;
+}
+
+// ── SVG setup ──────────────────────────────────────────────────────────
+const svgEl = document.getElementById("graph-svg");
+const canvasEl = document.getElementById("canvas-container");
+let W = canvasEl.clientWidth, H = canvasEl.clientHeight;
+
+const svg = d3.select("#graph-svg");
+const defs = svg.append("defs");
+
+// Arrow markers per workflow
+Object.entries(WFCOLOR).forEach(([wf, col]) => {
+  if (wf === "all") return;
+  defs.append("marker").attr("id",`arr-${wf}`)
+    .attr("viewBox","0 -4 8 8").attr("refX",6).attr("refY",0)
+    .attr("markerWidth",6).attr("markerHeight",6).attr("orient","auto")
+    .append("path").attr("d","M0,-4L8,0L0,4")
+    .attr("fill",col).attr("opacity",.65);
+});
+
+// Hatch for partial
+defs.append("pattern").attr("id","hatch").attr("patternUnits","userSpaceOnUse")
+  .attr("width",6).attr("height",6).attr("patternTransform","rotate(45)")
+  .append("line").attr("x1",0).attr("y1",0).attr("x2",0).attr("y2",6)
+  .attr("stroke","#a855f7").attr("stroke-width",2.5);
+
+const root = svg.append("g");
+const zoom = d3.zoom().scaleExtent([0.15,4]).on("zoom", e => root.attr("transform", e.transform));
+svg.call(zoom);
+svg.on("click", e => {
+  if (e.target === svgEl || e.target.tagName === "svg") clearSelection();
+});
+
+// ── Simulation ────────────────────────────────────────────────────────
+const sim = d3.forceSimulation(NODES)
+  .force("link", d3.forceLink(LINKS).id(d => d.id).distance(d => {
+    const s = nodeById[d.source.id||d.source], t = nodeById[d.target.id||d.target];
+    return 85 + (s ? nodeRadius(s) : 14) + (t ? nodeRadius(t) : 14);
+  }).strength(0.38))
+  .force("charge", d3.forceManyBody().strength(d => -550 - nodeRadius(d)*12))
+  .force("center", d3.forceCenter(W/2, H/2))
+  .force("collision", d3.forceCollide().radius(d => nodeRadius(d)+20).strength(0.85))
+  .alphaDecay(0.018);
+
+// ── Draw ──────────────────────────────────────────────────────────────
+const linkG = root.append("g");
+const linkEl = linkG.selectAll("line").data(LINKS).join("line")
+  .attr("class","link")
+  .attr("stroke", d => WFCOLOR[d.workflow] || "#94a3b8")
+  .attr("marker-end", d => `url(#arr-${d.workflow})`);
+
+const linkLabelG = root.append("g");
+const linkLabelEl = linkLabelG.selectAll("text").data(LINKS).join("text")
+  .attr("class","link-label").text(d => d.label);
+
+const nodeG = root.append("g").selectAll(".node-g").data(NODES).join("g")
+  .attr("class","node-g")
+  .call(d3.drag()
+    .on("start",(e,d) => { if(!e.active) sim.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; })
+    .on("drag",(e,d)  => { d.fx=e.x; d.fy=e.y; })
+    .on("end",(e,d)   => { if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+  .on("click",(e,d) => { e.stopPropagation(); selectNode(d); });
+
+// Selection ring
+nodeG.append("circle").attr("class","sel-ring")
+  .attr("r", d => nodeRadius(d)+6)
+  .attr("fill","none").attr("stroke", d => nodeStrokeColor(d))
+  .attr("stroke-width",2.5).attr("opacity",0);
+
+// Main circle
+nodeG.append("circle").attr("class","node-circle")
+  .attr("r", d => nodeRadius(d))
+  .attr("stroke-width", d => d.inBifrost === false ? 2 : 1.5)
+  .attr("stroke-dasharray", d => d.inBifrost === false ? "5,3" : "none")
+  .classed("gap-anim", d => d.inBifrost === false);
+
+// Bifrost dot (top-right)
+nodeG.filter(d => d.inBifrost === true || d.inBifrost === "partial")
+  .append("circle").attr("class","bifrost-dot")
+  .attr("cx", d => nodeRadius(d)*0.62).attr("cy", d => -nodeRadius(d)*0.62)
+  .attr("r", 4).attr("fill","#4ade80").attr("stroke","#0f172a").attr("stroke-width",1.5);
+
+// P0 badge (top-left)
+nodeG.filter(d => d.priority === 0)
+  .append("circle")
+  .attr("cx", d => -nodeRadius(d)*0.55).attr("cy", d => -nodeRadius(d)*0.55)
+  .attr("r", 5).attr("fill","#1d4ed8").attr("stroke","#0f172a").attr("stroke-width",1.5);
+
+// Labels
+nodeG.each(function(d) {
+  const el = d3.select(this);
+  const lines = d.label.split("\n");
+  const r = nodeRadius(d);
+  const lh = 11;
+  lines.forEach((line, i) => {
+    el.append("text").attr("class","node-label")
+      .attr("text-anchor","middle").attr("dominant-baseline","central")
+      .attr("y", -((lines.length-1)*lh)/2 + i*lh)
+      .attr("font-size", r>=23?"10px":r>=18?"9px":"8px")
+      .attr("font-weight","600")
+      .text(line);
+  });
+});
+
+// Tooltip
+nodeG.on("mouseenter",(e,d) => {
+  const tt = document.getElementById("tooltip");
+  const score = d.inBifrost !== false && d.adr65 ? ` · ADR ${adrScore(d)}/8` : "";
+  tt.innerHTML = `<strong>${d.label.replace("\n"," ")}</strong><br>${(SUITES[d.suite]||SUITES.platform).label}${score}`;
+  tt.style.opacity="1"; tt.style.left=(e.clientX+12)+"px"; tt.style.top=(e.clientY-10)+"px";
+}).on("mousemove",e => {
+  const tt = document.getElementById("tooltip");
+  tt.style.left=(e.clientX+12)+"px"; tt.style.top=(e.clientY-10)+"px";
+}).on("mouseleave",() => { document.getElementById("tooltip").style.opacity="0"; });
+
+// ── Tick ──────────────────────────────────────────────────────────────
+sim.on("tick",() => {
+  linkEl
+    .attr("x1",d=>d.source.x).attr("y1",d=>d.source.y)
+    .attr("x2",d=>{
+      const dx=d.target.x-d.source.x, dy=d.target.y-d.source.y;
+      const dist=Math.sqrt(dx*dx+dy*dy)||1;
+      return d.target.x-(dx/dist)*(nodeRadius(d.target)+8);
+    })
+    .attr("y2",d=>{
+      const dx=d.target.x-d.source.x, dy=d.target.y-d.source.y;
+      const dist=Math.sqrt(dx*dx+dy*dy)||1;
+      return d.target.y-(dy/dist)*(nodeRadius(d.target)+8);
+    });
+  linkLabelEl.attr("x",d=>(d.source.x+d.target.x)/2).attr("y",d=>(d.source.y+d.target.y)/2-4);
+  nodeG.attr("transform",d=>`translate(${d.x},${d.y})`);
+});
+
+// ── Update visuals ─────────────────────────────────────────────────────
+function refreshNodeColors() {
+  nodeG.select(".node-circle")
+    .attr("fill", d => nodeFillColor(d))
+    .attr("stroke", d => nodeStrokeColor(d));
+  nodeG.selectAll(".node-label")
+    .attr("fill", d => d.inBifrost === false ? nodeStrokeColor(d) : "#fff");
+  nodeG.select(".sel-ring").attr("stroke", d => nodeStrokeColor(d));
+}
+
+function updateHighlight() {
+  refreshNodeColors();
+  const wf = activeWorkflow;
+  const wfLinks = wf==="all" ? LINKS : LINKS.filter(l=>l.workflow===wf);
+  const wfNodeIds = new Set(wfLinks.flatMap(l=>[l.source.id||l.source, l.target.id||l.target]));
+
+  let neighborIds = new Set(), neighborLinkSet = new Set();
+  if (selectedNode) {
+    neighborIds.add(selectedNode.id);
+    LINKS.forEach((l,i)=>{
+      const s=l.source.id||l.source, t=l.target.id||l.target;
+      if(s===selectedNode.id||t===selectedNode.id){ neighborIds.add(s); neighborIds.add(t); neighborLinkSet.add(i); }
+    });
+  }
+
+  nodeG.each(function(d) {
+    let op = 1;
+    if (!isVisible(d)) op = 0;
+    else if (selectedNode) op = neighborIds.has(d.id) ? 1 : 0.07;
+    else if (wf!=="all" && !wfNodeIds.has(d.id)) op = 0.09;
+    d3.select(this).selectAll("circle,text").style("opacity", op);
+    d3.select(this).select(".sel-ring").attr("opacity", selectedNode&&d.id===selectedNode.id ? 0.55 : 0);
+  });
+
+  linkEl.each(function(l,i){
+    const inWf = wf==="all"||l.workflow===wf;
+    let op = inWf ? 0.32 : 0.04;
+    if (selectedNode) op = neighborLinkSet.has(i) ? 0.85 : 0.04;
+    d3.select(this).style("opacity",op).attr("stroke-width",selectedNode&&neighborLinkSet.has(i)?2.5:1.5);
+  });
+
+  linkLabelEl.classed("visible", (d,i) =>
+    showEdgeLabels && ((!selectedNode&&(wf==="all"||d.workflow===wf)) || (selectedNode&&neighborLinkSet.has(i)))
+  );
+}
+
+// ── Selection ──────────────────────────────────────────────────────────
+function selectNode(d) {
+  selectedNode = d;
+  updateHighlight();
+  if (activeTab !== "object") switchTab("object");
+  updatePanel(d);
+}
+function clearSelection() {
+  selectedNode = null;
+  updateHighlight();
+  document.getElementById("panel-empty-msg").style.display = "";
+  document.getElementById("panel-detail").style.display = "none";
+}
+
+// ── Panel ──────────────────────────────────────────────────────────────
+function updatePanel(d) {
+  document.getElementById("panel-empty-msg").style.display = "none";
+  document.getElementById("panel-detail").style.display = "";
+
+  document.getElementById("panel-name").textContent = d.label.replace(/\n/g," ");
+
+  // Badges
+  const badges = document.getElementById("panel-badges");
+  badges.innerHTML = "";
+  if (d.priority !== null) {
+    const b = document.createElement("span");
+    b.className = "badge priority"; b.textContent = `P${d.priority}`; badges.appendChild(b);
+  }
+  const bb = document.createElement("span");
+  if (d.inBifrost===true) {
+    bb.className="badge bifrost-yes"; bb.textContent=`✓ ${d.bifrostDomain}`;
+  } else if (d.inBifrost==="partial") {
+    bb.className="badge bifrost-part"; bb.textContent=`~ ${d.bifrostDomain} (partial)`;
+  } else {
+    bb.className="badge bifrost-no"; bb.textContent="⚠ Not in Bifrost";
+  }
+  badges.appendChild(bb);
+  if (d.adr65) {
+    const sc = adrScore(d);
+    const ab = document.createElement("span");
+    ab.className="badge adr-score"; ab.textContent=`ADR ${sc}/8`; badges.appendChild(ab);
+  }
+
+  // Suite tags
+  const st = document.getElementById("panel-suites"); st.innerHTML="";
+  (d.suites||[d.suite]).slice(0,6).forEach(s => {
+    const tag = document.createElement("span"); tag.className="suite-tag";
+    const info = SUITES[s]||SUITES.platform;
+    tag.style.color=info.color; tag.style.borderColor=info.color+"44"; tag.style.background=info.color+"11";
+    tag.textContent=(SUITES[s]||{label:s.toUpperCase()}).label.split("(")[0].trim();
+    st.appendChild(tag);
+  });
+
+  // Desc
+  document.getElementById("panel-desc").textContent = d.desc||"";
+
+  // ADR-65
+  const adrGrid = document.getElementById("panel-adr"); adrGrid.innerHTML="";
+  if (d.inBifrost===false && !d.adr65) {
+    adrGrid.innerHTML=`<div style="grid-column:1/-1;font-size:10px;color:#475569">Not yet in Bifrost — ADR-65 compliance N/A</div>`;
+  } else if (d.adr65) {
+    ADR_KEYS.forEach(k => {
+      const v = d.adr65[k];
+      const item = document.createElement("div");
+      item.className = `adr-item ${v===true?"met":v===false?"unmet":"na"}`;
+      item.innerHTML = `<span class="adr-icon">${ADR_META[k].icon}</span><span class="adr-name">${ADR_META[k].name}</span>`;
+      adrGrid.appendChild(item);
+    });
+  } else {
+    adrGrid.innerHTML=`<div style="grid-column:1/-1;font-size:10px;color:#475569">ADR-65 data not yet assessed</div>`;
+  }
+
+  // Relationships
+  const relList = document.getElementById("panel-rels"); relList.innerHTML="";
+  const rels = [];
+  LINKS.forEach(l=>{
+    const s=l.source.id||l.source, t=l.target.id||l.target;
+    if(s===d.id){ const n=nodeById[t]; if(n) rels.push({dir:"out",node:n,label:l.label,wf:l.workflow}); }
+    if(t===d.id){ const n=nodeById[s]; if(n) rels.push({dir:"in",node:n,label:l.label,wf:l.workflow}); }
+  });
+  rels.forEach(r=>{
+    const el=document.createElement("div"); el.className="rel-item";
+    el.innerHTML=`<div class="rel-dot" style="background:${suiteColor(r.node.suite)}"></div><span class="rel-arrow">${r.dir==="out"?"→":"←"}</span><span class="rel-label">${r.label}</span><span class="rel-name">${r.node.label.replace(/\n/g," ")}</span>`;
+    el.onclick=()=>selectNode(r.node);
+    relList.appendChild(el);
+  });
+  if(rels.length===0) relList.innerHTML=`<div style="font-size:11px;color:#475569">No relationships</div>`;
+}
+
+// ── Stats ──────────────────────────────────────────────────────────────
+function updateStats() {
+  const total = NODES.length;
+  const modeled = NODES.filter(n=>n.inBifrost!==false);
+  const gaps = NODES.filter(n=>n.inBifrost===false).length;
+  const adrFull = modeled.filter(n=>n.adr65&&adrScore(n)>=7).length;
+  const adrPart = modeled.filter(n=>n.adr65&&adrScore(n)>0&&adrScore(n)<7).length;
+  document.getElementById("stat-total").textContent=total;
+  document.getElementById("stat-bifrost").textContent=`${modeled.length} (${Math.round(modeled.length/total*100)}%)`;
+  document.getElementById("stat-gaps").textContent=gaps;
+  document.getElementById("stat-adr-full").textContent=adrFull;
+  document.getElementById("stat-adr-partial").textContent=adrPart;
+}
+updateStats();
+
+// ── Tab switching ──────────────────────────────────────────────────────
+function switchTab(tab) {
+  activeTab = tab;
+  ["object","adr","legend"].forEach(t=>{
+    document.getElementById(`tab-${t}`).classList.toggle("active",t===tab);
+    document.getElementById(`pane-${t}`).classList.toggle("visible",t===tab);
+  });
+}
+
+// ── Suite legend ────────────────────────────────────────────────────────
+const sl = document.getElementById("suite-legend");
+Object.entries(SUITES).forEach(([k,v])=>{
+  const item = document.createElement("div"); item.className="legend-item";
+  item.innerHTML=`<div class="legend-swatch" style="background:${v.color}"></div><span style="font-size:10px">${v.label.split("(")[0].trim()}</span>`;
+  sl.appendChild(item);
+});
+
+// ── Controls ──────────────────────────────────────────────────────────
+document.querySelectorAll("[data-workflow]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    activeWorkflow = btn.dataset.workflow;
+    document.querySelectorAll("[data-workflow]").forEach(b=>{
+      b.classList.remove("active");
+      const wf=b.dataset.workflow; const base=b.className.replace(" active","");
+      b.className=base;
+    });
+    btn.classList.add("active");
+    clearSelection(); updateHighlight();
+  });
+});
+
+document.getElementById("color-suite-btn").addEventListener("click",function(){
+  colorMode="suite"; this.classList.add("active"); document.getElementById("color-adr-btn").classList.remove("active");
+  refreshNodeColors();
+});
+document.getElementById("color-adr-btn").addEventListener("click",function(){
+  colorMode="adr"; this.classList.add("active"); document.getElementById("color-suite-btn").classList.remove("active");
+  refreshNodeColors();
+});
+document.getElementById("toggle-gaps-btn").addEventListener("click",function(){
+  showGaps=!showGaps; this.classList.toggle("active",showGaps); updateHighlight();
+});
+document.getElementById("toggle-modeled-btn").addEventListener("click",function(){
+  showModeled=!showModeled; this.classList.toggle("active",showModeled); updateHighlight();
+});
+document.getElementById("toggle-labels-btn").addEventListener("click",function(){
+  showEdgeLabels=!showEdgeLabels; this.classList.toggle("active",showEdgeLabels); updateHighlight();
+});
+document.getElementById("search-input").addEventListener("input",function(){
+  searchTerm=this.value.trim();
+  if(searchTerm){
+    const m=NODES.find(n=>n.label.toLowerCase().replace(/\n/g," ").includes(searchTerm.toLowerCase()));
+    if(m) selectNode(m);
+  } else clearSelection();
+  updateHighlight();
+});
+
+// ── Resize ────────────────────────────────────────────────────────────
+new ResizeObserver(()=>{
+  W=canvasEl.clientWidth; H=canvasEl.clientHeight;
+  sim.force("center",d3.forceCenter(W/2,H/2)).alpha(0.1).restart();
+}).observe(canvasEl);
+
+// ── Initial positions ─────────────────────────────────────────────────
+const pos = {
+  gov_entity:{x:.5,y:.06}, gov_user:{x:.38,y:.09}, department:{x:.5,y:.19},
+  coa:{x:.2,y:.28}, gl:{x:.14,y:.43}, fund:{x:.1,y:.33}, journal_entry:{x:.1,y:.56},
+  fiscal_year:{x:.22,y:.52}, fund_balance:{x:.05,y:.65}, fixed_asset:{x:.23,y:.65},
+  vendor:{x:.8,y:.22}, supplier:{x:.9,y:.12}, solicitation:{x:.96,y:.22},
+  contract:{x:.86,y:.32}, request:{x:.71,y:.32}, item:{x:.76,y:.42},
+  purchase_order:{x:.75,y:.52}, receipt:{x:.86,y:.58}, pcard:{x:.96,y:.48},
+  invoice:{x:.91,y:.48}, payment:{x:.97,y:.58},
+  budget:{x:.36,y:.32}, budget_proposal:{x:.26,y:.43}, budget_amendment:{x:.26,y:.54},
+  workforce_plan:{x:.15,y:.64}, employee:{x:.08,y:.74},
+  project:{x:.44,y:.46}, grant:{x:.38,y:.56},
+  infra_asset:{x:.68,y:.68}, work_order:{x:.79,y:.76}, labor_task:{x:.86,y:.86},
+  labor_resource:{x:.96,y:.86}, equipment_res:{x:.79,y:.9}, materials_res:{x:.66,y:.88},
+  inspection:{x:.58,y:.78}, eam_scenario:{x:.5,y:.72},
+  permit:{x:.44,y:.86}, license:{x:.37,y:.93}, applicant:{x:.35,y:.83}, code_case:{x:.27,y:.88},
+  utility_customer:{x:.14,y:.84}, service_account:{x:.2,y:.74}, bill:{x:.3,y:.68},
+  rate_code:{x:.22,y:.64}, tax:{x:.06,y:.56}, location:{x:.5,y:.9},
+  constituent:{x:.24,y:.17},
+};
+NODES.forEach(n=>{
+  const p=pos[n.id]; if(p){n.x=p.x*W;n.y=p.y*H;}
+  else{n.x=W*(0.25+Math.random()*.5);n.y=H*(0.25+Math.random()*.5);}
+});
+
+sim.alpha(1).restart();
+updateHighlight();
+</script>
+</body>
+</html>
