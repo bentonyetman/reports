@@ -111,6 +111,26 @@ function renderTrend(weeks, selectedStart) {
   });
 }
 
+function allTimeView(weeks) {
+  const latest = new Map(); // "repo#number" -> pr, keeping the most-recently-updated copy
+  for (const w of weeks) {
+    for (const pr of w.prs) {
+      const key = `${pr.repo}#${pr.number}`;
+      const prev = latest.get(key);
+      if (!prev || pr.updatedAt > prev.updatedAt) latest.set(key, pr);
+    }
+  }
+  return {
+    weekStart: "all",
+    weekEnd: "all",
+    author: weeks[0]?.author ?? "",
+    generatedAt: weeks[weeks.length - 1]?.generatedAt ?? "",
+    rangeStart: weeks[0]?.weekStart,
+    rangeEnd: weeks[weeks.length - 1]?.weekEnd,
+    prs: [...latest.values()],
+  };
+}
+
 function renderContent(week) {
   const content = document.getElementById("content");
   const sub = document.getElementById("sub");
@@ -124,7 +144,9 @@ function renderContent(week) {
   }
 
   const s = weekStats(week);
-  sub.textContent = `${week.author} · week of ${week.weekStart} to ${week.weekEnd} · generated ${week.generatedAt}`;
+  sub.textContent = week.weekStart === "all"
+    ? `${week.author} · all time · ${week.rangeStart} to ${week.rangeEnd} · generated ${week.generatedAt}`
+    : `${week.author} · week of ${week.weekStart} to ${week.weekEnd} · generated ${week.generatedAt}`;
 
   const bars = s.repos.map(([repo, prs]) => {
     const pct = Math.round(100 * prs.length / (s.repos[0][1].length || 1));
@@ -177,7 +199,8 @@ function selectWeek(weekStart) {
   history.replaceState(null, "", url);
   document.getElementById("week-select").value = weekStart;
   renderTrend(ALL_WEEKS, weekStart);
-  renderContent(ALL_WEEKS.find(w => w.weekStart === weekStart));
+  const target = weekStart === "all" ? allTimeView(ALL_WEEKS) : ALL_WEEKS.find(w => w.weekStart === weekStart);
+  renderContent(target);
 }
 
 async function init() {
@@ -187,9 +210,10 @@ async function init() {
   ALL_WEEKS = weeks;
 
   const select = document.getElementById("week-select");
-  select.innerHTML = weeks.slice().reverse().map(w =>
+  const weekOptions = weeks.slice().reverse().map(w =>
     `<option value="${w.weekStart}">Week of ${w.weekStart}${w === weeks[weeks.length - 1] ? " (latest)" : ""}</option>`
   ).join("");
+  select.innerHTML = `<option value="all">All time</option>${weekOptions}`;
   select.addEventListener("change", () => selectWeek(select.value));
 
   if (weeks.length === 0) {
@@ -198,9 +222,11 @@ async function init() {
   }
 
   const requested = params.get("week");
-  const target = (requested && requested !== "last" && weeks.some(w => w.weekStart === requested))
-    ? requested
-    : weeks[weeks.length - 1].weekStart;
+  const target = requested === "all"
+    ? "all"
+    : (requested && requested !== "last" && weeks.some(w => w.weekStart === requested))
+      ? requested
+      : weeks[weeks.length - 1].weekStart;
 
   selectWeek(target);
 }
