@@ -1,0 +1,441 @@
+[
+  {
+    "weekStart": "2026-06-30",
+    "weekEnd": "2026-07-06",
+    "author": "bentonyetman",
+    "generatedAt": "2026-07-18",
+    "prs": [
+      {
+        "repo": "OpenGov/product-ops-tools",
+        "number": 587,
+        "title": "fix(widget): serve psp-demo-assistant bundle from web host, override API base URL",
+        "url": "https://github.com/OpenGov/product-ops-tools/pull/587",
+        "state": "merged",
+        "updatedAt": "2026-07-06T19:03:57Z",
+        "commentsCount": 1
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 256,
+        "title": "feat(widget): allow API base URL override via registryConfig.apiBaseUrl",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/256",
+        "state": "merged",
+        "updatedAt": "2026-07-06T19:00:39Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 254,
+        "title": "docs: weekly progress journal update (#250-253)",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/254",
+        "state": "merged",
+        "updatedAt": "2026-07-06T02:21:45Z",
+        "commentsCount": 0
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 253,
+        "title": "fix(widget): move attach button above details, rename to Additional Details",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/253",
+        "state": "merged",
+        "updatedAt": "2026-07-05T20:56:31Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 252,
+        "title": "fix(widget): outline style for inactive Chat with Support button",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/252",
+        "state": "merged",
+        "updatedAt": "2026-07-05T20:00:47Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/k8s-deployment-platform-shared-modules",
+        "number": 672,
+        "title": "fix(psp-demo-assistant): add PSP_DEMO_ASSISTANT_URL to production",
+        "url": "https://github.com/OpenGov/k8s-deployment-platform-shared-modules/pull/672",
+        "state": "merged",
+        "updatedAt": "2026-07-05T19:00:33Z",
+        "commentsCount": 1
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 251,
+        "title": "feat(widget): hide Resource Center drawer while recording + preserve recorded video",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/251",
+        "state": "merged",
+        "updatedAt": "2026-07-04T22:15:00Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 250,
+        "title": "docs: add progress journal HTML snapshot",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/250",
+        "state": "merged",
+        "updatedAt": "2026-07-04T11:42:43Z",
+        "commentsCount": 0
+      },
+      {
+        "repo": "OpenGov/product-ops-tools",
+        "number": 582,
+        "title": "fix(widget): point psp-demo-assistant widget at Okta-configured internal instance",
+        "url": "https://github.com/OpenGov/product-ops-tools/pull/582",
+        "state": "merged",
+        "updatedAt": "2026-07-06T16:51:09Z",
+        "commentsCount": 1
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 249,
+        "title": "feat(api): add Okta auth middleware for internal shell deployments",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/249",
+        "state": "merged",
+        "updatedAt": "2026-07-03T12:02:55Z",
+        "commentsCount": 4
+      },
+      {
+        "repo": "bentonyetman/benton-skills",
+        "number": 7,
+        "title": "updating arb-skill",
+        "url": "https://github.com/bentonyetman/benton-skills/pull/7",
+        "state": "merged",
+        "updatedAt": "2026-07-01T20:38:41Z",
+        "commentsCount": 0
+      },
+      {
+        "repo": "bentonyetman/benton-skills",
+        "number": 6,
+        "title": "adding a few more",
+        "url": "https://github.com/bentonyetman/benton-skills/pull/6",
+        "state": "merged",
+        "updatedAt": "2026-07-01T20:27:43Z",
+        "commentsCount": 0
+      },
+      {
+        "repo": "OpenGov/k8s-deployment-platform-shared-modules",
+        "number": 664,
+        "title": "feat(psp-demo-assistant): add Salesforce env vars for support case integration",
+        "url": "https://github.com/OpenGov/k8s-deployment-platform-shared-modules/pull/664",
+        "state": "open",
+        "updatedAt": "2026-07-01T19:02:15Z",
+        "commentsCount": 3
+      },
+      {
+        "repo": "OpenGov/k8s-deployment-platform-shared-modules",
+        "number": 663,
+        "title": "feat(psp-demo-assistant): Grafana Faro telemetry env vars on MCP server (int/stg/prd)",
+        "url": "https://github.com/OpenGov/k8s-deployment-platform-shared-modules/pull/663",
+        "state": "merged",
+        "updatedAt": "2026-07-02T14:04:58Z",
+        "commentsCount": 6
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 244,
+        "title": "fix(widget): fall back to standalone mode when shell.auth0 is absent",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/244",
+        "state": "merged",
+        "updatedAt": "2026-07-01T15:06:17Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 243,
+        "title": "feat(salesforce): env-var defaults + RecordType name SOQL lookup",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/243",
+        "state": "merged",
+        "updatedAt": "2026-07-01T18:54:20Z",
+        "commentsCount": 4
+      },
+      {
+        "repo": "OpenGov/k8s-deployment-platform-shared-modules",
+        "number": 658,
+        "title": "feat(psp-demo-assistant): add PSP_MCP_SERVER_URL to API configMap in all envs",
+        "url": "https://github.com/OpenGov/k8s-deployment-platform-shared-modules/pull/658",
+        "state": "merged",
+        "updatedAt": "2026-06-30T12:14:40Z",
+        "commentsCount": 3
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 242,
+        "title": "fix(whats-new): strip [Published] prefix from Confluence release note titles",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/242",
+        "state": "merged",
+        "updatedAt": "2026-06-30T12:14:09Z",
+        "commentsCount": 4
+      },
+      {
+        "repo": "OpenGov/k8s-deployment-platform-shared-modules",
+        "number": 594,
+        "title": "Update JIRA_EMAIL to service account across all environments",
+        "url": "https://github.com/OpenGov/k8s-deployment-platform-shared-modules/pull/594",
+        "state": "closed",
+        "updatedAt": "2026-07-03T11:43:52Z",
+        "commentsCount": 4
+      },
+      {
+        "repo": "OpenGov/k8s-deployment-platform-shared-modules",
+        "number": 568,
+        "title": "feat(psp-demo-assistant): add BEACON_API_TOKEN and MENTION_CALLBACK_API_KEY from service account",
+        "url": "https://github.com/OpenGov/k8s-deployment-platform-shared-modules/pull/568",
+        "state": "closed",
+        "updatedAt": "2026-07-03T11:43:28Z",
+        "commentsCount": 4
+      },
+      {
+        "repo": "OpenGov/k8s-deployment-platform-shared-modules",
+        "number": 554,
+        "title": "feat(psp-demo-assistant): add Beacon + mention callback env vars (all envs)",
+        "url": "https://github.com/OpenGov/k8s-deployment-platform-shared-modules/pull/554",
+        "state": "closed",
+        "updatedAt": "2026-07-02T13:18:58Z",
+        "commentsCount": 3
+      },
+      {
+        "repo": "OpenGov/utility-billing",
+        "number": 2377,
+        "title": "fix(ub): IRD-280 \u2014 size payment method icon SVGs to their wrapper",
+        "url": "https://github.com/OpenGov/utility-billing/pull/2377",
+        "state": "closed",
+        "updatedAt": "2026-07-02T13:22:04Z",
+        "commentsCount": 3
+      },
+      {
+        "repo": "OpenGov/erp-fin-ap",
+        "number": 857,
+        "title": "fix(fin): IRD-288 \u2014 show Add Selected button on accrual run when one invoice is checked",
+        "url": "https://github.com/OpenGov/erp-fin-ap/pull/857",
+        "state": "closed",
+        "updatedAt": "2026-07-02T13:25:17Z",
+        "commentsCount": 3
+      },
+      {
+        "repo": "OpenGov/administration",
+        "number": 3756,
+        "title": "Add psp-demo-assistant repository",
+        "url": "https://github.com/OpenGov/administration/pull/3756",
+        "state": "closed",
+        "updatedAt": "2026-07-02T13:19:44Z",
+        "commentsCount": 1
+      },
+      {
+        "repo": "OpenGov/seamstress-design",
+        "number": 136,
+        "title": "Add Notification Drawer and Inbox Page",
+        "url": "https://github.com/OpenGov/seamstress-design/pull/136",
+        "state": "closed",
+        "updatedAt": "2026-07-03T11:13:55Z",
+        "commentsCount": 4
+      },
+      {
+        "repo": "OpenGov/plc-dev-portal",
+        "number": 694,
+        "title": "Adding initial GAB API spec",
+        "url": "https://github.com/OpenGov/plc-dev-portal/pull/694",
+        "state": "closed",
+        "updatedAt": "2026-07-02T13:25:43Z",
+        "commentsCount": 1
+      }
+    ]
+  },
+  {
+    "weekStart": "2026-07-07",
+    "weekEnd": "2026-07-13",
+    "author": "bentonyetman",
+    "generatedAt": "2026-07-18",
+    "prs": [
+      {
+        "repo": "arykowski-og/lms",
+        "number": 15,
+        "title": "fix(web): unblock course creation \u2014 skip trailing-slash redirect on API proxy",
+        "url": "https://github.com/arykowski-og/lms/pull/15",
+        "state": "merged",
+        "updatedAt": "2026-07-13T22:16:23Z",
+        "commentsCount": 0
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 272,
+        "title": "fix(widget): make feedback-intent buttons equal size, no wrap",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/272",
+        "state": "merged",
+        "updatedAt": "2026-07-13T14:06:48Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 270,
+        "title": "fix(widget): deep-link Fullstory replay URL to submit moment",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/270",
+        "state": "merged",
+        "updatedAt": "2026-07-13T02:38:10Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 269,
+        "title": "feat(feedback): capture user intent (New Idea / Improvement / Something Wrong); classifier owns sentiment",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/269",
+        "state": "merged",
+        "updatedAt": "2026-07-13T00:13:00Z",
+        "commentsCount": 5
+      },
+      {
+        "repo": "OpenGov/beacon",
+        "number": 206,
+        "title": "feat(templates): enrich psp-demo-assistant feedback_comment email",
+        "url": "https://github.com/OpenGov/beacon/pull/206",
+        "state": "merged",
+        "updatedAt": "2026-07-13T03:26:21Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 268,
+        "title": "feat(notifications): enrich feedback-comment email template",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/268",
+        "state": "merged",
+        "updatedAt": "2026-07-13T10:38:04Z",
+        "commentsCount": 7
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 266,
+        "title": "feat(widget): Your feedback tab in Feedback Mode + deep-link landing",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/266",
+        "state": "merged",
+        "updatedAt": "2026-07-12T18:35:27Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 265,
+        "title": "fix(notifications): deep link lands on shell root + opens Your feedback record",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/265",
+        "state": "merged",
+        "updatedAt": "2026-07-11T11:29:05Z",
+        "commentsCount": 4
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 264,
+        "title": "docs: weekly progress journal update (2026-07-03\u20132026-07-10)",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/264",
+        "state": "merged",
+        "updatedAt": "2026-07-11T10:29:17Z",
+        "commentsCount": 0
+      },
+      {
+        "repo": "arykowski-og/lms",
+        "number": 14,
+        "title": "fix(web): unblock course authoring \u2014 unsplash v7 pin + buffered proxy body",
+        "url": "https://github.com/arykowski-og/lms/pull/14",
+        "state": "merged",
+        "updatedAt": "2026-07-12T12:32:38Z",
+        "commentsCount": 0
+      },
+      {
+        "repo": "OpenGov/beacon",
+        "number": 205,
+        "title": "feat(templates): add psp-demo-assistant feedback_comment email template",
+        "url": "https://github.com/OpenGov/beacon/pull/205",
+        "state": "merged",
+        "updatedAt": "2026-07-11T07:30:25Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/k8s-deployment-platform-shared-modules",
+        "number": 684,
+        "title": "feat(psp-demo-assistant): add BEACON_BASE_URL for int/stg/prod",
+        "url": "https://github.com/OpenGov/k8s-deployment-platform-shared-modules/pull/684",
+        "state": "merged",
+        "updatedAt": "2026-07-10T20:45:54Z",
+        "commentsCount": 3
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 263,
+        "title": "fix(notifications): align Beacon calls to live API contract (hybrid in-app + template email)",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/263",
+        "state": "merged",
+        "updatedAt": "2026-07-10T21:10:09Z",
+        "commentsCount": 4
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 262,
+        "title": "feat(notifications): Beacon email notifications + status-change fix",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/262",
+        "state": "merged",
+        "updatedAt": "2026-07-10T18:40:39Z",
+        "commentsCount": 4
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 260,
+        "title": "chore: untrack scheduled_tasks.lock MCP runtime lock",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/260",
+        "state": "merged",
+        "updatedAt": "2026-07-07T22:15:30Z",
+        "commentsCount": 0
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 257,
+        "title": "fix(api): resolve Okta principal from token; local email-domain authz",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/257",
+        "state": "merged",
+        "updatedAt": "2026-07-07T01:11:41Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 255,
+        "title": "fix(widget): isolate Resource Center behind a chunk-error boundary",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/255",
+        "state": "merged",
+        "updatedAt": "2026-07-07T21:03:22Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/user-mention-service",
+        "number": 32,
+        "title": "chore(mention-component): bump version to 0.1.4",
+        "url": "https://github.com/OpenGov/user-mention-service/pull/32",
+        "state": "merged",
+        "updatedAt": "2026-07-11T16:21:25Z",
+        "commentsCount": 3
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 209,
+        "title": "fix(widget): use 'rc' sourceProduct for Resource Center mentions",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/209",
+        "state": "merged",
+        "updatedAt": "2026-07-12T12:28:25Z",
+        "commentsCount": 5
+      },
+      {
+        "repo": "OpenGov/k8s-deployment-platform-shared-modules",
+        "number": 555,
+        "title": "feat(psp-demo-assistant): run DB migrations via init container (deploy-time migrate guard)",
+        "url": "https://github.com/OpenGov/k8s-deployment-platform-shared-modules/pull/555",
+        "state": "closed",
+        "updatedAt": "2026-07-08T21:06:46Z",
+        "commentsCount": 3
+      },
+      {
+        "repo": "OpenGov/insights-mcp",
+        "number": 16,
+        "title": "feat: add query_model_with_sql tool and table name resolution",
+        "url": "https://github.com/OpenGov/insights-mcp/pull/16",
+        "state": "closed",
+        "updatedAt": "2026-07-09T17:57:07Z",
+        "commentsCount": 1
+      }
+    ]
+  }
+]

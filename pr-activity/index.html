@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Weekly PR Activity</title>
+<style>
+  body { margin: 0; background: #f8fafc; color: #0f172a;
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+  .page { max-width: 920px; margin: 0 auto; background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 48px 56px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 18px; margin: 32px 0 8px; padding-bottom: 6px; border-bottom: 1px solid #e2e8f0; }
+  .sub { color: #64748b; font-size: 13px; }
+  .header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  select { font: inherit; font-size: 13px; padding: 6px 10px; border: 1px solid #e2e8f0; border-radius: 6px;
+    background: white; color: #0f172a; }
+  .trend { display: flex; align-items: flex-end; gap: 4px; height: 56px; margin: 20px 0 4px; }
+  .trend-bar { flex: 1; background: #dbeafe; border-radius: 3px 3px 0 0; min-height: 3px; cursor: pointer;
+    position: relative; }
+  .trend-bar:hover { background: #93c5fd; }
+  .trend-bar.active { background: #2563eb; }
+  .trend-bar .tt { display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+    background: #0f172a; color: white; font-size: 11px; padding: 3px 7px; border-radius: 4px; white-space: nowrap;
+    margin-bottom: 4px; }
+  .trend-bar:hover .tt { display: block; }
+  .trend-labels { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; margin-bottom: 8px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 24px 0; }
+  .stat { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 18px; }
+  .stat .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #64748b; }
+  .stat .value { font-size: 26px; font-weight: 600; line-height: 1.3; }
+  .repo-row { display: grid; grid-template-columns: 220px 1fr 32px; align-items: center; gap: 12px; margin: 8px 0; }
+  .repo-name { font-size: 13px; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .repo-bar-track { background: #e5e7eb; border-radius: 999px; height: 10px; overflow: hidden; }
+  .repo-bar-fill { background: #2563eb; height: 100%; border-radius: 999px; }
+  .repo-count { font-size: 13px; font-weight: 600; text-align: right; color: #334155; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; vertical-align: top; }
+  th { background: #f8fafc; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; color: #64748b; }
+  td a { color: #0f172a; text-decoration: none; }
+  td a:hover { text-decoration: underline; }
+  .badge { color: white; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; white-space: nowrap; }
+  .badge-merged { background: #7c3aed; }
+  .badge-closed { background: #64748b; }
+  .badge-open { background: #16a34a; }
+  .footer { color: #94a3b8; font-size: 11px; margin-top: 24px; text-align: center; }
+  .empty { color: #64748b; font-size: 13px; padding: 24px 0; text-align: center; }
+  @media print { body { background: white; } .page { box-shadow: none; padding: 24px; } select { display: none; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="header-row">
+  <div>
+    <h1>Weekly PR Activity</h1>
+    <div class="sub" id="sub">Loading&hellip;</div>
+  </div>
+  <select id="week-select"></select>
+</div>
+
+<div id="trend"></div>
+
+<div id="content"></div>
+
+<div class="footer" id="footer"></div>
+
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function weekStats(week) {
+  const prs = week.prs;
+  const grouped = {};
+  for (const pr of prs) (grouped[pr.repo] ||= []).push(pr);
+  const repos = Object.entries(grouped).sort((a, b) => b[1].length - a[1].length);
+  return {
+    total: prs.length,
+    merged: prs.filter(p => p.state === "merged").length,
+    closed: prs.filter(p => p.state === "closed").length,
+    open: prs.filter(p => p.state === "open").length,
+    comments: prs.reduce((n, p) => n + p.commentsCount, 0),
+    repos,
+  };
+}
+
+function renderTrend(weeks, selectedStart) {
+  const max = Math.max(1, ...weeks.map(w => w.prs.length));
+  const el = document.getElementById("trend");
+  el.innerHTML = `
+    <div class="trend">
+      ${weeks.map(w => {
+        const h = Math.round(70 * w.prs.length / max) + 5;
+        const active = w.weekStart === selectedStart ? "active" : "";
+        return `<div class="trend-bar ${active}" style="height:${h}%" data-week="${w.weekStart}">
+                  <span class="tt">${w.weekStart}: ${w.prs.length} PRs</span>
+                </div>`;
+      }).join("")}
+    </div>
+    <div class="trend-labels"><span>${weeks[0]?.weekStart ?? ""}</span><span>${weeks[weeks.length - 1]?.weekStart ?? ""}</span></div>
+  `;
+  el.querySelectorAll(".trend-bar").forEach(bar => {
+    bar.addEventListener("click", () => selectWeek(bar.dataset.week));
+  });
+}
+
+function renderContent(week) {
+  const content = document.getElementById("content");
+  const sub = document.getElementById("sub");
+  const footer = document.getElementById("footer");
+
+  if (!week) {
+    sub.textContent = "No data yet";
+    content.innerHTML = `<div class="empty">No PR activity recorded for this week.</div>`;
+    footer.textContent = "";
+    return;
+  }
+
+  const s = weekStats(week);
+  sub.textContent = `${week.author} · week of ${week.weekStart} to ${week.weekEnd} · generated ${week.generatedAt}`;
+
+  const bars = s.repos.map(([repo, prs]) => {
+    const pct = Math.round(100 * prs.length / (s.repos[0][1].length || 1));
+    return `<div class="repo-row">
+      <div class="repo-name">${esc(repo)}</div>
+      <div class="repo-bar-track"><div class="repo-bar-fill" style="width:${pct}%"></div></div>
+      <div class="repo-count">${prs.length}</div>
+    </div>`;
+  }).join("");
+
+  const badgeClass = { merged: "badge-merged", closed: "badge-closed", open: "badge-open" };
+  const badgeLabel = { merged: "Merged", closed: "Closed", open: "Open" };
+  const rows = [...week.prs].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).map(pr => `
+    <tr>
+      <td>${esc(pr.repo)}</td>
+      <td><a href="${pr.url}">#${pr.number} ${esc(pr.title)}</a></td>
+      <td><span class="badge ${badgeClass[pr.state]}">${badgeLabel[pr.state]}</span></td>
+      <td>${pr.updatedAt.slice(0, 10)}</td>
+      <td>${pr.commentsCount}</td>
+    </tr>`).join("");
+
+  content.innerHTML = `
+    <div class="stats">
+      <div class="stat"><div class="label">Total PRs</div><div class="value">${s.total}</div></div>
+      <div class="stat"><div class="label">Merged</div><div class="value">${s.merged}</div></div>
+      <div class="stat"><div class="label">Closed (unmerged)</div><div class="value">${s.closed}</div></div>
+      <div class="stat"><div class="label">Repos touched</div><div class="value">${s.repos.length}</div></div>
+    </div>
+    <h2>By repo</h2>
+    ${bars}
+    <h2>All PRs</h2>
+    <table>
+      <thead><tr><th>Repo</th><th>PR</th><th>State</th><th>Last activity</th><th>Comments</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+
+  footer.textContent = `${s.total} PRs · ${s.repos.length} repos · ${s.comments} total comments · open PRs in window: ${s.open}`;
+}
+
+let ALL_WEEKS = [];
+
+function selectWeek(weekStart) {
+  const url = new URL(location.href);
+  url.searchParams.set("week", weekStart);
+  history.replaceState(null, "", url);
+  document.getElementById("week-select").value = weekStart;
+  renderTrend(ALL_WEEKS, weekStart);
+  renderContent(ALL_WEEKS.find(w => w.weekStart === weekStart));
+}
+
+async function init() {
+  const res = await fetch("data.json", { cache: "no-store" });
+  const weeks = await res.json();
+  weeks.sort((a, b) => a.weekStart.localeCompare(b.weekStart));
+  ALL_WEEKS = weeks;
+
+  const select = document.getElementById("week-select");
+  select.innerHTML = weeks.slice().reverse().map(w =>
+    `<option value="${w.weekStart}">Week of ${w.weekStart}${w === weeks[weeks.length - 1] ? " (latest)" : ""}</option>`
+  ).join("");
+  select.addEventListener("change", () => selectWeek(select.value));
+
+  if (weeks.length === 0) {
+    renderContent(null);
+    return;
+  }
+
+  const requested = params.get("week");
+  const target = (requested && requested !== "last" && weeks.some(w => w.weekStart === requested))
+    ? requested
+    : weeks[weeks.length - 1].weekStart;
+
+  selectWeek(target);
+}
+
+init();
+</script>
+</body>
+</html>
