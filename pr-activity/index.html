@@ -164,7 +164,7 @@ function renderContent(week) {
   const rows = s.repos.map(([repo, prs]) => {
     const prRows = [...prs].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).map(pr => `
     <tr>
-      <td><a href="${pr.url}">#${pr.number} ${esc(pr.title)}</a></td>
+      <td><a href="${pr.url}" target="_blank" rel="noopener noreferrer">#${pr.number} ${esc(pr.title)}</a></td>
       <td><span class="badge ${badgeClass[pr.state]}">${badgeLabel[pr.state]}</span></td>
       <td>${pr.updatedAt.slice(0, 10)}</td>
       <td>${pr.commentsCount}</td>
