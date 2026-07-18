@@ -36,6 +36,9 @@
   table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
   th, td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; vertical-align: top; }
   th { background: #f8fafc; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; color: #64748b; }
+  tr.repo-group td { background: #f8fafc; font-size: 12px; font-weight: 600; color: #334155;
+    border-bottom: 1px solid #e2e8f0; padding-top: 12px; }
+  .repo-group-count { font-weight: 400; color: #94a3b8; margin-left: 4px; }
   td a { color: #0f172a; text-decoration: none; }
   td a:hover { text-decoration: underline; }
   .badge { color: white; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; white-space: nowrap; }
@@ -134,14 +137,18 @@ function renderContent(week) {
 
   const badgeClass = { merged: "badge-merged", closed: "badge-closed", open: "badge-open" };
   const badgeLabel = { merged: "Merged", closed: "Closed", open: "Open" };
-  const rows = [...week.prs].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).map(pr => `
+  const rows = s.repos.map(([repo, prs]) => {
+    const prRows = [...prs].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).map(pr => `
     <tr>
-      <td>${esc(pr.repo)}</td>
       <td><a href="${pr.url}">#${pr.number} ${esc(pr.title)}</a></td>
       <td><span class="badge ${badgeClass[pr.state]}">${badgeLabel[pr.state]}</span></td>
       <td>${pr.updatedAt.slice(0, 10)}</td>
       <td>${pr.commentsCount}</td>
     </tr>`).join("");
+    return `
+    <tr class="repo-group"><td colspan="4">${esc(repo)} <span class="repo-group-count">${prs.length}</span></td></tr>
+    ${prRows}`;
+  }).join("");
 
   content.innerHTML = `
     <div class="stats">
@@ -154,7 +161,7 @@ function renderContent(week) {
     ${bars}
     <h2>All PRs</h2>
     <table>
-      <thead><tr><th>Repo</th><th>PR</th><th>State</th><th>Last activity</th><th>Comments</th></tr></thead>
+      <thead><tr><th>PR</th><th>State</th><th>Last activity</th><th>Comments</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
   `;
