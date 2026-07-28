@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BiFrost Catalog Completeness Report - April 1, 2026</title>
+<title>BiFrost Catalog Completeness Report - July 28, 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <style>
@@ -98,130 +98,205 @@ const e = React.createElement;
 
 const DOMAINS = [
   {
-    id: "GeneralLedger", name: "General Ledger", version: "1.0.3", owner: "erp-fin-gl-team",
-    services: 6, entities: 16, events: 33, channels: 6, score: 90,
-    principles: [
-      { name: "Ownership", rating: "Met", evidence: "erp-fin-gl-team owns all entities" },
-      { name: "Service/APIs", rating: "Met", evidence: "6 services: COA, JE, Fiscal Calendar, Import, Export, Inquiry" },
-      { name: "Eventing", rating: "Met", evidence: "33 events across 6 Kafka channels" },
-      { name: "Analytical Sink", rating: "Not Trackable", evidence: "Lives in SageMaker Studio" },
-      { name: "Versioning", rating: "Partial", evidence: "Entities versioned (v1.0.0-1.0.1); invariants universally TBD" },
-      { name: "Documented", rating: "Met", evidence: "CoaAccount: 6 properties with types and descriptions" },
-      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built in BiFrost" },
-      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
-    ],
-    priority: "Define business invariants for CoaAccount, JournalEntryControl, and FiscalYear."
-  },
-  {
-    id: "AccountsPayable", name: "Accounts Payable", version: "1.0.7", owner: "erp-ap-team",
-    services: 11, entities: 11, events: 23, channels: 2, score: 90,
-    principles: [
-      { name: "Ownership", rating: "Met", evidence: "erp-ap-team owns Invoice and PaymentRun" },
-      { name: "Service/APIs", rating: "Met", evidence: "11 services covering full AP lifecycle" },
-      { name: "Eventing", rating: "Met", evidence: "23 events on 2 Kafka channels (invoice + payment run)" },
-      { name: "Analytical Sink", rating: "Not Trackable", evidence: "Lives in SageMaker Studio" },
-      { name: "Versioning", rating: "Partial", evidence: "Invoice v1.0.6, PaymentRun v1.0.6; rowVersion for OCC; invariants TBD" },
-      { name: "Documented", rating: "Met", evidence: "Invoice: 35 properties with full descriptions, enums. Gold standard." },
-      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
-      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
-    ],
-    priority: "Map service dependencies (AP -> VM, AP -> GL, AP -> PO). Define business invariants."
-  },
-  {
-    id: "Beacon", name: "Beacon", version: "1.0.1", owner: "platform-team-notifications",
-    services: 3, entities: 3, events: 2, channels: 2, score: 90,
-    principles: [
-      { name: "Ownership", rating: "Met", evidence: "platform-team-notifications" },
-      { name: "Service/APIs", rating: "Met", evidence: "3 services: API, Processor, InApp Consumer" },
-      { name: "Eventing", rating: "Met", evidence: "2 events on 2 Kafka channels" },
-      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
-      { name: "Versioning", rating: "Partial", evidence: "Entities at v1.0.1; invariants TBD" },
-      { name: "Documented", rating: "Met", evidence: "NotificationRequest: 13 properties with descriptions and enum values" },
-      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
-      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
-    ],
-    priority: "Map upstream dependencies (which products call Beacon). Define invariants."
-  },
-  {
-    id: "VendorManagement", name: "Vendor Management", version: "1.0.5", owner: "vendor-management-team",
-    services: 1, entities: 8, events: 1, channels: 1, score: 70,
+    id: "VendorManagement", name: "Vendor Management", version: "1.0.46", owner: "vendor-management-team",
+    services: 1, entities: 4, events: 2, channels: 2, score: 90,
     principles: [
       { name: "Ownership", rating: "Met", evidence: "vendor-management-team" },
       { name: "Service/APIs", rating: "Met", evidence: "VendorService with CRUD, search, import, export, promote commands" },
-      { name: "Eventing", rating: "Met", evidence: "VendorApprovalStatusChanged on Kafka channel" },
+      { name: "Eventing", rating: "Met", evidence: "VendorApprovalStatusChanged + VendorRecordAmendment on 2 Kafka channels" },
       { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
-      { name: "Versioning", rating: "Partial", evidence: "Vendor at v1.0.5; invariants TBD" },
-      { name: "Documented", rating: "Missing", evidence: "Vendor entity has properties: [] (empty). No property definitions despite v1.0.5." },
-      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
+      { name: "Versioning", rating: "Partial", evidence: "Vendor at v1.0.46; invariants still TBD" },
+      { name: "Documented", rating: "Met", evidence: "Vendor: 49 fully typed, described properties (was empty at last grading -- resolved)" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Catalog itself is now MCP-accessible (ipfx-catalog); no domain-level tool registration yet" },
       { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
     ],
-    priority: "Populate Vendor entity properties. This is the #1 highest-impact action in the catalog -- canonical shared domain object."
+    priority: "Only remaining gap: define business invariants for Vendor. Fragmentation with PurchaseOrder's Vendor reference is resolved -- both now point to the same v1.0.46 definition."
   },
   {
-    id: "TaskManagement", name: "Task Management", version: "1.0.1", owner: "platform-team-tasks",
+    id: "Receipts", name: "Receipts", version: "1.0.8", owner: "pro-receipt",
+    services: 1, entities: 2, events: 1, channels: 1, score: 90,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "pro-receipt" },
+      { name: "Service/APIs", rating: "Met", evidence: "ReceiptService: CRUD, state transitions, PO data sync, search" },
+      { name: "Eventing", rating: "Partial", evidence: "Only ReceiptSubmitted event. Approve/reject/cancel are APIs, not published events." },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Met", evidence: "Receipt has 7 concrete invariants (uniqueness, edit/delete rules, status transitions) -- not TBD" },
+      { name: "Documented", rating: "Met", evidence: "Receipt: 28 properties, all typed and described" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "New domain since last grading, and the strongest one in the catalog. Add approve/reject/cancel events; otherwise a model for the rest of the catalog."
+  },
+  {
+    id: "PurchaseCard", name: "Purchase Card", version: "1.0.3", owner: "erp-fin-pcard-team",
+    services: 1, entities: 6, events: 4, channels: 5, score: 90,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "erp-fin-pcard-team (note: pcard-team's description also claims ownership but its ownedDomainIds is empty -- minor team-record inconsistency)" },
+      { name: "Service/APIs", rating: "Met", evidence: "PurchaseCardService: card programs, holders, merchant categories, COA sync, entity onboarding" },
+      { name: "Eventing", rating: "Met", evidence: "4 CardProgram lifecycle events across 5 channels (incl. transaction, audit, AI sub-channels)" },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Partial", evidence: "CardProgram at v1.0.3; invariants TBD" },
+      { name: "Documented", rating: "Met", evidence: "CardProgram: 23 properties incl. workflow/GL linkage, fully typed" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "New domain since last grading. Resolve the dual team-ownership record (pcard-team vs erp-fin-pcard-team); define invariants."
+  },
+  {
+    id: "GeneralLedger", name: "General Ledger", version: "1.0.16", owner: "erp-fin-gl-team",
+    services: 6, entities: 16, events: 35, channels: 6, score: 90,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "erp-fin-gl-team owns all entities" },
+      { name: "Service/APIs", rating: "Met", evidence: "6 services: COA, JE, Fiscal Calendar, Import, Export, Inquiry" },
+      { name: "Eventing", rating: "Met", evidence: "35 events across 6 Kafka channels" },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "Lives in SageMaker Studio" },
+      { name: "Versioning", rating: "Partial", evidence: "Entities versioned (v1.0.13-1.0.14); invariants universally TBD" },
+      { name: "Documented", rating: "Met", evidence: "CoaAccount, JournalEntryControl documented with types and descriptions" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Define business invariants for CoaAccount, JournalEntryControl, and FiscalYear -- still the single biggest gap in this domain."
+  },
+  {
+    id: "EnterpriseAssetManagement", name: "Enterprise Asset Management", version: "1.0.4", owner: "eam-team",
+    services: 1, entities: 5, events: 15, channels: 5, score: 90,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "eam-team" },
+      { name: "Service/APIs", rating: "Met", evidence: "EAMService: WaterMeter, Task, CrossTenantRequest, WorkOrder, Request APIs" },
+      { name: "Eventing", rating: "Met", evidence: "15 events -- full Created/Updated/Deleted CRUD coverage across all 5 entities, 5 dedicated Kafka channels" },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Partial", evidence: "Entities at v1.0.0-1.0.4; invariants TBD" },
+      { name: "Documented", rating: "Met", evidence: "WaterMeter, WorkOrder: fully typed properties with CloudEvent field-mapping provenance" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "New domain since last grading. Define invariants (e.g. WorkOrder status transitions, WaterMeter install/retire rules) -- otherwise strong out of the gate."
+  },
+  {
+    id: "Beacon", name: "Beacon", version: "1.0.3", owner: "platform-team-notifications",
+    services: 4, entities: 3, events: 3, channels: 6, score: 90,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "platform-team-notifications" },
+      { name: "Service/APIs", rating: "Met", evidence: "4 services: API, Processor, In-App Consumer, Email Consumer (new since last grading)" },
+      { name: "Eventing", rating: "Met", evidence: "3 events across 6 Kafka channels (incl. internal/external DLQs)" },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Partial", evidence: "Entities at v1.0.3; invariants TBD" },
+      { name: "Documented", rating: "Met", evidence: "NotificationRequest: 14 properties with descriptions and enum values" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Map upstream dependencies (which products call Beacon) -- still no structured service-dependency edges. Define invariants."
+  },
+  {
+    id: "AccountsPayable", name: "Accounts Payable", version: "1.0.19", owner: "erp-ap-team",
+    services: 14, entities: 14, events: 23, channels: 2, score: 90,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "erp-ap-team owns Invoice and PaymentRun" },
+      { name: "Service/APIs", rating: "Met", evidence: "14 services covering full AP lifecycle (up from 11)" },
+      { name: "Eventing", rating: "Met", evidence: "23 events on 2 Kafka channels (invoice + payment run)" },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "Lives in SageMaker Studio" },
+      { name: "Versioning", rating: "Partial", evidence: "Invoice v1.0.18, PaymentRun v1.0.18; rowVersion for OCC; invariants TBD" },
+      { name: "Documented", rating: "Met", evidence: "Invoice: 34 properties with full descriptions, enums. Still the gold standard." },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Map service dependencies (AP -> VM, AP -> GL, AP -> PO) -- get_service_dependencies still returns 0/0 for InvoiceService. Define business invariants."
+  },
+  {
+    id: "Requests", name: "Requests", version: "1.0.1", owner: "pro-purchase-order",
+    services: 1, entities: 1, events: 1, channels: 1, score: 80,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "pro-purchase-order" },
+      { name: "Service/APIs", rating: "Met", evidence: "RequestService: workflow transitions, event publishing" },
+      { name: "Eventing", rating: "Partial", evidence: "Only RequestSubmitted event. Missing approved/rejected/cancelled events." },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Partial", evidence: "Request at v1.0.1; invariants TBD" },
+      { name: "Documented", rating: "Met", evidence: "Request: 12 properties, fully typed with status enum" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "New domain since last grading. Add lifecycle events beyond submission; define invariants."
+  },
+  {
+    id: "TaskManagement", name: "Task Management", version: "1.0.12", owner: "platform-team-tasks",
     services: 1, entities: 1, events: 0, channels: 0, score: 70,
     principles: [
       { name: "Ownership", rating: "Met", evidence: "platform-team-tasks" },
       { name: "Service/APIs", rating: "Met", evidence: "TaskApiService with CRUD, search, outcome submission" },
-      { name: "Eventing", rating: "Missing", evidence: "No events. Task lifecycle (OPEN/COMPLETE/CANCELLED) not published." },
+      { name: "Eventing", rating: "Missing", evidence: "Still no events. Task lifecycle (OPEN/COMPLETE/CANCELLED) not published." },
       { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
-      { name: "Versioning", rating: "Partial", evidence: "Task at v1.0.1; invariants TBD" },
-      { name: "Documented", rating: "Met", evidence: "Task entity: 15 properties with full descriptions and enum values" },
-      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
+      { name: "Versioning", rating: "Partial", evidence: "Task at v1.0.12; invariants TBD" },
+      { name: "Documented", rating: "Met", evidence: "Task: 14 properties with full descriptions and enum values" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
       { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
     ],
-    priority: "Add domain events for task lifecycle transitions to enable event-driven integrations."
+    priority: "Unchanged since last grading: add domain events for task lifecycle transitions."
   },
   {
-    id: "PurchaseOrder", name: "Purchase Order", version: "1.0.3", owner: "pro-purchase-order",
-    services: 4, entities: 5, events: 1, channels: 1, score: 60,
+    id: "HumanCapitalManagement", name: "Human Capital Management", version: "1.0.1", owner: "hcm-app-team",
+    services: 1, entities: 259, events: 22, channels: 1, score: 70,
     principles: [
-      { name: "Ownership", rating: "Met", evidence: "pro-purchase-order" },
-      { name: "Service/APIs", rating: "Met", evidence: "4 services: PO, LineItem, InvoiceAllocation, POType" },
-      { name: "Eventing", rating: "Partial", evidence: "Only PoSubmitted event. Missing approval, issuance, closure events." },
+      { name: "Ownership", rating: "Met", evidence: "hcm-app-team" },
+      { name: "Service/APIs", rating: "Met", evidence: "1 monolithic HcmApi service exposing the full employee/recruiting/time/benefits/compliance/performance surface" },
+      { name: "Eventing", rating: "Partial", evidence: "22 events for 259 entities -- covers major lifecycle transitions (hire, terminate, position, leave, benefits, onboarding) but thin relative to domain size" },
       { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
-      { name: "Versioning", rating: "Partial", evidence: "PurchaseOrder at v1.0.3; invariants not defined" },
-      { name: "Documented", rating: "Missing", evidence: "PurchaseOrder entity has properties: [] (empty). Context relationships documented in description." },
-      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
+      { name: "Versioning", rating: "Partial", evidence: "Entities at v1.0.1; invariants not sampled/confirmed" },
+      { name: "Documented", rating: "Partial", evidence: "Entity list includes action-like items (Run, Send, Seed, Unblock, Simulate) that read as commands, not entities; primary aggregate (Employee) not resolvable by that ID" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
       { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
     ],
-    priority: "Document PO entity properties and expand events to cover full lifecycle."
+    priority: "New domain since last grading, largest by entity count (259). Split the single monolithic service into bounded sub-capabilities (payroll, recruiting, time & attendance) matching AP/PO's granularity; audit for command/entity conflation."
   },
   {
-    id: "Requisitions", name: "Requisitions", version: "1.0.0", owner: "requisitions-team",
+    id: "Requisitions", name: "Requisitions", version: "1.0.12", owner: "requisitions-team",
     services: 1, entities: 15, events: 0, channels: 0, score: 60,
     principles: [
       { name: "Ownership", rating: "Met", evidence: "requisitions-team" },
       { name: "Service/APIs", rating: "Met", evidence: "ProApiRequisitions with queries for reqs, review sequences, groups" },
-      { name: "Eventing", rating: "Missing", evidence: "No events. Requisition approval/submission not published." },
+      { name: "Eventing", rating: "Missing", evidence: "Still no events. Requisition approval/submission not published." },
       { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
-      { name: "Versioning", rating: "Partial", evidence: "Entities at v1.0.0; invariants TBD" },
-      { name: "Documented", rating: "Partial", evidence: "Requisition has 6 properties but most lack descriptions." },
-      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
+      { name: "Versioning", rating: "Partial", evidence: "Entities at v1.0.12; invariants TBD" },
+      { name: "Documented", rating: "Partial", evidence: "Requisition has 6 shallow properties (id/status/title/description/timestamps), no per-property descriptions" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
       { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
     ],
-    priority: "Add events for requisition lifecycle and flesh out property documentation."
+    priority: "Unchanged since last grading: add events for requisition lifecycle and flesh out property documentation."
   },
   {
-    id: "RevenueCore", name: "Revenue Core", version: "1.0.0", owner: "(not assigned)",
-    services: 1, entities: 9, events: 0, channels: 0, score: 30,
+    id: "PurchaseOrder", name: "Purchase Order", version: "2.0.13", owner: "pro-purchase-order",
+    services: 12, entities: 12, events: 2, channels: 2, score: 60,
     principles: [
-      { name: "Ownership", rating: "Missing", evidence: "No owning team assigned" },
+      { name: "Ownership", rating: "Met", evidence: "pro-purchase-order" },
+      { name: "Service/APIs", rating: "Met", evidence: "12 services (up from 4): PO, LineItem, InvoiceAllocation, ReceiptAllocation, ChangeOrder(+Line+Reason), POType, Comment, Attachment, Activity, OrgUnit" },
+      { name: "Eventing", rating: "Partial", evidence: "PoSubmitted + CoSubmitted (up from 1). Still missing approval, issuance, closure events." },
+      { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
+      { name: "Versioning", rating: "Partial", evidence: "PurchaseOrder entity itself has no invariants; sibling ChangeOrder entity has 7 concrete invariants" },
+      { name: "Documented", rating: "Missing", evidence: "PurchaseOrder entity still has properties: [] (empty), no invariants section. ChangeOrder/LineItem/Vendor in the same domain are well documented." },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
+      { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
+    ],
+    priority: "Document the PurchaseOrder aggregate itself -- the domain's namesake entity is still the gap, even though ChangeOrder (same domain) now models invariants well. Use ChangeOrder as the in-house template."
+  },
+  {
+    id: "RevenueCore", name: "Revenue Core", version: "1.0.0", owner: "revenue-core-team",
+    services: 1, entities: 9, events: 0, channels: 0, score: 50,
+    principles: [
+      { name: "Ownership", rating: "Met", evidence: "revenue-core-team now assigned (was unassigned at last grading)" },
       { name: "Service/APIs", rating: "Met", evidence: "RevenueCoreService with account, customer, rate, service operations" },
       { name: "Eventing", rating: "Missing", evidence: "No events defined" },
       { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
       { name: "Versioning", rating: "Partial", evidence: "All entities at v1.0.0" },
-      { name: "Documented", rating: "Missing", evidence: "Entity summaries are placeholders ('Account entity', 'Customer entity')" },
-      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "Not yet built" },
+      { name: "Documented", rating: "Missing", evidence: "Account/Customer still properties: [] with placeholder summaries ('Account entity', 'Customer entity') -- unchanged since last grading" },
+      { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
       { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
     ],
-    priority: "Assign an owning team and document entity properties. Good structural breadth needs depth."
+    priority: "Ownership is now resolved -- document entity properties next. Good structural breadth still needs depth."
   },
   {
-    id: "PurchaseRequests", name: "Purchase Requests", version: "1.0.0", owner: "(not assigned)",
-    services: 0, entities: 0, events: 0, channels: 0, score: 0,
+    id: "PurchaseRequests", name: "Purchase Requests", version: "1.0.0", owner: "pro-purchase-order",
+    services: 0, entities: 0, events: 0, channels: 0, score: 20,
     principles: [
-      { name: "Ownership", rating: "Missing", evidence: "No owner assigned" },
+      { name: "Ownership", rating: "Met", evidence: "pro-purchase-order now formally owns this domain (was unassigned)" },
       { name: "Service/APIs", rating: "Missing", evidence: "0 services" },
       { name: "Eventing", rating: "Missing", evidence: "0 events" },
       { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
@@ -230,13 +305,13 @@ const DOMAINS = [
       { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
       { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
     ],
-    priority: "Planned domain not yet populated. Clarify boundary with Requisitions domain."
+    priority: "Still an empty shell, but now owned. PurchaseOrder's own description already plans a PurchaseRequests-to-PO integration -- populate to unblock it."
   },
   {
-    id: "Contracts", name: "Contracts", version: "1.0.0", owner: "(not assigned)",
-    services: 0, entities: 0, events: 0, channels: 0, score: 0,
+    id: "Contracts", name: "Contracts", version: "1.0.0", owner: "pro-purchase-order",
+    services: 0, entities: 0, events: 0, channels: 0, score: 20,
     principles: [
-      { name: "Ownership", rating: "Missing", evidence: "No owner assigned" },
+      { name: "Ownership", rating: "Met", evidence: "pro-purchase-order now formally owns this domain (was unassigned)" },
       { name: "Service/APIs", rating: "Missing", evidence: "0 services" },
       { name: "Eventing", rating: "Missing", evidence: "0 events" },
       { name: "Analytical Sink", rating: "Not Trackable", evidence: "N/A" },
@@ -245,7 +320,7 @@ const DOMAINS = [
       { name: "MCP Server Tools", rating: "Not Trackable", evidence: "N/A" },
       { name: "GAB Discoverability", rating: "Not Trackable", evidence: "N/A" }
     ],
-    priority: "Planned domain not yet populated. Clarify boundary with VendorManagement."
+    priority: "Still an empty shell, but now owned. PurchaseOrder's description already plans a Contracts-to-PO integration -- populate to unblock it."
   }
 ];
 
@@ -261,23 +336,22 @@ const PRINCIPLES = [
 ];
 
 const ISSUES = [
-  { severity: "critical", title: "Vendor entity fragmentation persists", desc: "Vendor entity (v1.0.5) appears in both VendorManagement and PurchaseOrder. The authoritative VendorManagement Vendor has zero properties defined. ADR-65 specifically flags this as the canonical fragmentation problem." },
-  { severity: "critical", title: "Entity list mixes commands/queries as entities", desc: "The entity list API returns 375 items, but many are commands (199) and queries (106) duplicated as entities. This inflates counts and creates confusion for catalog consumers." },
-  { severity: "critical", title: "Service dependencies almost entirely unmapped", desc: "Of 30 services, only Beacon's NotificationApiService has a mapped downstream dependency. Known cross-domain interactions (AP to GL, PO to GL, AP to VM) are not reflected." },
-  { severity: "high", title: "Business invariants universally TBD", desc: "Every entity inspected has invariants marked as TBD. Without invariants, the catalog cannot serve as a contract for cross-domain integration." },
-  { severity: "high", title: "No flow definitions exist", desc: "Zero end-to-end process flows are defined. Procure-to-Pay, Record-to-Report, and other cross-domain processes are not modeled." },
-  { severity: "high", title: "Five domains lack events entirely", desc: "TaskManagement, RevenueCore, Requisitions, PurchaseRequests, and Contracts publish no domain events, preventing event-driven integration." },
-  { severity: "high", title: "Core procurement entities lack property definitions", desc: "PurchaseOrder and Vendor entities both have empty property arrays despite being at v1.0.3 and v1.0.5 respectively." },
-  { severity: "medium", title: "RevenueCore has placeholder documentation", desc: "Entity summaries like 'Account entity' and 'Customer entity' provide no meaningful information." },
-  { severity: "medium", title: "Potential domain overlap: PurchaseRequests vs Requisitions", desc: "Both domains describe managing purchase requisitions. Requisitions has 15 entities while PurchaseRequests is empty. Domain boundaries need clarification." }
+  { severity: "critical", title: "Service-to-service dependency graph is still structurally empty", desc: "get_service_dependencies returns 0 upstream / 0 downstream for InvoiceService, ChartOfAccountsService, VendorService, and HcmApi. PurchaseOrder's entity description now narrates real dependencies (AP, GL, PurchaseRequests, Contracts) in prose, but none of it is encoded as graph edges consumers can query." },
+  { severity: "high", title: "PurchaseOrder's own namesake entity remains undocumented", desc: "The PurchaseOrder entity has an empty property array and no invariants section, even though sibling entities in the same domain -- ChangeOrder, LineItem -- are now well documented. The domain's most-referenced entity is its weakest link." },
+  { severity: "high", title: "RevenueCore entities are unchanged since last grading", desc: "Account and Customer still have empty property arrays and placeholder summaries ('Account entity', 'Customer entity'), despite the domain gaining an assigned owner this cycle." },
+  { severity: "medium", title: "Cross-domain entity ID collisions", desc: "\"Position\", \"Requisition\", and \"User\" are each defined independently in two unrelated domains (procurement vs. HCM vs. PCard) under the same bare entity ID with different schemas -- a consumer resolving by ID alone risks pulling the wrong domain's definition. (Vendor previously had this problem too; it's now resolved -- see below.)" },
+  { severity: "medium", title: "HumanCapitalManagement's entity list reads as partly commands", desc: "Items like Run, Send, Seed, Unblock, and Simulate look like operations, not domain entities. This is the same entity/command conflation pattern the catalog resolved globally last cycle, recurring locally within HCM's 259-item entity list." },
+  { severity: "medium", title: "PurchaseCard has two teams claiming ownership", desc: "erp-fin-pcard-team formally owns the domain (ownedDomainIds includes PurchaseCard). pcard-team's own summary also describes owning it, but its ownedDomainIds is empty. Minor, but worth reconciling before it causes a real ownership dispute." },
+  { severity: "medium", title: "Still zero flow definitions", desc: "list_flows returns 0 results, unchanged since last grading. With Requests and Receipts now populated, a full Procure-to-Pay flow (Requisition to Request to PO to Receipt to Invoice to PaymentRun) is modelable for the first time -- it just hasn't been done." }
 ];
 
 const RECS = [
-  { title: "Populate Vendor entity properties.", desc: "Highest-leverage single action. Use the Invoice entity (35 properties) as the template. Resolve fragmentation by making VendorManagement's definition authoritative." },
-  { title: "Map service dependencies for cross-domain interactions.", desc: "Start with AP to VM (vendor sync), AP to GL (accrual posting), PO to GL (encumbrance). Beacon's existing mapping is the model." },
-  { title: "Define business invariants for top 5 aggregate roots.", desc: "Start with Invoice, PaymentRun, PurchaseOrder, Vendor, and JournalEntryControl. Even 3-5 invariants per entity would be transformative." },
-  { title: "Add lifecycle events for PurchaseOrder and Requisitions.", desc: "PO has only PoSubmitted. Add Approved, Issued, Closed, Cancelled to mirror AP's comprehensive approach." },
-  { title: "Create at least one end-to-end flow definition.", desc: "The Procure-to-Pay flow (Requisition to PO to Invoice to PaymentRun) would demonstrate the most cross-domain value." }
+  { title: "Turn PurchaseOrder's prose dependencies into real graph edges.", desc: "The domain's own description already names AP, GL, PurchaseRequests, and Contracts as upstream/downstream partners. Encode those as service-dependency edges -- the qualitative knowledge already exists, it just isn't structured." },
+  { title: "Document the PurchaseOrder aggregate itself.", desc: "Use ChangeOrder or Receipt as the in-house template -- both now ship full property lists and concrete invariants. PurchaseOrder is the one entity in its own domain still at properties: []." },
+  { title: "Split HumanCapitalManagement's single service into bounded sub-capabilities.", desc: "259 entities behind one monolithic HcmApi is thin relative to AP's 14 services or PO's 12 for comparable complexity. Payroll, recruiting, and time & attendance look like natural seams. Audit the entity list for command-like items (Run, Send, Seed) while at it." },
+  { title: "Define invariants for the remaining TBD entities.", desc: "Vendor, Invoice, PaymentRun, JournalEntryControl, Task, CardProgram, NotificationRequest, WaterMeter, WorkOrder. Receipt and ChangeOrder already show what a real invariants section looks like -- copy the pattern." },
+  { title: "Resolve entity ID collisions.", desc: "Position, Requisition, and User each mean different things in different domains under the same bare ID. Either namespace by domain or document explicitly that the collision is intentional." },
+  { title: "Create at least one end-to-end flow definition.", desc: "Procure-to-Pay (Requisition -> Request -> PurchaseOrder -> Receipt -> Invoice -> PaymentRun) is fully modelable now that Requests and Receipts exist as domains -- this was blocked before, it isn't anymore." }
 ];
 
 function getScoreClass(score) {
@@ -451,7 +525,7 @@ function CrossCuttingTab() {
 
 function Recommendations() {
   return e("div", { className: "rec-section" },
-    e("h2", null, "Top 5 Recommendations"),
+    e("h2", null, "Top Recommendations"),
     RECS.map(function(r, i) {
       return e("div", { key: i, className: "rec-item" },
         e("div", { className: "rec-num" }, i + 1),
@@ -470,7 +544,7 @@ function App() {
   return e("div", { className: "container" },
     e("div", { className: "header" },
       e("h1", null, "BiFrost Catalog Completeness Report"),
-      e("p", null, "ADR-65 Shared Domain Object Principles | April 1, 2026")
+      e("p", null, "ADR-65 Shared Domain Object Principles | July 28, 2026")
     ),
     e(SummaryCards),
     e("div", { className: "tabs" },
