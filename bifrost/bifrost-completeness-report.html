@@ -327,8 +327,18 @@ const DOMAINS = [
 const MISSING_DOMAINS = [
   {
     name: "Government App Builder", jiraId: "GAB", severity: "critical",
-    evidence: "30 active repos org-wide in the last 90 days (gab-frontend, gab-backend, gab-core, gab-boilerplate, gab-311, gab-ogc-311, gab-grants-management, gab-workflows, gab-ocr-service, gab-ai-gateway, gab-import-service...), several pushed same-day.",
-    note: "Zero domains modeled. Includes two newer GAB-built product offerings with no catalog presence at all: 311 (gab-311, gab-ogc-311) and Grants Management (gab-grants-management)."
+    evidence: "30 active repos org-wide in the last 90 days (gab-frontend, gab-backend, gab-core, gab-boilerplate, gab-workflows, gab-ocr-service, gab-ai-gateway, gab-import-service...), several pushed same-day.",
+    note: "Zero domains modeled -- the underlying app-builder platform itself, distinct from the product offerings built on top of it (311, Grants Management -- see below)."
+  },
+  {
+    name: "311", jiraId: "GAB-311", severity: "high",
+    evidence: "gab-311, gab-ogc-311 -- both active, pushed same-day.",
+    note: "Own product offering (citizen request/311 management), built on the GAB platform but not itself represented anywhere in the catalog. Zero domains modeled."
+  },
+  {
+    name: "Grants Management", jiraId: "GAB-GRANTS", severity: "high",
+    evidence: "gab-grants-management -- active, pushed same-day.",
+    note: "Own product offering built on the GAB platform, not itself represented anywhere in the catalog. Zero domains modeled."
   },
   {
     name: "Permitting & Licensing", jiraId: "PLC", severity: "critical",
@@ -363,7 +373,7 @@ const MISSING_DOMAINS = [
   {
     name: "Reporting & Transparency", jiraId: "RNT", severity: "medium",
     evidence: "rnt-spring-auth-lib, bnp-rnt-coa-registry-service, fin-to-rnt-event-transformer -- smaller but active footprint; legacy TransparencyAPI/ReportApp (2019-2020) appear to be mid-replacement.",
-    note: "Zero domains modeled. Smallest gap of the eight, but still not represented."
+    note: "Zero domains modeled. Smallest gap of the group, but still not represented."
   }
 ];
 
@@ -386,7 +396,7 @@ const ISSUES = [
   { severity: "medium", title: "HumanCapitalManagement's entity list reads as partly commands", desc: "Items like Run, Send, Seed, Unblock, and Simulate look like operations, not domain entities. This is the same entity/command conflation pattern the catalog resolved globally last cycle, recurring locally within HCM's 259-item entity list." },
   { severity: "medium", title: "PurchaseCard has two teams claiming ownership", desc: "erp-fin-pcard-team formally owns the domain (ownedDomainIds includes PurchaseCard). pcard-team's own summary also describes owning it, but its ownedDomainIds is empty. Minor, but worth reconciling before it causes a real ownership dispute." },
   { severity: "medium", title: "Still zero flow definitions", desc: "list_flows returns 0 results, unchanged since last grading. With Requests and Receipts now populated, a full Procure-to-Pay flow (Requisition to Request to PO to Receipt to Invoice to PaymentRun) is modelable for the first time -- it just hasn't been done." },
-  { severity: "high", title: "8 of 13 OpenGov products have no domain in the catalog at all", desc: "GAB, PLC, and BNP are among the most actively developed products org-wide (30+ active repos each in the last 90 days) yet have zero Bifrost representation. Payroll, Tax & Revenue, Utility Billing, Access Control, and Reporting & Transparency are also uncataloged. See the new Missing Domains tab." },
+  { severity: "high", title: "8 of 13 OpenGov products have no domain in the catalog at all", desc: "GAB, PLC, and BNP are among the most actively developed products org-wide (30+ active repos each in the last 90 days) yet have zero Bifrost representation. Payroll, Tax & Revenue, Utility Billing, Access Control, and Reporting & Transparency are also uncataloged. GAB's own product offerings -- 311 and Grants Management -- are additionally uncataloged in their own right, not merely as a byproduct of GAB being missing. See the new Missing Domains tab." },
   { severity: "medium", title: "RevenueCore does not actually cover Tax & Revenue or Utility Billing", desc: "Verified directly: WaterMeter is only modeled under EnterpriseAssetManagement (as a physical asset), not under RevenueCore or linked to any billing entity, and no meter-reading/consumption entity exists anywhere in the catalog. RevenueCore's 9 entities are generic account/customer/rate scaffolding with no TNR- or UB-specific concepts -- it does not functionally cover either product." }
 ];
 
@@ -575,7 +585,7 @@ function CrossCuttingTab() {
 function MissingDomainsTab() {
   return e("div", null,
     e("div", { className: "priority-note", style: { marginBottom: 16 } },
-      e("strong", null, "Method: "), "Cross-referenced the 15 domains live in the catalog against OpenGov's 13-product inventory (JIRA project / product ID / stack-profile / repo) and against every opengov org repo pushed in the last 90 days. 5 products are fully covered (Procurement, Financials/ERP, Vendor Management, HCM, EAM). The 8 below have zero or unattributed catalog representation despite active development."
+      e("strong", null, "Method: "), "Cross-referenced the 15 domains live in the catalog against OpenGov's 13-product inventory (JIRA project / product ID / stack-profile / repo) and against every opengov org repo pushed in the last 90 days. 5 inventory products are fully covered (Procurement, Financials/ERP, Vendor Management, HCM, EAM). 8 inventory products below have zero or unattributed catalog representation despite active development. 311 and Grants Management are additionally listed as their own entries -- they're GAB-built product offerings, but distinct products in their own right, not just a byproduct of GAB being missing."
     ),
     MISSING_DOMAINS.map(function(m, i) {
       return e("div", { key: i, className: "issue-card" },
