@@ -324,6 +324,49 @@ const DOMAINS = [
   }
 ];
 
+const MISSING_DOMAINS = [
+  {
+    name: "Government App Builder", jiraId: "GAB", severity: "critical",
+    evidence: "30 active repos org-wide in the last 90 days (gab-frontend, gab-backend, gab-core, gab-boilerplate, gab-311, gab-ogc-311, gab-grants-management, gab-workflows, gab-ocr-service, gab-ai-gateway, gab-import-service...), several pushed same-day.",
+    note: "Zero domains modeled. Includes two newer GAB-built product offerings with no catalog presence at all: 311 (gab-311, gab-ogc-311) and Grants Management (gab-grants-management)."
+  },
+  {
+    name: "Permitting & Licensing", jiraId: "PLC", severity: "critical",
+    evidence: "30 active repos (plc-ember-apps, plc-rails-api, plc-mobile-app, plc-service-payments, plc-service-records, plc-service-search, plc-service-notifications...), most pushed within the last 24h.",
+    note: "Zero domains modeled despite being one of the most actively developed products in the org."
+  },
+  {
+    name: "Budgeting & Planning", jiraId: "BNP", severity: "critical",
+    evidence: "30+ active repos (bnp-ui, bnp-budget-service, bnp-workflow-service, bnp-notifications-service, bnp-common-service, bnp-data-management...).",
+    note: "Zero domains modeled."
+  },
+  {
+    name: "Payroll", jiraId: "PAYROLL", severity: "high",
+    evidence: "payroll, payroll-app, payroll-gf-app, payroll-prosim, payroll-app-reports-service -- all active.",
+    note: "Zero domains modeled. Distinct from HumanCapitalManagement, which does not reference payroll run/pay-period entities."
+  },
+  {
+    name: "Tax & Revenue", jiraId: "TNR", severity: "high",
+    evidence: "tnr-app-core (\"Main app for OpenGov Tax & Revenue\"), tnr-flatfile-listeners, infra-app-tnr, tnr-k6-performance-testing -- 10 active repos.",
+    note: "RevenueCore was suspected as a stand-in but does not hold up: its 9 entities (Account, AccountService, Customer, CustomerContact, CustomerMailingAddress, PostingCode, RateCode, RateSchedule, Service) contain no tax-specific concepts (no Parcel, Assessment, MillRate, TaxBill). RevenueCore is owned by a generic 'revenue-core-team' with no attribution to TNR."
+  },
+  {
+    name: "Utility Billing", jiraId: "UB", severity: "high",
+    evidence: "utility-billing monorepo (very active), k8s-deployment-utility-billing.",
+    note: "Checked directly: WaterMeter exists in the catalog, but only under EnterpriseAssetManagement as a physical asset (install/retire, CloudEvent-mapped from EAM's asset feed) -- not under RevenueCore, and not linked to any billing entity. Catalog-wide search for meter reads / consumption entities returns nothing. RevenueCore's Account/Customer/RateSchedule/Service model is generic billing scaffolding, not UB's metering-to-billing pipeline. UB is functionally uncataloged."
+  },
+  {
+    name: "Access Control", jiraId: "ACE", severity: "medium",
+    evidence: "ace-service (\"miniservice with user-management and access control APIs\"), ace-mcp-server -- active.",
+    note: "TaskManagement's own summary references ACE claim-based access (TASKMASTER_VIEWER etc.) but no ACE bounded context exists in the catalog."
+  },
+  {
+    name: "Reporting & Transparency", jiraId: "RNT", severity: "medium",
+    evidence: "rnt-spring-auth-lib, bnp-rnt-coa-registry-service, fin-to-rnt-event-transformer -- smaller but active footprint; legacy TransparencyAPI/ReportApp (2019-2020) appear to be mid-replacement.",
+    note: "Zero domains modeled. Smallest gap of the eight, but still not represented."
+  }
+];
+
 const PRINCIPLES = [
   { name: "Ownership", desc: "Does the domain have a clear owning team?" },
   { name: "Service/APIs", desc: "Are services defined with commands and queries?" },
@@ -342,7 +385,9 @@ const ISSUES = [
   { severity: "medium", title: "Cross-domain entity ID collisions", desc: "\"Position\", \"Requisition\", and \"User\" are each defined independently in two unrelated domains (procurement vs. HCM vs. PCard) under the same bare entity ID with different schemas -- a consumer resolving by ID alone risks pulling the wrong domain's definition. (Vendor previously had this problem too; it's now resolved -- see below.)" },
   { severity: "medium", title: "HumanCapitalManagement's entity list reads as partly commands", desc: "Items like Run, Send, Seed, Unblock, and Simulate look like operations, not domain entities. This is the same entity/command conflation pattern the catalog resolved globally last cycle, recurring locally within HCM's 259-item entity list." },
   { severity: "medium", title: "PurchaseCard has two teams claiming ownership", desc: "erp-fin-pcard-team formally owns the domain (ownedDomainIds includes PurchaseCard). pcard-team's own summary also describes owning it, but its ownedDomainIds is empty. Minor, but worth reconciling before it causes a real ownership dispute." },
-  { severity: "medium", title: "Still zero flow definitions", desc: "list_flows returns 0 results, unchanged since last grading. With Requests and Receipts now populated, a full Procure-to-Pay flow (Requisition to Request to PO to Receipt to Invoice to PaymentRun) is modelable for the first time -- it just hasn't been done." }
+  { severity: "medium", title: "Still zero flow definitions", desc: "list_flows returns 0 results, unchanged since last grading. With Requests and Receipts now populated, a full Procure-to-Pay flow (Requisition to Request to PO to Receipt to Invoice to PaymentRun) is modelable for the first time -- it just hasn't been done." },
+  { severity: "high", title: "8 of 13 OpenGov products have no domain in the catalog at all", desc: "GAB, PLC, and BNP are among the most actively developed products org-wide (30+ active repos each in the last 90 days) yet have zero Bifrost representation. Payroll, Tax & Revenue, Utility Billing, Access Control, and Reporting & Transparency are also uncataloged. See the new Missing Domains tab." },
+  { severity: "medium", title: "RevenueCore does not actually cover Tax & Revenue or Utility Billing", desc: "Verified directly: WaterMeter is only modeled under EnterpriseAssetManagement (as a physical asset), not under RevenueCore or linked to any billing entity, and no meter-reading/consumption entity exists anywhere in the catalog. RevenueCore's 9 entities are generic account/customer/rate scaffolding with no TNR- or UB-specific concepts -- it does not functionally cover either product." }
 ];
 
 const RECS = [
@@ -391,6 +436,10 @@ function SummaryCards() {
     e("div", { className: "summary-card" },
       e("div", { className: "value score-red" }, criticalCount),
       e("div", { className: "label" }, "Critical Issues")
+    ),
+    e("div", { className: "summary-card" },
+      e("div", { className: "value score-red" }, MISSING_DOMAINS.length),
+      e("div", { className: "label" }, "OpenGov Products Not Cataloged")
     )
   );
 }
@@ -523,6 +572,26 @@ function CrossCuttingTab() {
   );
 }
 
+function MissingDomainsTab() {
+  return e("div", null,
+    e("div", { className: "priority-note", style: { marginBottom: 16 } },
+      e("strong", null, "Method: "), "Cross-referenced the 15 domains live in the catalog against OpenGov's 13-product inventory (JIRA project / product ID / stack-profile / repo) and against every opengov org repo pushed in the last 90 days. 5 products are fully covered (Procurement, Financials/ERP, Vendor Management, HCM, EAM). The 8 below have zero or unattributed catalog representation despite active development."
+    ),
+    MISSING_DOMAINS.map(function(m, i) {
+      return e("div", { key: i, className: "issue-card" },
+        e("div", { className: "issue-header" },
+          e("span", { className: "severity-badge severity-" + m.severity }, m.severity),
+          e("span", { className: "issue-title" }, m.name + " (" + m.jiraId + ")")
+        ),
+        e("div", { className: "issue-desc" },
+          e("div", { style: { marginBottom: 4 } }, e("strong", null, "Evidence: "), m.evidence),
+          e("div", null, e("strong", null, "Note: "), m.note)
+        )
+      );
+    })
+  );
+}
+
 function Recommendations() {
   return e("div", { className: "rec-section" },
     e("h2", null, "Top Recommendations"),
@@ -550,11 +619,13 @@ function App() {
     e("div", { className: "tabs" },
       e("button", { className: "tab " + (activeTab === "domain" ? "active" : ""), onClick: function() { setActiveTab("domain"); } }, "By Domain"),
       e("button", { className: "tab " + (activeTab === "principle" ? "active" : ""), onClick: function() { setActiveTab("principle"); } }, "By Principle"),
-      e("button", { className: "tab " + (activeTab === "issues" ? "active" : ""), onClick: function() { setActiveTab("issues"); } }, "Cross-Cutting Issues")
+      e("button", { className: "tab " + (activeTab === "issues" ? "active" : ""), onClick: function() { setActiveTab("issues"); } }, "Cross-Cutting Issues"),
+      e("button", { className: "tab " + (activeTab === "missing" ? "active" : ""), onClick: function() { setActiveTab("missing"); } }, "Missing Domains")
     ),
     activeTab === "domain" ? e(ByDomainTab) : null,
     activeTab === "principle" ? e(ByPrincipleTab) : null,
     activeTab === "issues" ? e(CrossCuttingTab) : null,
+    activeTab === "missing" ? e(MissingDomainsTab) : null,
     e(Recommendations),
     e("div", { className: "footer" }, "Generated by BiFrost Completeness Report -- scheduled weekly on Mondays at 8am | " + new Date().toISOString().slice(0, 19).replace("T", " ") + " UTC")
   );
