@@ -377,6 +377,27 @@ const MISSING_DOMAINS = [
   }
 ];
 
+const GAP_PLANS = [
+  {
+    title: "Cross-Domain Relationships Aren't Modeled",
+    problem: "get_service_dependencies returns 0 upstream / 0 downstream for every service checked (InvoiceService, ChartOfAccountsService, VendorService, HcmApi). Real dependencies exist in code -- PurchaseOrder.vendorId references VendorManagement.Vendor, Invoice references PurchaseOrder -- but none of it is structured, queryable data in the catalog. PurchaseOrder's entity description narrates real relationships in prose; that's the only place any of this shows up.",
+    steps: [
+      "Derive the graph bottom-up from event consumers instead of hand-authoring it: cross-reference which services subscribe to which Kafka channels (channel/event data already exists for most domains) to auto-populate a first real dependency graph.",
+      "Pilot on Procure-to-Pay (Requisition -> Request -> PurchaseOrder -> Receipt -> Invoice -> PaymentRun) -- already flagged as fully modelable but undone. Prove the pattern on one flow before asking every team to do it.",
+      "Push domain teams to populate get_service_dependencies directly -- the field already exists in the catalog schema, it's just empty everywhere. Track it as a 9th scored principle next cycle so regressions get caught weekly instead of silently persisting."
+    ]
+  },
+  {
+    title: "Business Context Isn't Deep Enough for AI-SDLC Use",
+    problem: "The current \"Documented\" principle only checks whether a property has a type and a description string -- it doesn't check whether that description carries real business meaning. RevenueCore's Account and Customer entities are typed and \"documented\" but their descriptions literally read \"Account entity\" and \"Customer entity.\" That passes today's check and is useless to a coding agent trying to reason about the domain. Invariants are worse: most domains show \"Partial\" on Versioning because invariants are still TBD placeholder text, and a Partial rating currently passes without consequence.",
+    steps: [
+      "Split \"Documented\" into two separately tracked principles: Typed (today's check -- has a type, has a description field) and Business Context (purpose statement tied to a real business process, explicit invariants, a worked example, relationship notes).",
+      "Use Receipt, ChangeOrder, and Invoice as the internal exemplar template -- they're already the best-documented entities in the catalog. Mandate other domains match that bar rather than each team inventing its own documentation standard.",
+      "Make invariants-TBD an explicit failure, not a Partial pass. Versioning should not be scored Partial when the invariants section is empty placeholder text -- that's functionally Missing."
+    ]
+  }
+];
+
 const PRINCIPLES = [
   { name: "Ownership", desc: "Does the domain have a clear owning team?" },
   { name: "Service/APIs", desc: "Are services defined with commands and queries?" },
@@ -602,6 +623,26 @@ function MissingDomainsTab() {
   );
 }
 
+function GapPlansTab() {
+  return e("div", null,
+    e("div", { className: "priority-note", style: { marginBottom: 16 } },
+      e("strong", null, "Why this is separate from the scored principles: "), "These are rubric-level gaps, not domain-level findings -- fixing them changes how every domain gets scored going forward (proposed as an ADR-65 amendment), rather than being one more thing an individual domain owner fixes."
+    ),
+    GAP_PLANS.map(function(g, i) {
+      return e("div", { key: i, className: "principle-card" },
+        e("h3", null, g.title),
+        e("div", { className: "desc" }, g.problem),
+        e("div", { style: { marginTop: 8 } },
+          e("strong", { style: { fontSize: 12, color: "var(--indigo)" } }, "Fix path:"),
+          e("ol", { style: { marginTop: 6, paddingLeft: 20, fontSize: 13, lineHeight: 1.7 } },
+            g.steps.map(function(s, si) { return e("li", { key: si }, s); })
+          )
+        )
+      );
+    })
+  );
+}
+
 function Recommendations() {
   return e("div", { className: "rec-section" },
     e("h2", null, "Top Recommendations"),
@@ -630,12 +671,14 @@ function App() {
       e("button", { className: "tab " + (activeTab === "domain" ? "active" : ""), onClick: function() { setActiveTab("domain"); } }, "By Domain"),
       e("button", { className: "tab " + (activeTab === "principle" ? "active" : ""), onClick: function() { setActiveTab("principle"); } }, "By Principle"),
       e("button", { className: "tab " + (activeTab === "issues" ? "active" : ""), onClick: function() { setActiveTab("issues"); } }, "Cross-Cutting Issues"),
-      e("button", { className: "tab " + (activeTab === "missing" ? "active" : ""), onClick: function() { setActiveTab("missing"); } }, "Missing Domains")
+      e("button", { className: "tab " + (activeTab === "missing" ? "active" : ""), onClick: function() { setActiveTab("missing"); } }, "Missing Domains"),
+      e("button", { className: "tab " + (activeTab === "gaps" ? "active" : ""), onClick: function() { setActiveTab("gaps"); } }, "Relationships & Context")
     ),
     activeTab === "domain" ? e(ByDomainTab) : null,
     activeTab === "principle" ? e(ByPrincipleTab) : null,
     activeTab === "issues" ? e(CrossCuttingTab) : null,
     activeTab === "missing" ? e(MissingDomainsTab) : null,
+    activeTab === "gaps" ? e(GapPlansTab) : null,
     e(Recommendations),
     e("div", { className: "footer" }, "Generated by BiFrost Completeness Report -- scheduled weekly on Mondays at 8am | " + new Date().toISOString().slice(0, 19).replace("T", " ") + " UTC")
   );
