@@ -657,10 +657,29 @@ function Recommendations() {
   );
 }
 
+var VALID_TABS = ["domain", "principle", "issues", "missing", "gaps"];
+
+function getTabFromUrl() {
+  var params = new URLSearchParams(window.location.search);
+  var t = params.get("tab");
+  return VALID_TABS.indexOf(t) !== -1 ? t : "domain";
+}
+
 function App() {
-  var tabState = React.useState("domain");
+  var tabState = React.useState(getTabFromUrl);
   var activeTab = tabState[0];
-  var setActiveTab = tabState[1];
+  var setActiveTabRaw = tabState[1];
+  function setActiveTab(tab) {
+    setActiveTabRaw(tab);
+    var params = new URLSearchParams(window.location.search);
+    params.set("tab", tab);
+    window.history.replaceState(null, "", window.location.pathname + "?" + params.toString());
+  }
+  React.useEffect(function() {
+    function onPopState() { setActiveTabRaw(getTabFromUrl()); }
+    window.addEventListener("popstate", onPopState);
+    return function() { window.removeEventListener("popstate", onPopState); };
+  }, []);
   return e("div", { className: "container" },
     e("div", { className: "header" },
       e("h1", null, "BiFrost Catalog Completeness Report"),
