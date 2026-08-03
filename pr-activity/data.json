@@ -2620,6 +2620,158 @@
     ]
   },
   {
+    "weekStart": "2026-07-21",
+    "weekEnd": "2026-07-27",
+    "author": "bentonyetman",
+    "generatedAt": "2026-08-03",
+    "prs": [
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 300,
+        "title": "fix(feedback): alphabetize product area dropdown by name",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/300",
+        "state": "merged",
+        "updatedAt": "2026-07-26T11:43:54Z",
+        "commentsCount": 4
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 299,
+        "title": "feat(product-areas): add Fixed Assets, Bank Reconciliation, Cash Receipts, General Ledger, 311",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/299",
+        "state": "merged",
+        "updatedAt": "2026-07-25T20:30:55Z",
+        "commentsCount": 5
+      },
+      {
+        "repo": "OpenGov/ai",
+        "number": 915,
+        "title": "feat(rc): add Resource Center prompt-library tools (rc-getPrompts/rc-createPrompt/rc-updatePrompt)",
+        "url": "https://github.com/OpenGov/ai/pull/915",
+        "state": "merged",
+        "updatedAt": "2026-07-26T21:41:56Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/og-ai-marketplace",
+        "number": 231,
+        "title": "chore(psp-demo-assistant): subscribe to bedrock, code-review, drizzle-orm, legit-triage",
+        "url": "https://github.com/OpenGov/og-ai-marketplace/pull/231",
+        "state": "merged",
+        "updatedAt": "2026-07-23T18:57:13Z",
+        "commentsCount": 1
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 297,
+        "title": "chore(claude): enable additional og-hub plugins",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/297",
+        "state": "closed",
+        "updatedAt": "2026-07-23T18:20:33Z",
+        "commentsCount": 1
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 296,
+        "title": "fix(prompts): use condensed Alert variant for the shortcut tip banner",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/296",
+        "state": "merged",
+        "updatedAt": "2026-07-23T18:01:56Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 295,
+        "title": "feat(prompts): add Shift-twice shortcut tip, label Validated filter",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/295",
+        "state": "merged",
+        "updatedAt": "2026-07-23T16:30:29Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 294,
+        "title": "fix(ci): unblock CI + clear repo-wide SonarQube Quality Gate failures",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/294",
+        "state": "merged",
+        "updatedAt": "2026-07-23T14:49:48Z",
+        "commentsCount": 7
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 293,
+        "title": "Prompt picker UI polish: typography, 5-row cap, category color",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/293",
+        "state": "merged",
+        "updatedAt": "2026-07-22T22:10:56Z",
+        "commentsCount": 0
+      },
+      {
+        "repo": "OpenGov/ai",
+        "number": 907,
+        "title": "feat(config): add RC MCP static server to integration environment",
+        "url": "https://github.com/OpenGov/ai/pull/907",
+        "state": "merged",
+        "updatedAt": "2026-07-25T02:00:39Z",
+        "commentsCount": 5
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 291,
+        "title": "fix(services): trim Schema.Trim fields before Model.insert/update.make()",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/291",
+        "state": "merged",
+        "updatedAt": "2026-07-22T20:09:34Z",
+        "commentsCount": 0
+      },
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 290,
+        "title": "fix(prompts): trim title/body before PromptModel.make() to stop 500 on whitespace",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/290",
+        "state": "merged",
+        "updatedAt": "2026-07-22T09:52:02Z",
+        "commentsCount": 4
+      },
+      {
+        "repo": "OpenGov/crd-agent-ecosystem",
+        "number": 69,
+        "title": "Snapshot tiles carry all active filters to Runs page",
+        "url": "https://github.com/OpenGov/crd-agent-ecosystem/pull/69",
+        "state": "merged",
+        "updatedAt": "2026-07-24T11:46:08Z",
+        "commentsCount": 6
+      },
+      {
+        "repo": "OpenGov/pss-access-control-apps",
+        "number": 686,
+        "title": "feat(AC-8288): remove legacy email preferences",
+        "url": "https://github.com/OpenGov/pss-access-control-apps/pull/686",
+        "state": "closed",
+        "updatedAt": "2026-07-21T20:36:42Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/pss-access-control-apps",
+        "number": 672,
+        "title": "feat(AC-8279): remove BnP AI toggle from Entity Settings",
+        "url": "https://github.com/OpenGov/pss-access-control-apps/pull/672",
+        "state": "merged",
+        "updatedAt": "2026-07-21T01:36:59Z",
+        "commentsCount": 5
+      },
+      {
+        "repo": "OpenGov/public-service-platform",
+        "number": 347,
+        "title": "feat(nav): pinned navigation sidebar",
+        "url": "https://github.com/OpenGov/public-service-platform/pull/347",
+        "state": "open",
+        "updatedAt": "2026-07-23T22:08:10Z",
+        "commentsCount": 4
+      }
+    ]
+  },
+  {
     "weekStart": "2026-07-27",
     "weekEnd": "2026-08-02",
     "author": "bentonyetman",
