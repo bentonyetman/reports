@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BiFrost Catalog Completeness Report - July 28, 2026</title>
+<title>BiFrost Catalog Completeness Report - August 3, 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <style>
@@ -188,12 +188,12 @@ const DOMAINS = [
     priority: "Map upstream dependencies (which products call Beacon) -- still no structured service-dependency edges. Define invariants."
   },
   {
-    id: "AccountsPayable", name: "Accounts Payable", version: "1.0.19", owner: "erp-ap-team",
-    services: 14, entities: 14, events: 23, channels: 2, score: 90,
+    id: "AccountsPayable", name: "Accounts Payable", version: "1.0.20", owner: "erp-ap-team",
+    services: 14, entities: 14, events: 25, channels: 2, score: 90,
     principles: [
       { name: "Ownership", rating: "Met", evidence: "erp-ap-team owns Invoice and PaymentRun" },
       { name: "Service/APIs", rating: "Met", evidence: "14 services covering full AP lifecycle (up from 11)" },
-      { name: "Eventing", rating: "Met", evidence: "23 events on 2 Kafka channels (invoice + payment run)" },
+      { name: "Eventing", rating: "Met", evidence: "25 events on 2 Kafka channels (invoice + payment run lifecycle)" },
       { name: "Analytical Sink", rating: "Not Trackable", evidence: "Lives in SageMaker Studio" },
       { name: "Versioning", rating: "Partial", evidence: "Invoice v1.0.18, PaymentRun v1.0.18; rowVersion for OCC; invariants TBD" },
       { name: "Documented", rating: "Met", evidence: "Invoice: 34 properties with full descriptions, enums. Still the gold standard." },
@@ -410,6 +410,7 @@ const PRINCIPLES = [
 ];
 
 const ISSUES = [
+  { severity: "medium", title: "Catalog remains stable; no new critical issues this cycle", desc: "2026-08-03 regrade confirms all 15 domains structurally stable since 2026-07-28. AccountsPayable now shows 25 events (up from 23 — full payment run lifecycle newly modeled). HumanCapitalManagement entity count confirmed at 244 (was 259 in initial report, re-verified 2026-07-28 evening as internal count artifact). All domain scores unchanged. Previously open issues remain: service-to-service dependency graph, PurchaseOrder entity documentation, RevenueCore property documentation, cross-domain ID collisions, flow definitions." },
   { severity: "critical", title: "Service-to-service dependency graph is still structurally empty", desc: "get_service_dependencies returns 0 upstream / 0 downstream for InvoiceService, ChartOfAccountsService, VendorService, and HcmApi. PurchaseOrder's entity description now narrates real dependencies (AP, GL, PurchaseRequests, Contracts) in prose, but none of it is encoded as graph edges consumers can query." },
   { severity: "high", title: "PurchaseOrder's own namesake entity remains undocumented", desc: "The PurchaseOrder entity has an empty property array and no invariants section, even though sibling entities in the same domain -- ChangeOrder, LineItem -- are now well documented. The domain's most-referenced entity is its weakest link." },
   { severity: "high", title: "RevenueCore entities are unchanged since last grading", desc: "Account and Customer still have empty property arrays and placeholder summaries ('Account entity', 'Customer entity'), despite the domain gaining an assigned owner this cycle." },
@@ -683,7 +684,7 @@ function App() {
   return e("div", { className: "container" },
     e("div", { className: "header" },
       e("h1", null, "BiFrost Catalog Completeness Report"),
-      e("p", null, "ADR-65 Shared Domain Object Principles | July 28, 2026")
+      e("p", null, "ADR-65 Shared Domain Object Principles | August 3, 2026")
     ),
     e(SummaryCards),
     e("div", { className: "tabs" },
