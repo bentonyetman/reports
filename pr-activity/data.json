@@ -2417,7 +2417,7 @@
     "weekStart": "2026-07-20",
     "weekEnd": "2026-07-26",
     "author": "bentonyetman",
-    "generatedAt": "2026-07-28",
+    "generatedAt": "2026-08-02",
     "prs": [
       {
         "repo": "OpenGov/psp-demo-assistant",
@@ -2616,6 +2616,32 @@
         "state": "open",
         "updatedAt": "2026-07-23T22:08:10Z",
         "commentsCount": 4
+      }
+    ]
+  },
+  {
+    "weekStart": "2026-07-27",
+    "weekEnd": "2026-08-02",
+    "author": "bentonyetman",
+    "generatedAt": "2026-08-03",
+    "prs": [
+      {
+        "repo": "OpenGov/psp-demo-assistant",
+        "number": 306,
+        "title": "fix: un-freeze autosize on 9 multiline TextFields (IRD-927)",
+        "url": "https://github.com/OpenGov/psp-demo-assistant/pull/306",
+        "state": "merged",
+        "updatedAt": "2026-08-02T18:13:11Z",
+        "commentsCount": 2
+      },
+      {
+        "repo": "OpenGov/utility-billing",
+        "number": 2376,
+        "title": "fix(cr): IRD-290 \u2014 reset PSPErrorBoundary on navigation",
+        "url": "https://github.com/OpenGov/utility-billing/pull/2376",
+        "state": "closed",
+        "updatedAt": "2026-07-31T20:11:13Z",
+        "commentsCount": 2
       }
     ]
   }
